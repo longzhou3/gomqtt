@@ -111,30 +111,51 @@ func (rpc *Rpc) Subscribe(ctx context.Context, msg *proto.SubMsg) (*proto.RetSub
 }
 
 // UnSubscribe 取消订阅
-func (rpc *Rpc) UnSubscribe(ctx context.Context, tm *proto.UnSubMsg) (*proto.RetUnSubMsg, error) {
+func (rpc *Rpc) UnSubscribe(ctx context.Context, msg *proto.UnSubMsg) (*proto.RetUnSubMsg, error) {
+
 	return &proto.RetUnSubMsg{Msg: []byte("UnSubscribe 成功调用")}, nil
 }
 
 // BPull 拉取广播推送
-func (rpc *Rpc) BPull(ctx context.Context, bm *proto.BPushMsg) (*proto.RetBPushMsg, error) {
+func (rpc *Rpc) BPull(ctx context.Context, msg *proto.BPushMsg) (*proto.RetBPushMsg, error) {
 
 	return &proto.RetBPushMsg{Msg: []byte("BPull 成功调用")}, nil
 }
 
 // SPull 拉取单播推送
-func (rpc *Rpc) SPull(ctx context.Context, sm *proto.SPushMsg) (*proto.RetSPushMsg, error) {
+func (rpc *Rpc) SPull(ctx context.Context, msg *proto.SPushMsg) (*proto.RetSPushMsg, error) {
 
 	return &proto.RetSPushMsg{Msg: []byte("SPull 成功调用")}, nil
 }
 
 // PPull 拉取私聊
-func (rpc *Rpc) PPull(ctx context.Context, pm *proto.PChatMsg) (*proto.RetPChatMsg, error) {
+func (rpc *Rpc) PPull(ctx context.Context, msg *proto.PChatMsg) (*proto.RetPChatMsg, error) {
 
 	return &proto.RetPChatMsg{Msg: []byte("PPull 成功调用")}, nil
 }
 
 // GPull 拉取群聊
-func (rpc *Rpc) GPull(ctx context.Context, gm *proto.GChatMsg) (*proto.RetGChatMsg, error) {
+func (rpc *Rpc) GPull(ctx context.Context, msg *proto.GChatMsg) (*proto.RetGChatMsg, error) {
 
 	return &proto.RetGChatMsg{Msg: []byte("GPull 成功调用")}, nil
+}
+
+// 用户设置相关接口
+
+// SetNick 设置昵称
+func (rpc *Rpc) SetNick(ctx context.Context, msg *proto.NickMsg) (*proto.RetNickMsg, error) {
+
+	return &proto.RetNickMsg{Msg: []byte("SetNick 成功调用")}, nil
+}
+
+// SetApns 设置Apns
+func (rpc *Rpc) SetApns(ctx context.Context, msg *proto.ApnsMsg) (*proto.RetApnsMsg, error) {
+
+	return &proto.RetApnsMsg{Msg: []byte("SetApns 成功调用")}, nil
+}
+
+// SetLabel Label
+func (rpc *Rpc) SetLabel(ctx context.Context, msg *proto.LabelMsg) (*proto.RetLabelMsg, error) {
+
+	return &proto.RetLabelMsg{Msg: []byte("SetLabel 成功调用")}, nil
 }
