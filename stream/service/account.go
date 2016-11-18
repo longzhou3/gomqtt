@@ -1,9 +1,10 @@
 package service
 
-import (
-	"sync"
+import "sync"
 
-	"github.com/aiyun/gomqtt/proto"
+const (
+	ONLINE  bool = true  //在线
+	OFFLINE bool = false //离线
 )
 
 type Accounts struct {
@@ -47,6 +48,7 @@ type User struct {
 	ConV      int    // 连接版本号
 	Gip       string //网关地址
 	ApnsToken string //apns token
+	Oline     bool   //是否在线
 }
 
 func NewUser() *User {
@@ -55,5 +57,5 @@ func NewUser() *User {
 }
 
 // UpdateGip 更新网关地址
-func (user *User) Update(am *proto.AccMsg) {
-}
+// func (user *User) Update(am *proto.AccMsg, isLine bool) {
+// }

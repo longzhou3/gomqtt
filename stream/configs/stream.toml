@@ -9,9 +9,9 @@ log_path = "./out.log"
 addrs = ["10.7.24.191:2379",  "10.7.24.192:2379",]
 dltimeout = 10
 rqtimeout = 10
-reportTime = 10
+reportTime = 5
 reportdir = "/gomqtt/stream/etcd/reportdir"
 ttl = 15
 
 [grpc]
-addr = "127.0.0.1:8991"
+addr = "10.3.11.43:8991"

@@ -57,83 +57,84 @@ func (r *Rpc) Close() error {
 // ---------------- 消息推送相关接口  ----------------
 
 // BPush 广播推送
-func (rpc *Rpc) BPush(ctx context.Context, bm *proto.BPushMsg) (*proto.Reply, error) {
+func (rpc *Rpc) BPush(ctx context.Context, bm *proto.BPushMsg) (*proto.RetBPushMsg, error) {
 
-	return &proto.Reply{}, nil
+	return &proto.RetBPushMsg{}, nil
 }
 
 // SPush 单播推送
-func (rpc *Rpc) SPush(ctx context.Context, sm *proto.SPushMsg) (*proto.Reply, error) {
+func (rpc *Rpc) SPush(ctx context.Context, sm *proto.SPushMsg) (*proto.RetSPushMsg, error) {
 
-	return &proto.Reply{}, nil
+	return &proto.RetSPushMsg{}, nil
 }
 
 // PChat 私聊
-func (rpc *Rpc) PChat(ctx context.Context, pm *proto.PChatMsg) (*proto.Reply, error) {
+func (rpc *Rpc) PChat(ctx context.Context, pm *proto.PChatMsg) (*proto.RetPChatMsg, error) {
 
-	return &proto.Reply{}, nil
+	return &proto.RetPChatMsg{}, nil
 }
 
 // GChat 群聊
-func (rpc *Rpc) GChat(ctx context.Context, gm *proto.GChatMsg) (*proto.Reply, error) {
+func (rpc *Rpc) GChat(ctx context.Context, gm *proto.GChatMsg) (*proto.RetGChatMsg, error) {
 
-	return &proto.Reply{}, nil
+	return &proto.RetGChatMsg{}, nil
 }
 
 // ---------------- 用户相关接口  ----------------
 
-// LogIn 登陆
-func (rpc *Rpc) LogIn(ctx context.Context, am *proto.AccMsg) (*proto.Reply, error) {
-	var user *User
-	user, ok := gStream.cache.As.GetUser(am.An, am.Un)
-	if !ok {
-		// 数据库中拉取
-	}
-	user.Update(am)
+// Login 登陆
+func (rpc *Rpc) Login(ctx context.Context, msg *proto.LoginMsg) (*proto.RetLoginMsg, error) {
+	// var user *User
+	// user, ok := gStream.cache.As.GetUser(am.An, am.Un)
+	// if !ok {
+	// 	// 数据库中拉取
+	// 	// 异常返回错误信息
+	// }
+	// user.Update(am, ONLINE)
+	// Logger.Info("Login", zap.Object("user", user))
 
-	Logger.Info("LogIn", zap.Object("user", user))
-
-	return &proto.Reply{Msg: "帅帅帅帅"}, nil
+	return &proto.RetLoginMsg{Msg: []byte("Login 成功调用")}, nil
 }
 
-// LogOut 登出
-func (rpc *Rpc) LogOut(ctx context.Context, am *proto.AccMsg) (*proto.Reply, error) {
+// Logout 登出
+func (rpc *Rpc) Logout(ctx context.Context, msg *proto.LogoutMsg) (*proto.RetLogoutMsg, error) {
 
-	return &proto.Reply{Msg: "帅帅帅帅"}, nil
+	return &proto.RetLogoutMsg{Msg: []byte("Logout 成功调用")}, nil
 }
 
 // ---------------- 订阅相关接口  ----------------
 
 // Subscribe 订阅
-func (rpc *Rpc) Subscribe(ctx context.Context, tm *proto.TcMsg) (*proto.Reply, error) {
-	return &proto.Reply{Msg: "帅帅帅帅"}, nil
+func (rpc *Rpc) Subscribe(ctx context.Context, msg *proto.SubMsg) (*proto.RetSubMsg, error) {
+
+	return &proto.RetSubMsg{Msg: []byte("Subscribe 成功调用")}, nil
 }
 
 // UnSubscribe 取消订阅
-func (rpc *Rpc) UnSubscribe(ctx context.Context, tm *proto.TcMsg) (*proto.Reply, error) {
-	return &proto.Reply{Msg: "帅帅帅帅"}, nil
+func (rpc *Rpc) UnSubscribe(ctx context.Context, tm *proto.UnSubMsg) (*proto.RetUnSubMsg, error) {
+	return &proto.RetUnSubMsg{Msg: []byte("UnSubscribe 成功调用")}, nil
 }
 
 // BPull 拉取广播推送
-func (rpc *Rpc) BPull(ctx context.Context, bm *proto.BPushMsg) (*proto.Reply, error) {
+func (rpc *Rpc) BPull(ctx context.Context, bm *proto.BPushMsg) (*proto.RetBPushMsg, error) {
 
-	return &proto.Reply{Msg: "帅帅帅帅"}, nil
+	return &proto.RetBPushMsg{Msg: []byte("BPull 成功调用")}, nil
 }
 
 // SPull 拉取单播推送
-func (rpc *Rpc) SPull(ctx context.Context, sm *proto.SPushMsg) (*proto.Reply, error) {
+func (rpc *Rpc) SPull(ctx context.Context, sm *proto.SPushMsg) (*proto.RetSPushMsg, error) {
 
-	return &proto.Reply{Msg: "帅帅帅帅"}, nil
+	return &proto.RetSPushMsg{Msg: []byte("SPull 成功调用")}, nil
 }
 
 // PPull 拉取私聊
-func (rpc *Rpc) PPull(ctx context.Context, pm *proto.PChatMsg) (*proto.Reply, error) {
+func (rpc *Rpc) PPull(ctx context.Context, pm *proto.PChatMsg) (*proto.RetPChatMsg, error) {
 
-	return &proto.Reply{Msg: "帅帅帅帅"}, nil
+	return &proto.RetPChatMsg{Msg: []byte("PPull 成功调用")}, nil
 }
 
 // GPull 拉取群聊
-func (rpc *Rpc) GPull(ctx context.Context, gm *proto.GChatMsg) (*proto.Reply, error) {
+func (rpc *Rpc) GPull(ctx context.Context, gm *proto.GChatMsg) (*proto.RetGChatMsg, error) {
 
-	return &proto.Reply{Msg: "帅帅帅帅"}, nil
+	return &proto.RetGChatMsg{Msg: []byte("GPull 成功调用")}, nil
 }
