@@ -46,7 +46,7 @@ message GChatMsg {
 message LoginMsg {
     bytes  an      = 1;      //账户名
     bytes  un      = 2;      //子用户名
-    int32   cid     = 3;      //链接id
+    int64   cid     = 3;      //链接id
     bytes  gip     = 4;      //gateway ip地址
 }
 
