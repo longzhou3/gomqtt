@@ -201,6 +201,7 @@ func (c *rpcClient) Logout(ctx context.Context, in *AccMsg, opts ...grpc.CallOpt
 	if err != nil {
 		return nil, err
 	}
+
 	return out, nil
 }
 
