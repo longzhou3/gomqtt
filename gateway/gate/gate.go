@@ -1,6 +1,9 @@
 package gate
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 type Gate struct {
 }
@@ -15,6 +18,8 @@ func (g *Gate) Start(isStatic bool) {
 
 	loadConfig(isStatic)
 
+	time.Sleep(6 * time.Second)
+
 	// init providers
 	providersStart()
 
@@ -22,5 +27,7 @@ func (g *Gate) Start(isStatic bool) {
 	go adminStart()
 
 	// start the monitors
-	monitorsStart()
+	// monitorsStart()
+
+	Logger.Info("gate started!!")
 }

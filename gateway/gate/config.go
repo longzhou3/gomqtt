@@ -12,6 +12,8 @@ import (
 
 	"os"
 
+	"sync"
+
 	"github.com/corego/tools"
 	"github.com/coreos/etcd/clientv3"
 	"github.com/naoina/toml"
@@ -55,7 +57,15 @@ type Config struct {
 
 var Conf = &Config{}
 
+// for dispatch
 var Consist *consistent.Consistent
+
+// for hash streams ip
+var consist *consistent.Consistent
+
+// for rpc to stream
+var rpcRoutes = make(map[string]*rpcServie)
+var mux = &sync.RWMutex{}
 
 func loadConfig(staticConf bool) {
 	var contents []byte
@@ -79,7 +89,6 @@ func loadConfig(staticConf bool) {
 
 	toml.UnmarshalTable(tbl, Conf)
 
-	// 初始化Logger
 	InitLogger(Conf.Common.LogPath, Conf.Common.LogLevel, Conf.Common.IsDebug)
 
 	// stream hot update
@@ -98,8 +107,9 @@ func loadConfig(staticConf bool) {
 }
 
 // update the stream addrs
+//  etcdctl --endpoints="http://10.7.24.191:2379"  set "/gomqtt/gateway/dispatch/addr" :8906
+// sudo confd -watch -backend etcd -node http://10.7.24.191:2379
 func watchEtcd(cli *clientv3.Client) {
-
 	// update the stream addrs
 	go func() {
 		Conf.StreamAddrs = make(map[string]string)
@@ -107,13 +117,43 @@ func watchEtcd(cli *clientv3.Client) {
 
 		for wresp := range rch {
 			for _, ev := range wresp.Events {
+				ip := string(ev.Kv.Value)
 				if ev.Type == 0 { // PUT
-					Conf.StreamAddrs[string(ev.Kv.Key)] = string(ev.Kv.Value)
+					Conf.StreamAddrs[string(ev.Kv.Key)] = ip
+
+					mux.Lock()
+					if _, ok := rpcRoutes[ip]; !ok {
+						rpc := &rpcServie{}
+						if err := rpc.init(ip); err != nil {
+							Logger.Info("rpc init error", zap.Error(err), zap.String("ip", ip))
+							continue
+						}
+						rpcRoutes[ip] = rpc
+					}
+					mux.Unlock()
 				} else {
+					ip, ok := Conf.StreamAddrs[string(ev.Kv.Key)]
+					if ok {
+						mux.Lock()
+						rpc, ok := rpcRoutes[ip]
+						if ok {
+							rpc.close()
+						}
+						delete(rpcRoutes, ip)
+						mux.Unlock()
+					}
+
 					delete(Conf.StreamAddrs, string(ev.Kv.Key))
 				}
 			}
 
+			consist = consistent.New()
+			for _, v := range Conf.StreamAddrs {
+				consist.Add(v)
+			}
+
+			fmt.Println(consist.Members())
+			fmt.Println(rpcRoutes)
 			// Logger.Debug("get new stream addrs", zap.Object("addrs", Conf.StreamAddrs))
 		}
 	}()
@@ -151,7 +191,7 @@ func uploadEtcd(cli *clientv3.Client) {
 	go func() {
 		for {
 			// upload self ip
-			Grant, err := cli.Grant(context.TODO(), 120)
+			Grant, err := cli.Grant(context.TODO(), 30)
 			if err != nil {
 				Logger.Warn("etcd grant error", zap.Error(err))
 			}
@@ -161,7 +201,7 @@ func uploadEtcd(cli *clientv3.Client) {
 				Logger.Warn("etcd put error", zap.Error(err))
 			}
 
-			time.Sleep(30 * time.Second)
+			time.Sleep(10 * time.Second)
 		}
 	}()
 
