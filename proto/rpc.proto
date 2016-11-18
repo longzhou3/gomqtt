@@ -44,16 +44,16 @@ message GChatMsg {
 
 // 登陆消息
 message LoginMsg {
-    string  an      = 1;      //账户名
-    string  un      = 2;      //子用户名
+    bytes  an      = 1;      //账户名
+    bytes  un      = 2;      //子用户名
     int32   cid     = 3;      //链接id
-    string  gip     = 4;      //gateway ip地址
+    bytes  gip     = 4;      //gateway ip地址
 }
 
 // 登出消息
 message LogoutMsg {
-    string  an      = 1;      //账户名
-    string  un      = 2;      //子用户名
+    bytes  an      = 1;      //账户名
+    bytes  un      = 2;      //子用户名
 }
 
 // 订阅主题消息
@@ -67,5 +67,5 @@ message UnSubMsg {
 }
 
 message Reply {
-    string  msg    = 1;    //其他数据
+    bytes  msg    = 1;    //其他数据
 }
