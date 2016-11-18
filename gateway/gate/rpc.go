@@ -37,8 +37,8 @@ func (r *rpcServie) close() {
 	r.conn.Close()
 }
 
-func (r *rpcServie) login(acm *rpc.AccMsg) error {
-	req, err := r.client.Login(context.Background(), acm)
+func (r *rpcServie) login(msg *rpc.AccMsg) error {
+	req, err := r.client.Login(context.Background(), msg)
 	if err != nil {
 		Logger.Error("Login", zap.Error(err))
 		return err
@@ -47,8 +47,8 @@ func (r *rpcServie) login(acm *rpc.AccMsg) error {
 	return nil
 }
 
-func (r *rpcServie) logout(acm *rpc.AccMsg) error {
-	req, err := r.client.Logout(context.Background(), acm)
+func (r *rpcServie) logout(msg *rpc.AccMsg) error {
+	req, err := r.client.Logout(context.Background(), msg)
 	if err != nil {
 		Logger.Error("LogOut", zap.Error(err))
 		return err
@@ -57,8 +57,8 @@ func (r *rpcServie) logout(acm *rpc.AccMsg) error {
 	return nil
 }
 
-func (r *rpcServie) subscribe(tm *rpc.TcMsg) error {
-	req, err := r.client.Subscribe(context.Background(), tm)
+func (r *rpcServie) subscribe(msg *rpc.TcMsg) error {
+	req, err := r.client.Subscribe(context.Background(), msg)
 	if err != nil {
 		Logger.Error("Subscribe", zap.Error(err))
 		return err
@@ -67,8 +67,8 @@ func (r *rpcServie) subscribe(tm *rpc.TcMsg) error {
 	return nil
 }
 
-func (r *rpcServie) unSubscribe(tm *rpc.TcMsg) error {
-	req, err := r.client.Subscribe(context.Background(), tm)
+func (r *rpcServie) unSubscribe(msg *rpc.TcMsg) error {
+	req, err := r.client.Subscribe(context.Background(), msg)
 	if err != nil {
 		Logger.Error("UnSubscribe", zap.Error(err))
 		return err
@@ -77,8 +77,8 @@ func (r *rpcServie) unSubscribe(tm *rpc.TcMsg) error {
 	return nil
 }
 
-func (r *rpcServie) pChat(ctx context.Context, pm *rpc.PChatMsg) error {
-	req, err := r.client.PChat(context.Background(), pm)
+func (r *rpcServie) pChat(ctx context.Context, msg *rpc.PChatMsg) error {
+	req, err := r.client.PChat(context.Background(), msg)
 	if err != nil {
 		Logger.Error("PChat", zap.Error(err))
 		return err
@@ -87,8 +87,8 @@ func (r *rpcServie) pChat(ctx context.Context, pm *rpc.PChatMsg) error {
 	return nil
 }
 
-func (r *rpcServie) gChat(ctx context.Context, gm *rpc.GChatMsg) error {
-	req, err := r.client.GChat(context.Background(), gm)
+func (r *rpcServie) gChat(ctx context.Context, msg *rpc.GChatMsg) error {
+	req, err := r.client.GChat(context.Background(), msg)
 	if err != nil {
 		Logger.Error("GChat", zap.Error(err))
 		return err
