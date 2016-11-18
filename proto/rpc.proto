@@ -12,12 +12,12 @@ service Rpc {
     rpc GChat(GChatMsg) 		returns (Reply) 	{}
 
     // 用户相关接口
-    rpc Login (AccMsg)         returns (Reply) 	{}
-    rpc Logout(AccMsg)         returns (Reply) 	{}
+    rpc Login (AccMsg)          returns (Reply) 	{}
+    rpc Logout(AccMsg)          returns (Reply) 	{}
 
     // 用户订阅相关
-    rpc Subscribe (TcMsg)         returns (Reply) 	{}
-    rpc UnSubscribe (TcMsg)       returns (Reply) 	{}
+    rpc Subscribe (TopicMsg)         returns (Reply) 	{}
+    rpc UnSubscribe (TopicMsg)       returns (Reply) 	{}
 }
 
 // 广播
@@ -27,8 +27,8 @@ message BPushMsg {
 
 // 单播
 message SPushMsg {
-    repeated    bytes  tTopics = 1;        // topic列表
-    repeated    bytes  tOpids = 2;         // topic列表
+    repeated    bytes  tt = 1;        // to topic列表
+    repeated    bytes  tu = 2;        // to user列表
 }
 
 // 私聊
@@ -45,12 +45,12 @@ message GChatMsg {
 message AccMsg {
     string  an      = 1;      //账户名
     string  un      = 2;      //子用户名
-    int32   conVer  = 3;      //链接版本号
+    int32   cid     = 3;      //链接id
     string  gip     = 4;      //gateway ip地址
 }
 
 // 主题消息
-message TcMsg {
+message TopicMsg {
 
 }
 
