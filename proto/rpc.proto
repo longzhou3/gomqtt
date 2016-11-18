@@ -12,8 +12,8 @@ service Rpc {
     rpc GChat(GChatMsg) 		returns (Reply) 	{}
 
     // 用户相关接口
-    rpc LogIn (AccMsg)         returns (Reply) 	{}
-    rpc LogOut(AccMsg)         returns (Reply) 	{}
+    rpc Login (AccMsg)         returns (Reply) 	{}
+    rpc Logout(AccMsg)         returns (Reply) 	{}
 
     // 用户订阅相关
     rpc Subscribe (TcMsg)         returns (Reply) 	{}
