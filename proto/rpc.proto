@@ -81,7 +81,8 @@ message RetPChatMsg {
     bytes msg = 1;
 }
 
-// 群播返回消息
+
+// 群播返回消息 
 message RetGChatMsg {
     bytes msg = 1;
 }

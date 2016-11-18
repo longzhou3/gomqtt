@@ -255,6 +255,7 @@ type rpcClient struct {
 	cc *grpc.ClientConn
 }
 
+//
 func NewRpcClient(cc *grpc.ClientConn) RpcClient {
 	return &rpcClient{cc}
 }
