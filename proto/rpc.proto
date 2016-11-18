@@ -4,66 +4,121 @@ syntax = "proto3";
 
 package proto;
 
+// 
+// center to stream 和 gateway to stream的数据都是单条的
+// stream to gateway 的数据都是按多条发送的，就是下面各类信息体的的打包类型结构
+// 
+
 service Rpc {
     // 推送接口
-	rpc BPush(BPushMsg) 		returns (RetBPushMsg) 	{}
-    rpc SPush(SPushMsg) 		returns (RetSPushMsg) 	{}
-    rpc PChat(PChatMsg) 		returns (RetPChatMsg) 	{}
-    rpc GChat(GChatMsg) 		returns (RetGChatMsg) 	{}
+	rpc BPush (BPushMsg) 		returns (RetBPushMsg) 	{}
+    rpc SPush (SPushMsg) 		returns (RetSPushMsg) 	{}
+    rpc PChat (PChatMsg) 		returns (RetPChatMsg) 	{}
+    rpc GChat (GChatMsg) 		returns (RetGChatMsg) 	{}
 
-    // 用户相关接口
-    rpc Login (LoginMsg)          returns (RetLoginMsg) 	{}
-    rpc Logout(LogoutMsg)          returns (RetLogoutMsg) 	{}
+    // 用户登陆相关接口
+    rpc Login (LoginMsg)        returns (RetLoginMsg) 	{}
+    rpc Logout (LogoutMsg)      returns (RetLogoutMsg) 	{}
+
+    // 用户设置相关接口
+    rpc SetNick (NickMsg)       returns (RetNickMsg) 	{}
+    rpc SetApns (ApnsMsg)       returns (RetApnsMsg) 	{}
+    rpc SetLabel (LabelMsg)     returns (RetLabelMsg) 	{}
 
     // 用户订阅相关
-    rpc Subscribe (SubMsg)         returns (RetSubMsg) 	{}
-    rpc UnSubscribe (UnSubMsg)       returns (RetUnSubMsg) 	{}
+    rpc Subscribe (SubMsg)      returns (RetSubMsg) 	{}
+    rpc UnSubscribe (UnSubMsg)  returns (RetUnSubMsg) 	{}
 }
 
 
 // 广播
 message BPushMsg {
-
+    bytes  ts       = 1;        // topic
+    int64  rt       = 2;        // 接到消息时间
+    int64  ttl      = 3;        // 消息到期时间
+    bytes  mid      = 4;        // 消息id
+    bytes  lb       = 8;        // 标签
+    bytes  ij       = 9;        // iosjson          
+    bytes  msg      = 7;        // 消息内容
 }
+
+// 广播打包结构
+message BPushMsgs {
+    repeated BPushMsg msgs = 1;         //数据包
+}
+
 
 // 单播
 message SPushMsg {
-    repeated    bytes  tt = 1;        // to topic列表
-    repeated    bytes  tu = 2;        // to user列表
+    repeated    bytes  tts      = 1;        // 目标主题列表
+    repeated    bytes  tus      = 2;        // 目标用户列表
+                bytes  ft       = 3;        // 来源主题
+                bytes  fu       = 4;        // 来源用户 
+                int64  rt       = 5;        // 接到消息时间
+                int64  ttl      = 6;        // 消息到期时间
+                bytes  mid      = 7;        // 消息id
+                bytes  lb       = 8;        // 标签
+                bytes  ij       = 9;        // iosjson        
+                bytes  msg      = 10;       // 消息内容
 }
+
+// 单播打包结构
+message SPushMsgs {
+    repeated SPushMsg msgs = 1;         //数据包
+}
+
 
 // 私聊
 message PChatMsg {
-
+    bytes  tt       = 1;        // 目标主题
+    bytes  tu       = 2;        // 目标用户
+    bytes  ft       = 3;        // 来源主题
+    bytes  fu       = 4;        // 来源用户
+    int64  rt       = 5;        // 接到消息时间
+    int64  ttl      = 6;        // 消息到期时间
+    bytes  mid      = 7;        // 消息id
+    bytes  lb       = 8;        // 标签
+    bytes  ij       = 9;        // iosjson       
+    bytes  msg      = 10;       // 消息内容
 }
 
-// 群播
-message GChatMsg {
+// 私聊打包结构
+message PChatMsgs {
+    repeated PChatMsg msgs = 1;         //数据包
+}
 
+// 群聊
+message GChatMsg {
+    bytes msg = 1;
+}
+
+// 群聊打包结构
+message GChatMsgs {
+    repeated GChatMsg msgs = 1;         //数据包
 }
 
 // 登陆消息
 message LoginMsg {
-    bytes  an      = 1;      //账户名
-    bytes  un      = 2;      //子用户名
-    int64   cid     = 3;      //链接id
-    bytes  gip     = 4;      //gateway ip地址
+    bytes  an      = 1;      // 账户名
+    bytes  un      = 2;      // 子用户名
+    int64  cid     = 3;      // 链接id
+    bytes  gip     = 4;      // gateway ip地址
 }
 
 // 登出消息
 message LogoutMsg {
-    bytes  an      = 1;      //账户名
-    bytes  un      = 2;      //子用户名
+    bytes  an      = 1;      // 账户名
+    bytes  un      = 2;      // 子用户名
 }
 
 // 订阅主题消息
 message SubMsg {
-
+    bytes  ts = 1;        // topic列表
 }
 
 // 取消订阅主题消息
 message UnSubMsg {
-
+    bytes  ts = 1;        // topic列表
 }
 
 // 广播返回消息
@@ -104,5 +159,37 @@ message RetSubMsg {
 
 // 取消订阅主题消息返回消息
 message RetUnSubMsg {
+    bytes msg = 1;
+}
+
+// 设置Nick
+message NickMsg {
+    bytes msg = 1;
+}
+
+// 设置Nick返回消息
+message RetNickMsg {
+    bytes msg = 1;
+}
+
+// 设置Apns
+message ApnsMsg {
+    bytes msg = 1;
+}
+
+// 设置Apns返回消息
+message RetApnsMsg {
+    bytes msg = 1;
+}
+
+
+
+// Label
+message LabelMsg {
+    repeated bytes msg = 1;
+}
+
+// 设置Label返回消息
+message RetLabelMsg {
     bytes msg = 1;
 }
