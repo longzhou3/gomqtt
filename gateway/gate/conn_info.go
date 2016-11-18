@@ -8,7 +8,7 @@ import (
 )
 
 type connInfo struct {
-	id int
+	id int64
 	c  net.Conn
 	cp *proto.ConnectPacket
 
@@ -18,15 +18,17 @@ type connInfo struct {
 	stopped chan struct{}
 
 	relogin bool
+
+	rpc *rpcServie
 }
 
 type connInfos struct {
 	sync.RWMutex
-	infos map[int]*connInfo
+	infos map[int64]*connInfo
 }
 
 var cons = &connInfos{
-	infos: make(map[int]*connInfo),
+	infos: make(map[int64]*connInfo),
 }
 
 func saveCI(ci *connInfo) {
@@ -35,7 +37,7 @@ func saveCI(ci *connInfo) {
 	cons.Unlock()
 }
 
-func getCI(id int) *connInfo {
+func getCI(id int64) *connInfo {
 	cons.RLock()
 	c, ok := cons.infos[id]
 	cons.RUnlock()
@@ -47,7 +49,7 @@ func getCI(id int) *connInfo {
 	return nil
 }
 
-func delCI(id int) {
+func delCI(id int64) {
 	cons.Lock()
 	delete(cons.infos, id)
 	cons.Unlock()

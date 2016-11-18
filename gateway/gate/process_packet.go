@@ -34,7 +34,7 @@ func processPacket(ci *connInfo, pt proto.Packet) error {
 		Logger.Info("recv ping req")
 		pingReq(ci)
 	default:
-		Logger.Warn("recv invalid packet type", zap.String("invalid_type", fmt.Sprintf("%T", pt)), zap.Int("cid", ci.id))
+		Logger.Warn("recv invalid packet type", zap.String("invalid_type", fmt.Sprintf("%T", pt)), zap.Int64("cid", ci.id))
 	}
 
 	return err
