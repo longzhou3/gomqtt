@@ -18,6 +18,7 @@ func (g *Gate) Start(isStatic bool) {
 
 	loadConfig(isStatic)
 
+	// wait for rpc connections inited
 	time.Sleep(6 * time.Second)
 
 	// init providers

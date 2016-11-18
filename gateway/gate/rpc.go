@@ -37,17 +37,17 @@ func (r *rpcServie) close() {
 	r.conn.Close()
 }
 
-func (r *rpcServie) login(msg *rpc.AccMsg) error {
+func (r *rpcServie) login(msg *rpc.LoginMsg) error {
 	req, err := r.client.Login(context.Background(), msg)
 	if err != nil {
 		Logger.Error("Login", zap.Error(err))
 		return err
 	}
-	log.Println(req)
+	log.Println(string(req.Msg))
 	return nil
 }
 
-func (r *rpcServie) logout(msg *rpc.AccMsg) error {
+func (r *rpcServie) logout(msg *rpc.LogoutMsg) error {
 	req, err := r.client.Logout(context.Background(), msg)
 	if err != nil {
 		Logger.Error("LogOut", zap.Error(err))
@@ -57,7 +57,7 @@ func (r *rpcServie) logout(msg *rpc.AccMsg) error {
 	return nil
 }
 
-func (r *rpcServie) subscribe(msg *rpc.TcMsg) error {
+func (r *rpcServie) subscribe(msg *rpc.SubMsg) error {
 	req, err := r.client.Subscribe(context.Background(), msg)
 	if err != nil {
 		Logger.Error("Subscribe", zap.Error(err))
@@ -67,8 +67,8 @@ func (r *rpcServie) subscribe(msg *rpc.TcMsg) error {
 	return nil
 }
 
-func (r *rpcServie) unSubscribe(msg *rpc.TcMsg) error {
-	req, err := r.client.Subscribe(context.Background(), msg)
+func (r *rpcServie) unSubscribe(msg *rpc.UnSubMsg) error {
+	req, err := r.client.UnSubscribe(context.Background(), msg)
 	if err != nil {
 		Logger.Error("UnSubscribe", zap.Error(err))
 		return err

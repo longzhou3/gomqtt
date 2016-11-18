@@ -13,7 +13,7 @@ func recvPacket(ci *connInfo) {
 		close(ci.stopped)
 	}()
 
-	wait := time.Duration(ci.cp.KeepAlive())*time.Second - 10*time.Second
+	wait := time.Duration(ci.cp.KeepAlive())*time.Second + 10*time.Second
 
 	for {
 		// We need to considering about the network delay,so here allows 10 seconds delay.
@@ -21,7 +21,7 @@ func recvPacket(ci *connInfo) {
 
 		pt, buf, n, err := service.ReadPacket(ci.c)
 		if err != nil {
-			Logger.Warn("Read packet error", zap.Error(err), zap.String("buf", fmt.Sprintf("%v", buf)), zap.Int("bytes", n), zap.Int("cid", ci.id))
+			Logger.Warn("Read packet error", zap.Error(err), zap.String("buf", fmt.Sprintf("%v", buf)), zap.Int("bytes", n), zap.Int64("cid", ci.id))
 			break
 		}
 
