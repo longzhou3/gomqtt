@@ -1,6 +1,10 @@
 package service
 
-import "github.com/labstack/echo"
+import (
+	"unsafe"
+
+	"github.com/labstack/echo"
+)
 
 type Stream struct {
 	upa   *UpdateAddr
@@ -79,17 +83,27 @@ func httpStart() {
 	}
 }
 
-// GetAddrKey  获取上报stream地址的key
-// func GetAddrKey(rootDir string) (string, error) {
+// zero-copy, []byte转为string类型
+// 注意，这种做法下，一旦[]byte变化，string也会变化
+// 谨慎，黑科技！！除非性能瓶颈，否则请使用string(b)
+func Bytes2String(b []byte) (s string) {
+	return *(*string)(unsafe.Pointer(&b))
+	// pb := (*reflect.SliceHeader)(unsafe.Pointer(&b))
+	// ps := (*reflect.StringHeader)(unsafe.Pointer(&s))
+	// ps.Data = pb.Data
+	// ps.Len = pb.Len
+	// return
+}
 
-// 	keylen := len(rootDir)
-// 	if keylen > 0 && rootDir[keylen-1] != '/' {
-// 		rootDir = rootDir + "/"
-// 	}
-
-// 	host, err := os.Hostname()
-// 	if err != nil {
-// 		return "", err
-// 	}
-// 	return fmt.Sprintf("%s%s-%d", rootDir, host, os.Getpid()), nil
-// }
+// zero-coy, string类型转为[]byte
+// 注意，这种做法下，一旦string变化，程序立马崩溃且不能recover
+// 谨慎，黑科技！！除非性能瓶颈，否则请使用[]byte(s)
+func String2Bytes(s string) (b []byte) {
+	return *(*[]byte)(unsafe.Pointer(&s))
+	// pb := (*reflect.SliceHeader)(unsafe.Pointer(&b))
+	// ps := (*reflect.StringHeader)(unsafe.Pointer(&s))
+	// pb.Data = ps.Data
+	// pb.Len = ps.Len
+	// pb.Cap = ps.Len
+	// return
+}

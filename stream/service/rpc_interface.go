@@ -7,6 +7,8 @@ import (
 
 	"google.golang.org/grpc"
 
+	"fmt"
+
 	"github.com/aiyun/gomqtt/proto"
 	"github.com/uber-go/zap"
 )
@@ -57,105 +59,101 @@ func (r *Rpc) Close() error {
 // ---------------- 消息推送相关接口  ----------------
 
 // BPush 广播推送
-func (rpc *Rpc) BPush(ctx context.Context, bm *proto.BPushMsg) (*proto.RetBPushMsg, error) {
+func (rpc *Rpc) BPush(ctx context.Context, bm *proto.BPushMsg) (*proto.BPushRet, error) {
 
-	return &proto.RetBPushMsg{}, nil
+	return &proto.BPushRet{}, nil
 }
 
 // SPush 单播推送
-func (rpc *Rpc) SPush(ctx context.Context, sm *proto.SPushMsg) (*proto.RetSPushMsg, error) {
+func (rpc *Rpc) SPush(ctx context.Context, sm *proto.SPushMsg) (*proto.SPushRet, error) {
 
-	return &proto.RetSPushMsg{}, nil
+	return &proto.SPushRet{}, nil
 }
 
 // PChat 私聊
-func (rpc *Rpc) PChat(ctx context.Context, pm *proto.PChatMsg) (*proto.RetPChatMsg, error) {
+func (rpc *Rpc) PChat(ctx context.Context, pm *proto.PChatMsg) (*proto.PChatRet, error) {
 
-	return &proto.RetPChatMsg{}, nil
+	return &proto.PChatRet{}, nil
 }
 
 // GChat 群聊
-func (rpc *Rpc) GChat(ctx context.Context, gm *proto.GChatMsg) (*proto.RetGChatMsg, error) {
+func (rpc *Rpc) GChat(ctx context.Context, gm *proto.GChatMsg) (*proto.GChatRet, error) {
 
-	return &proto.RetGChatMsg{}, nil
+	return &proto.GChatRet{}, nil
 }
 
 // ---------------- 用户相关接口  ----------------
 
 // Login 登陆
-func (rpc *Rpc) Login(ctx context.Context, msg *proto.LoginMsg) (*proto.RetLoginMsg, error) {
-	// var user *User
-	// user, ok := gStream.cache.As.GetUser(am.An, am.Un)
-	// if !ok {
-	// 	// 数据库中拉取
-	// 	// 异常返回错误信息
-	// }
-	// user.Update(am, ONLINE)
-	// Logger.Info("Login", zap.Object("user", user))
+func (rpc *Rpc) Login(ctx context.Context, msg *proto.LoginMsg) (*proto.LoginRet, error) {
+	err := gStream.cache.As.Login(msg)
+	if err != nil {
+		return &proto.LoginRet{Msg: []byte(fmt.Sprint("%s", err.Error()))}, err
+	}
 
-	return &proto.RetLoginMsg{Msg: []byte("Login 成功调用")}, nil
+	return &proto.LoginRet{Msg: []byte("ok")}, nil
 }
 
 // Logout 登出
-func (rpc *Rpc) Logout(ctx context.Context, msg *proto.LogoutMsg) (*proto.RetLogoutMsg, error) {
+func (rpc *Rpc) Logout(ctx context.Context, msg *proto.LogoutMsg) (*proto.LogoutRet, error) {
 
-	return &proto.RetLogoutMsg{Msg: []byte("Logout 成功调用")}, nil
+	return &proto.LogoutRet{Msg: []byte("Logout 成功调用")}, nil
 }
 
 // ---------------- 订阅相关接口  ----------------
 
 // Subscribe 订阅
-func (rpc *Rpc) Subscribe(ctx context.Context, msg *proto.SubMsg) (*proto.RetSubMsg, error) {
+func (rpc *Rpc) Subscribe(ctx context.Context, msg *proto.SubMsg) (*proto.SubRet, error) {
 
-	return &proto.RetSubMsg{Msg: []byte("Subscribe 成功调用")}, nil
+	return &proto.SubRet{Msg: []byte("Subscribe 成功调用")}, nil
 }
 
 // UnSubscribe 取消订阅
-func (rpc *Rpc) UnSubscribe(ctx context.Context, msg *proto.UnSubMsg) (*proto.RetUnSubMsg, error) {
+func (rpc *Rpc) UnSubscribe(ctx context.Context, msg *proto.UnSubMsg) (*proto.UnSubRet, error) {
 
-	return &proto.RetUnSubMsg{Msg: []byte("UnSubscribe 成功调用")}, nil
+	return &proto.UnSubRet{Msg: []byte("UnSubscribe 成功调用")}, nil
 }
 
 // BPull 拉取广播推送
-func (rpc *Rpc) BPull(ctx context.Context, msg *proto.BPushMsg) (*proto.RetBPushMsg, error) {
+func (rpc *Rpc) BPull(ctx context.Context, msg *proto.BPushMsg) (*proto.BPushRet, error) {
 
-	return &proto.RetBPushMsg{Msg: []byte("BPull 成功调用")}, nil
+	return &proto.BPushRet{Msg: []byte("BPull 成功调用")}, nil
 }
 
 // SPull 拉取单播推送
-func (rpc *Rpc) SPull(ctx context.Context, msg *proto.SPushMsg) (*proto.RetSPushMsg, error) {
+func (rpc *Rpc) SPull(ctx context.Context, msg *proto.SPushMsg) (*proto.SPushRet, error) {
 
-	return &proto.RetSPushMsg{Msg: []byte("SPull 成功调用")}, nil
+	return &proto.SPushRet{Msg: []byte("SPull 成功调用")}, nil
 }
 
 // PPull 拉取私聊
-func (rpc *Rpc) PPull(ctx context.Context, msg *proto.PChatMsg) (*proto.RetPChatMsg, error) {
+func (rpc *Rpc) PPull(ctx context.Context, msg *proto.PChatMsg) (*proto.PChatRet, error) {
 
-	return &proto.RetPChatMsg{Msg: []byte("PPull 成功调用")}, nil
+	return &proto.PChatRet{Msg: []byte("PPull 成功调用")}, nil
 }
 
 // GPull 拉取群聊
-func (rpc *Rpc) GPull(ctx context.Context, msg *proto.GChatMsg) (*proto.RetGChatMsg, error) {
+func (rpc *Rpc) GPull(ctx context.Context, msg *proto.GChatMsg) (*proto.GChatRet, error) {
 
-	return &proto.RetGChatMsg{Msg: []byte("GPull 成功调用")}, nil
+	return &proto.GChatRet{Msg: []byte("GPull 成功调用")}, nil
 }
 
 // 用户设置相关接口
 
 // SetNick 设置昵称
-func (rpc *Rpc) SetNick(ctx context.Context, msg *proto.NickMsg) (*proto.RetNickMsg, error) {
+func (rpc *Rpc) SetNick(ctx context.Context, msg *proto.NickMsg) (*proto.NickRet, error) {
 
-	return &proto.RetNickMsg{Msg: []byte("SetNick 成功调用")}, nil
+	return &proto.NickRet{Msg: []byte("SetNick 成功调用")}, nil
 }
 
 // SetApns 设置Apns
-func (rpc *Rpc) SetApns(ctx context.Context, msg *proto.ApnsMsg) (*proto.RetApnsMsg, error) {
+func (rpc *Rpc) SetApns(ctx context.Context, msg *proto.ApnsMsg) (*proto.ApnsRet, error) {
 
-	return &proto.RetApnsMsg{Msg: []byte("SetApns 成功调用")}, nil
+	return &proto.ApnsRet{Msg: []byte("SetApns 成功调用")}, nil
 }
 
 // SetLabel Label
-func (rpc *Rpc) SetLabel(ctx context.Context, msg *proto.LabelMsg) (*proto.RetLabelMsg, error) {
+func (rpc *Rpc) SetLabel(ctx context.Context, msg *proto.LabelMsg) (*proto.LabelRet, error) {
 
-	return &proto.RetLabelMsg{Msg: []byte("SetLabel 成功调用")}, nil
+	return &proto.LabelRet{Msg: []byte("SetLabel 成功调用")}, nil
 }
