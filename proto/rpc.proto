@@ -13,9 +13,7 @@ service Rpc {
  
     // 用户登陆相关接口
     rpc Login (LoginMsg)        returns (LoginRet) 	{}
-    rpc Logout (LogoutMsg)      returns (LogoutRet) 	{}
-
-
+    rpc Logout (LogoutMsg)      returns (LogoutRet) {}
 
     // 用户订阅相关
     rpc Subscribe (SubMsg)      returns (SubRet) 	{}
@@ -28,8 +26,6 @@ service Rpc {
 message PubMsg {
     bytes msg = 1; 
 }
-
-
 
 // 
 message PubRet {
@@ -111,10 +107,22 @@ message LoginMsg {
     bytes  gip     = 4;      // gateway ip地址
 }
 
+// 登陆消息返回消息
+message LoginRet {
+    bool  r = 1;    //  true 成功， false 失败
+    bytes m = 2;    //  失败原因
+}
+
 // 登出消息
 message LogoutMsg {
     bytes  an      = 1;      // 账户名
     bytes  un      = 2;      // 子用户名
+}
+
+// 登出消息返回消息
+message LogoutRet {
+    bool  r = 1;    //  true 成功， false 失败
+    bytes m = 2;    //  失败原因
 }
 
 // 订阅主题消息
@@ -122,9 +130,21 @@ message SubMsg {
     bytes  ts = 1;        // topic列表
 }
 
+// 订阅主题消息返回消息
+message SubRet {
+    bool  r = 1;    //  true 成功， false 失败
+    bytes m = 2;    //  失败原因
+}
+
 // 取消订阅主题消息
 message UnSubMsg {
     bytes  ts = 1;        // topic列表
+}
+
+// 取消订阅主题消息返回消息
+message UnSubRet {
+    bool  r = 1;    //  true 成功， false 失败
+    bytes m = 2;    //  失败原因
 }
 
 // 广播返回消息
@@ -145,26 +165,6 @@ message PChatRet {
 
 // 群播返回消息 
 message GChatRet {
-    bytes msg = 1;
-}
-
-// 登陆消息返回消息
-message LoginRet {
-    bytes msg = 1;
-}
-
-// 登出消息返回消息
-message LogoutRet {
-    bytes msg = 1;
-}
-
-// 订阅主题消息返回消息
-message SubRet {
-    bytes msg = 1;
-}
-
-// 取消订阅主题消息返回消息
-message UnSubRet {
     bytes msg = 1;
 }
 
