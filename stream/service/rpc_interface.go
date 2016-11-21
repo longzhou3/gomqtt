@@ -113,47 +113,50 @@ func (rpc *Rpc) UnSubscribe(ctx context.Context, msg *proto.UnSubMsg) (*proto.Un
 
 	return &proto.UnSubRet{Msg: []byte("UnSubscribe 成功调用")}, nil
 }
-
-// BPull 拉取广播推送
-func (rpc *Rpc) BPull(ctx context.Context, msg *proto.BPushMsg) (*proto.BPushRet, error) {
-
-	return &proto.BPushRet{Msg: []byte("BPull 成功调用")}, nil
+func (rpc *Rpc) Publish(ctx context.Context, msg *proto.PubMsg) (*proto.PubRet, error) {
+	return &proto.PubRet{R: false, M: []byte("UnSubscribe 成功调用")}, nil
 }
 
-// SPull 拉取单播推送
-func (rpc *Rpc) SPull(ctx context.Context, msg *proto.SPushMsg) (*proto.SPushRet, error) {
+// // BPull 拉取广播推送
+// func (rpc *Rpc) BPull(ctx context.Context, msg *proto.BPushMsg) (*proto.BPushRet, error) {
 
-	return &proto.SPushRet{Msg: []byte("SPull 成功调用")}, nil
-}
+// 	return &proto.BPushRet{Msg: []byte("BPull 成功调用")}, nil
+// }
 
-// PPull 拉取私聊
-func (rpc *Rpc) PPull(ctx context.Context, msg *proto.PChatMsg) (*proto.PChatRet, error) {
+// // SPull 拉取单播推送
+// func (rpc *Rpc) SPull(ctx context.Context, msg *proto.SPushMsg) (*proto.SPushRet, error) {
 
-	return &proto.PChatRet{Msg: []byte("PPull 成功调用")}, nil
-}
+// 	return &proto.SPushRet{Msg: []byte("SPull 成功调用")}, nil
+// }
 
-// GPull 拉取群聊
-func (rpc *Rpc) GPull(ctx context.Context, msg *proto.GChatMsg) (*proto.GChatRet, error) {
+// // PPull 拉取私聊
+// func (rpc *Rpc) PPull(ctx context.Context, msg *proto.PChatMsg) (*proto.PChatRet, error) {
 
-	return &proto.GChatRet{Msg: []byte("GPull 成功调用")}, nil
-}
+// 	return &proto.PChatRet{Msg: []byte("PPull 成功调用")}, nil
+// }
 
-// 用户设置相关接口
+// // GPull 拉取群聊
+// func (rpc *Rpc) GPull(ctx context.Context, msg *proto.GChatMsg) (*proto.GChatRet, error) {
 
-// SetNick 设置昵称
-func (rpc *Rpc) SetNick(ctx context.Context, msg *proto.NickMsg) (*proto.NickRet, error) {
+// 	return &proto.GChatRet{Msg: []byte("GPull 成功调用")}, nil
+// }
 
-	return &proto.NickRet{Msg: []byte("SetNick 成功调用")}, nil
-}
+// // 用户设置相关接口
 
-// SetApns 设置Apns
-func (rpc *Rpc) SetApns(ctx context.Context, msg *proto.ApnsMsg) (*proto.ApnsRet, error) {
+// // SetNick 设置昵称
+// func (rpc *Rpc) SetNick(ctx context.Context, msg *proto.NickMsg) (*proto.NickRet, error) {
 
-	return &proto.ApnsRet{Msg: []byte("SetApns 成功调用")}, nil
-}
+// 	return &proto.NickRet{Msg: []byte("SetNick 成功调用")}, nil
+// }
 
-// SetLabel Label
-func (rpc *Rpc) SetLabel(ctx context.Context, msg *proto.LabelMsg) (*proto.LabelRet, error) {
+// // SetApns 设置Apns
+// func (rpc *Rpc) SetApns(ctx context.Context, msg *proto.ApnsMsg) (*proto.ApnsRet, error) {
 
-	return &proto.LabelRet{Msg: []byte("SetLabel 成功调用")}, nil
-}
+// 	return &proto.ApnsRet{Msg: []byte("SetApns 成功调用")}, nil
+// }
+
+// // SetLabel Label
+// func (rpc *Rpc) SetLabel(ctx context.Context, msg *proto.LabelMsg) (*proto.LabelRet, error) {
+
+// 	return &proto.LabelRet{Msg: []byte("SetLabel 成功调用")}, nil
+// }
