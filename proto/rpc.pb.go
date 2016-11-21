@@ -9,6 +9,8 @@ It is generated from these files:
 	rpc.proto
 
 It has these top-level messages:
+	PubMsg
+	PubRet
 	BPushMsg
 	BPushMsgs
 	SPushMsg
@@ -58,6 +60,26 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto1.ProtoPackageIsVersion2 // please upgrade the proto package
 
+type PubMsg struct {
+	Msg []byte `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
+}
+
+func (m *PubMsg) Reset()                    { *m = PubMsg{} }
+func (m *PubMsg) String() string            { return proto1.CompactTextString(m) }
+func (*PubMsg) ProtoMessage()               {}
+func (*PubMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
+
+//
+type PubRet struct {
+	R bool   `protobuf:"varint,1,opt,name=r" json:"r,omitempty"`
+	M []byte `protobuf:"bytes,2,opt,name=m,proto3" json:"m,omitempty"`
+}
+
+func (m *PubRet) Reset()                    { *m = PubRet{} }
+func (m *PubRet) String() string            { return proto1.CompactTextString(m) }
+func (*PubRet) ProtoMessage()               {}
+func (*PubRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
+
 // 广播
 type BPushMsg struct {
 	Ts  []byte `protobuf:"bytes,1,opt,name=ts,proto3" json:"ts,omitempty"`
@@ -72,7 +94,7 @@ type BPushMsg struct {
 func (m *BPushMsg) Reset()                    { *m = BPushMsg{} }
 func (m *BPushMsg) String() string            { return proto1.CompactTextString(m) }
 func (*BPushMsg) ProtoMessage()               {}
-func (*BPushMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
+func (*BPushMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2} }
 
 // 广播打包结构
 type BPushMsgs struct {
@@ -82,7 +104,7 @@ type BPushMsgs struct {
 func (m *BPushMsgs) Reset()                    { *m = BPushMsgs{} }
 func (m *BPushMsgs) String() string            { return proto1.CompactTextString(m) }
 func (*BPushMsgs) ProtoMessage()               {}
-func (*BPushMsgs) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
+func (*BPushMsgs) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{3} }
 
 func (m *BPushMsgs) GetMsgs() []*BPushMsg {
 	if m != nil {
@@ -108,7 +130,7 @@ type SPushMsg struct {
 func (m *SPushMsg) Reset()                    { *m = SPushMsg{} }
 func (m *SPushMsg) String() string            { return proto1.CompactTextString(m) }
 func (*SPushMsg) ProtoMessage()               {}
-func (*SPushMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2} }
+func (*SPushMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{4} }
 
 // 单播打包结构
 type SPushMsgs struct {
@@ -118,7 +140,7 @@ type SPushMsgs struct {
 func (m *SPushMsgs) Reset()                    { *m = SPushMsgs{} }
 func (m *SPushMsgs) String() string            { return proto1.CompactTextString(m) }
 func (*SPushMsgs) ProtoMessage()               {}
-func (*SPushMsgs) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{3} }
+func (*SPushMsgs) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{5} }
 
 func (m *SPushMsgs) GetMsgs() []*SPushMsg {
 	if m != nil {
@@ -144,7 +166,7 @@ type PChatMsg struct {
 func (m *PChatMsg) Reset()                    { *m = PChatMsg{} }
 func (m *PChatMsg) String() string            { return proto1.CompactTextString(m) }
 func (*PChatMsg) ProtoMessage()               {}
-func (*PChatMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{4} }
+func (*PChatMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{6} }
 
 // 私聊打包结构
 type PChatMsgs struct {
@@ -154,7 +176,7 @@ type PChatMsgs struct {
 func (m *PChatMsgs) Reset()                    { *m = PChatMsgs{} }
 func (m *PChatMsgs) String() string            { return proto1.CompactTextString(m) }
 func (*PChatMsgs) ProtoMessage()               {}
-func (*PChatMsgs) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{5} }
+func (*PChatMsgs) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{7} }
 
 func (m *PChatMsgs) GetMsgs() []*PChatMsg {
 	if m != nil {
@@ -171,7 +193,7 @@ type GChatMsg struct {
 func (m *GChatMsg) Reset()                    { *m = GChatMsg{} }
 func (m *GChatMsg) String() string            { return proto1.CompactTextString(m) }
 func (*GChatMsg) ProtoMessage()               {}
-func (*GChatMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{6} }
+func (*GChatMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{8} }
 
 // 群聊打包结构
 type GChatMsgs struct {
@@ -181,7 +203,7 @@ type GChatMsgs struct {
 func (m *GChatMsgs) Reset()                    { *m = GChatMsgs{} }
 func (m *GChatMsgs) String() string            { return proto1.CompactTextString(m) }
 func (*GChatMsgs) ProtoMessage()               {}
-func (*GChatMsgs) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{7} }
+func (*GChatMsgs) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{9} }
 
 func (m *GChatMsgs) GetMsgs() []*GChatMsg {
 	if m != nil {
@@ -201,7 +223,7 @@ type LoginMsg struct {
 func (m *LoginMsg) Reset()                    { *m = LoginMsg{} }
 func (m *LoginMsg) String() string            { return proto1.CompactTextString(m) }
 func (*LoginMsg) ProtoMessage()               {}
-func (*LoginMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{8} }
+func (*LoginMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{10} }
 
 // 登出消息
 type LogoutMsg struct {
@@ -212,7 +234,7 @@ type LogoutMsg struct {
 func (m *LogoutMsg) Reset()                    { *m = LogoutMsg{} }
 func (m *LogoutMsg) String() string            { return proto1.CompactTextString(m) }
 func (*LogoutMsg) ProtoMessage()               {}
-func (*LogoutMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{9} }
+func (*LogoutMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{11} }
 
 // 订阅主题消息
 type SubMsg struct {
@@ -222,7 +244,7 @@ type SubMsg struct {
 func (m *SubMsg) Reset()                    { *m = SubMsg{} }
 func (m *SubMsg) String() string            { return proto1.CompactTextString(m) }
 func (*SubMsg) ProtoMessage()               {}
-func (*SubMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{10} }
+func (*SubMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{12} }
 
 // 取消订阅主题消息
 type UnSubMsg struct {
@@ -232,7 +254,7 @@ type UnSubMsg struct {
 func (m *UnSubMsg) Reset()                    { *m = UnSubMsg{} }
 func (m *UnSubMsg) String() string            { return proto1.CompactTextString(m) }
 func (*UnSubMsg) ProtoMessage()               {}
-func (*UnSubMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{11} }
+func (*UnSubMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{13} }
 
 // 广播返回消息
 type BPushRet struct {
@@ -242,7 +264,7 @@ type BPushRet struct {
 func (m *BPushRet) Reset()                    { *m = BPushRet{} }
 func (m *BPushRet) String() string            { return proto1.CompactTextString(m) }
 func (*BPushRet) ProtoMessage()               {}
-func (*BPushRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{12} }
+func (*BPushRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{14} }
 
 // 单播返回消息
 type SPushRet struct {
@@ -252,7 +274,7 @@ type SPushRet struct {
 func (m *SPushRet) Reset()                    { *m = SPushRet{} }
 func (m *SPushRet) String() string            { return proto1.CompactTextString(m) }
 func (*SPushRet) ProtoMessage()               {}
-func (*SPushRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{13} }
+func (*SPushRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{15} }
 
 // 私聊返回消息
 type PChatRet struct {
@@ -262,7 +284,7 @@ type PChatRet struct {
 func (m *PChatRet) Reset()                    { *m = PChatRet{} }
 func (m *PChatRet) String() string            { return proto1.CompactTextString(m) }
 func (*PChatRet) ProtoMessage()               {}
-func (*PChatRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{14} }
+func (*PChatRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{16} }
 
 // 群播返回消息
 type GChatRet struct {
@@ -272,7 +294,7 @@ type GChatRet struct {
 func (m *GChatRet) Reset()                    { *m = GChatRet{} }
 func (m *GChatRet) String() string            { return proto1.CompactTextString(m) }
 func (*GChatRet) ProtoMessage()               {}
-func (*GChatRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{15} }
+func (*GChatRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{17} }
 
 // 登陆消息返回消息
 type LoginRet struct {
@@ -282,7 +304,7 @@ type LoginRet struct {
 func (m *LoginRet) Reset()                    { *m = LoginRet{} }
 func (m *LoginRet) String() string            { return proto1.CompactTextString(m) }
 func (*LoginRet) ProtoMessage()               {}
-func (*LoginRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{16} }
+func (*LoginRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{18} }
 
 // 登出消息返回消息
 type LogoutRet struct {
@@ -292,7 +314,7 @@ type LogoutRet struct {
 func (m *LogoutRet) Reset()                    { *m = LogoutRet{} }
 func (m *LogoutRet) String() string            { return proto1.CompactTextString(m) }
 func (*LogoutRet) ProtoMessage()               {}
-func (*LogoutRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{17} }
+func (*LogoutRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{19} }
 
 // 订阅主题消息返回消息
 type SubRet struct {
@@ -302,7 +324,7 @@ type SubRet struct {
 func (m *SubRet) Reset()                    { *m = SubRet{} }
 func (m *SubRet) String() string            { return proto1.CompactTextString(m) }
 func (*SubRet) ProtoMessage()               {}
-func (*SubRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{18} }
+func (*SubRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{20} }
 
 // 取消订阅主题消息返回消息
 type UnSubRet struct {
@@ -312,7 +334,7 @@ type UnSubRet struct {
 func (m *UnSubRet) Reset()                    { *m = UnSubRet{} }
 func (m *UnSubRet) String() string            { return proto1.CompactTextString(m) }
 func (*UnSubRet) ProtoMessage()               {}
-func (*UnSubRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{19} }
+func (*UnSubRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{21} }
 
 // 设置Nick
 type NickMsg struct {
@@ -322,7 +344,7 @@ type NickMsg struct {
 func (m *NickMsg) Reset()                    { *m = NickMsg{} }
 func (m *NickMsg) String() string            { return proto1.CompactTextString(m) }
 func (*NickMsg) ProtoMessage()               {}
-func (*NickMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{20} }
+func (*NickMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{22} }
 
 // 设置Nick返回消息
 type NickRet struct {
@@ -332,7 +354,7 @@ type NickRet struct {
 func (m *NickRet) Reset()                    { *m = NickRet{} }
 func (m *NickRet) String() string            { return proto1.CompactTextString(m) }
 func (*NickRet) ProtoMessage()               {}
-func (*NickRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{21} }
+func (*NickRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{23} }
 
 // 设置Apns
 type ApnsMsg struct {
@@ -342,7 +364,7 @@ type ApnsMsg struct {
 func (m *ApnsMsg) Reset()                    { *m = ApnsMsg{} }
 func (m *ApnsMsg) String() string            { return proto1.CompactTextString(m) }
 func (*ApnsMsg) ProtoMessage()               {}
-func (*ApnsMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{22} }
+func (*ApnsMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{24} }
 
 // 设置Apns返回消息
 type ApnsRet struct {
@@ -352,7 +374,7 @@ type ApnsRet struct {
 func (m *ApnsRet) Reset()                    { *m = ApnsRet{} }
 func (m *ApnsRet) String() string            { return proto1.CompactTextString(m) }
 func (*ApnsRet) ProtoMessage()               {}
-func (*ApnsRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{23} }
+func (*ApnsRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{25} }
 
 // Label
 type LabelMsg struct {
@@ -362,7 +384,7 @@ type LabelMsg struct {
 func (m *LabelMsg) Reset()                    { *m = LabelMsg{} }
 func (m *LabelMsg) String() string            { return proto1.CompactTextString(m) }
 func (*LabelMsg) ProtoMessage()               {}
-func (*LabelMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{24} }
+func (*LabelMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{26} }
 
 // 设置Label返回消息
 type LabelRet struct {
@@ -372,9 +394,11 @@ type LabelRet struct {
 func (m *LabelRet) Reset()                    { *m = LabelRet{} }
 func (m *LabelRet) String() string            { return proto1.CompactTextString(m) }
 func (*LabelRet) ProtoMessage()               {}
-func (*LabelRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{25} }
+func (*LabelRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{27} }
 
 func init() {
+	proto1.RegisterType((*PubMsg)(nil), "proto.PubMsg")
+	proto1.RegisterType((*PubRet)(nil), "proto.PubRet")
 	proto1.RegisterType((*BPushMsg)(nil), "proto.BPushMsg")
 	proto1.RegisterType((*BPushMsgs)(nil), "proto.BPushMsgs")
 	proto1.RegisterType((*SPushMsg)(nil), "proto.SPushMsg")
@@ -414,21 +438,14 @@ const _ = grpc.SupportPackageIsVersion4
 // Client API for Rpc service
 
 type RpcClient interface {
-	// 推送接口
-	BPush(ctx context.Context, in *BPushMsg, opts ...grpc.CallOption) (*BPushRet, error)
-	SPush(ctx context.Context, in *SPushMsg, opts ...grpc.CallOption) (*SPushRet, error)
-	PChat(ctx context.Context, in *PChatMsg, opts ...grpc.CallOption) (*PChatRet, error)
-	GChat(ctx context.Context, in *GChatMsg, opts ...grpc.CallOption) (*GChatRet, error)
 	// 用户登陆相关接口
 	Login(ctx context.Context, in *LoginMsg, opts ...grpc.CallOption) (*LoginRet, error)
 	Logout(ctx context.Context, in *LogoutMsg, opts ...grpc.CallOption) (*LogoutRet, error)
-	// 用户设置相关接口
-	SetNick(ctx context.Context, in *NickMsg, opts ...grpc.CallOption) (*NickRet, error)
-	SetApns(ctx context.Context, in *ApnsMsg, opts ...grpc.CallOption) (*ApnsRet, error)
-	SetLabel(ctx context.Context, in *LabelMsg, opts ...grpc.CallOption) (*LabelRet, error)
 	// 用户订阅相关
 	Subscribe(ctx context.Context, in *SubMsg, opts ...grpc.CallOption) (*SubRet, error)
 	UnSubscribe(ctx context.Context, in *UnSubMsg, opts ...grpc.CallOption) (*UnSubRet, error)
+	// 用户发布
+	Publish(ctx context.Context, in *PubMsg, opts ...grpc.CallOption) (*PubRet, error)
 }
 
 type rpcClient struct {
@@ -437,42 +454,6 @@ type rpcClient struct {
 
 func NewRpcClient(cc *grpc.ClientConn) RpcClient {
 	return &rpcClient{cc}
-}
-
-func (c *rpcClient) BPush(ctx context.Context, in *BPushMsg, opts ...grpc.CallOption) (*BPushRet, error) {
-	out := new(BPushRet)
-	err := grpc.Invoke(ctx, "/proto.Rpc/BPush", in, out, c.cc, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *rpcClient) SPush(ctx context.Context, in *SPushMsg, opts ...grpc.CallOption) (*SPushRet, error) {
-	out := new(SPushRet)
-	err := grpc.Invoke(ctx, "/proto.Rpc/SPush", in, out, c.cc, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *rpcClient) PChat(ctx context.Context, in *PChatMsg, opts ...grpc.CallOption) (*PChatRet, error) {
-	out := new(PChatRet)
-	err := grpc.Invoke(ctx, "/proto.Rpc/PChat", in, out, c.cc, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *rpcClient) GChat(ctx context.Context, in *GChatMsg, opts ...grpc.CallOption) (*GChatRet, error) {
-	out := new(GChatRet)
-	err := grpc.Invoke(ctx, "/proto.Rpc/GChat", in, out, c.cc, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *rpcClient) Login(ctx context.Context, in *LoginMsg, opts ...grpc.CallOption) (*LoginRet, error) {
@@ -487,33 +468,6 @@ func (c *rpcClient) Login(ctx context.Context, in *LoginMsg, opts ...grpc.CallOp
 func (c *rpcClient) Logout(ctx context.Context, in *LogoutMsg, opts ...grpc.CallOption) (*LogoutRet, error) {
 	out := new(LogoutRet)
 	err := grpc.Invoke(ctx, "/proto.Rpc/Logout", in, out, c.cc, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *rpcClient) SetNick(ctx context.Context, in *NickMsg, opts ...grpc.CallOption) (*NickRet, error) {
-	out := new(NickRet)
-	err := grpc.Invoke(ctx, "/proto.Rpc/SetNick", in, out, c.cc, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *rpcClient) SetApns(ctx context.Context, in *ApnsMsg, opts ...grpc.CallOption) (*ApnsRet, error) {
-	out := new(ApnsRet)
-	err := grpc.Invoke(ctx, "/proto.Rpc/SetApns", in, out, c.cc, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *rpcClient) SetLabel(ctx context.Context, in *LabelMsg, opts ...grpc.CallOption) (*LabelRet, error) {
-	out := new(LabelRet)
-	err := grpc.Invoke(ctx, "/proto.Rpc/SetLabel", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -538,100 +492,30 @@ func (c *rpcClient) UnSubscribe(ctx context.Context, in *UnSubMsg, opts ...grpc.
 	return out, nil
 }
 
+func (c *rpcClient) Publish(ctx context.Context, in *PubMsg, opts ...grpc.CallOption) (*PubRet, error) {
+	out := new(PubRet)
+	err := grpc.Invoke(ctx, "/proto.Rpc/Publish", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Rpc service
 
 type RpcServer interface {
-	// 推送接口
-	BPush(context.Context, *BPushMsg) (*BPushRet, error)
-	SPush(context.Context, *SPushMsg) (*SPushRet, error)
-	PChat(context.Context, *PChatMsg) (*PChatRet, error)
-	GChat(context.Context, *GChatMsg) (*GChatRet, error)
 	// 用户登陆相关接口
 	Login(context.Context, *LoginMsg) (*LoginRet, error)
 	Logout(context.Context, *LogoutMsg) (*LogoutRet, error)
-	// 用户设置相关接口
-	SetNick(context.Context, *NickMsg) (*NickRet, error)
-	SetApns(context.Context, *ApnsMsg) (*ApnsRet, error)
-	SetLabel(context.Context, *LabelMsg) (*LabelRet, error)
 	// 用户订阅相关
 	Subscribe(context.Context, *SubMsg) (*SubRet, error)
 	UnSubscribe(context.Context, *UnSubMsg) (*UnSubRet, error)
+	// 用户发布
+	Publish(context.Context, *PubMsg) (*PubRet, error)
 }
 
 func RegisterRpcServer(s *grpc.Server, srv RpcServer) {
 	s.RegisterService(&_Rpc_serviceDesc, srv)
-}
-
-func _Rpc_BPush_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(BPushMsg)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RpcServer).BPush(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/proto.Rpc/BPush",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RpcServer).BPush(ctx, req.(*BPushMsg))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Rpc_SPush_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SPushMsg)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RpcServer).SPush(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/proto.Rpc/SPush",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RpcServer).SPush(ctx, req.(*SPushMsg))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Rpc_PChat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PChatMsg)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RpcServer).PChat(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/proto.Rpc/PChat",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RpcServer).PChat(ctx, req.(*PChatMsg))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Rpc_GChat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GChatMsg)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RpcServer).GChat(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/proto.Rpc/GChat",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RpcServer).GChat(ctx, req.(*GChatMsg))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _Rpc_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -666,60 +550,6 @@ func _Rpc_Logout_Handler(srv interface{}, ctx context.Context, dec func(interfac
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RpcServer).Logout(ctx, req.(*LogoutMsg))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Rpc_SetNick_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(NickMsg)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RpcServer).SetNick(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/proto.Rpc/SetNick",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RpcServer).SetNick(ctx, req.(*NickMsg))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Rpc_SetApns_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ApnsMsg)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RpcServer).SetApns(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/proto.Rpc/SetApns",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RpcServer).SetApns(ctx, req.(*ApnsMsg))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Rpc_SetLabel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LabelMsg)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RpcServer).SetLabel(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/proto.Rpc/SetLabel",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RpcServer).SetLabel(ctx, req.(*LabelMsg))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -760,26 +590,28 @@ func _Rpc_UnSubscribe_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Rpc_Publish_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PubMsg)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RpcServer).Publish(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Rpc/Publish",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RpcServer).Publish(ctx, req.(*PubMsg))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Rpc_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "proto.Rpc",
 	HandlerType: (*RpcServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "BPush",
-			Handler:    _Rpc_BPush_Handler,
-		},
-		{
-			MethodName: "SPush",
-			Handler:    _Rpc_SPush_Handler,
-		},
-		{
-			MethodName: "PChat",
-			Handler:    _Rpc_PChat_Handler,
-		},
-		{
-			MethodName: "GChat",
-			Handler:    _Rpc_GChat_Handler,
-		},
 		{
 			MethodName: "Login",
 			Handler:    _Rpc_Login_Handler,
@@ -789,18 +621,6 @@ var _Rpc_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Rpc_Logout_Handler,
 		},
 		{
-			MethodName: "SetNick",
-			Handler:    _Rpc_SetNick_Handler,
-		},
-		{
-			MethodName: "SetApns",
-			Handler:    _Rpc_SetApns_Handler,
-		},
-		{
-			MethodName: "SetLabel",
-			Handler:    _Rpc_SetLabel_Handler,
-		},
-		{
 			MethodName: "Subscribe",
 			Handler:    _Rpc_Subscribe_Handler,
 		},
@@ -808,45 +628,48 @@ var _Rpc_serviceDesc = grpc.ServiceDesc{
 			MethodName: "UnSubscribe",
 			Handler:    _Rpc_UnSubscribe_Handler,
 		},
+		{
+			MethodName: "Publish",
+			Handler:    _Rpc_Publish_Handler,
+		},
 	},
 	Streams: []grpc.StreamDesc{},
 }
 
 var fileDescriptor0 = []byte{
-	// 556 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0xcc, 0x54, 0xcd, 0x6e, 0xd4, 0x30,
-	0x10, 0x66, 0x9b, 0xfd, 0x49, 0xa6, 0xa5, 0x54, 0x3e, 0x45, 0x66, 0x91, 0x50, 0xb8, 0x54, 0xaa,
-	0xb4, 0x82, 0xf2, 0x04, 0xc0, 0x21, 0x17, 0xa8, 0xaa, 0x44, 0x3c, 0xc0, 0x26, 0x6c, 0xd3, 0x94,
-	0x25, 0x1b, 0xad, 0xed, 0x7b, 0x1f, 0x89, 0x03, 0x0f, 0x88, 0x3d, 0xf6, 0x6c, 0xe3, 0x90, 0x50,
-	0xb8, 0xf5, 0xb4, 0x9e, 0xf9, 0xbe, 0x99, 0x9d, 0x6f, 0x3e, 0x3b, 0x10, 0xed, 0xdb, 0x72, 0xd5,
-	0xee, 0x77, 0x72, 0xc7, 0x66, 0xf8, 0x93, 0xdc, 0x4f, 0x20, 0xfc, 0x78, 0xad, 0xc4, 0xed, 0x17,
-	0x51, 0xb1, 0x53, 0x38, 0x92, 0x22, 0x9e, 0xbc, 0x9e, 0x9c, 0x9f, 0x64, 0xfa, 0x64, 0xe2, 0xbd,
-	0x8c, 0x8f, 0x74, 0x1c, 0x64, 0xfa, 0xc4, 0xce, 0x20, 0x90, 0x72, 0x1b, 0x07, 0x98, 0x30, 0x47,
-	0x93, 0xf9, 0x51, 0x7f, 0x8b, 0xa7, 0x58, 0x62, 0x8e, 0xa6, 0x66, 0x5b, 0xc4, 0xa1, 0xed, 0xb1,
-	0x2d, 0x4c, 0x5c, 0xdf, 0xc5, 0x91, 0x8d, 0xeb, 0x3b, 0xac, 0x10, 0x55, 0xbc, 0x70, 0x15, 0xa2,
-	0x4a, 0xde, 0x42, 0x44, 0x13, 0x08, 0xf6, 0x06, 0xa6, 0x3a, 0x67, 0x86, 0x08, 0xce, 0x8f, 0x2f,
-	0x5f, 0xd8, 0x61, 0x57, 0x84, 0x67, 0x08, 0x26, 0xbf, 0xf4, 0xd0, 0x39, 0x0d, 0x8d, 0x43, 0xd9,
-	0x82, 0x13, 0x33, 0x94, 0xc0, 0x8c, 0x12, 0x7a, 0x6e, 0x9b, 0x51, 0x28, 0xe4, 0x46, 0xe2, 0xdc,
-	0x7a, 0x88, 0x1b, 0x89, 0xb1, 0x72, 0x53, 0xeb, 0x93, 0x13, 0x3a, 0xeb, 0x0b, 0x9d, 0xff, 0x21,
-	0x74, 0xf1, 0xdf, 0x42, 0xc1, 0x13, 0x9a, 0x3f, 0x22, 0x34, 0xf7, 0x85, 0xfe, 0xd4, 0x42, 0xaf,
-	0x3f, 0xdd, 0xae, 0x25, 0xb9, 0x23, 0x0f, 0xee, 0xa0, 0x08, 0xa9, 0xd0, 0x1d, 0x13, 0xab, 0xa7,
-	0x23, 0x92, 0x26, 0x1e, 0x13, 0x49, 0xb8, 0x13, 0xb9, 0x84, 0x30, 0x25, 0x8d, 0xae, 0xdf, 0xc4,
-	0xeb, 0x97, 0x3e, 0xd2, 0x2f, 0xf5, 0xfb, 0x5d, 0x41, 0xf8, 0x79, 0x57, 0xd5, 0x8d, 0xdb, 0xd9,
-	0xba, 0xa1, 0x9d, 0xad, 0x1b, 0x13, 0xab, 0x86, 0x76, 0xa6, 0x1a, 0xf3, 0x7f, 0xa5, 0x56, 0xec,
-	0x6e, 0xb4, 0x3e, 0x9a, 0x4c, 0x55, 0xb7, 0x74, 0xa3, 0xf5, 0x31, 0xb9, 0x80, 0x48, 0xf7, 0xdb,
-	0x29, 0xf9, 0x0f, 0x0d, 0x93, 0x18, 0xe6, 0xb9, 0x2a, 0x06, 0x1e, 0x53, 0xc2, 0x21, 0xfc, 0xda,
-	0x8c, 0x60, 0x4b, 0xf7, 0x08, 0xb3, 0x8d, 0x1c, 0x58, 0xc1, 0xd2, 0xdd, 0xf6, 0x51, 0x14, 0x17,
-	0x3a, 0x8a, 0xa6, 0x7f, 0x45, 0x71, 0x55, 0xc3, 0xe8, 0x2b, 0x12, 0x3e, 0x0c, 0x73, 0x94, 0x3a,
-	0xda, 0x18, 0xc5, 0x0e, 0xa3, 0x2f, 0x61, 0x71, 0x55, 0x97, 0xdf, 0x87, 0x0d, 0x77, 0xe0, 0x68,
-	0xe5, 0x87, 0xb6, 0x11, 0xa3, 0x95, 0x06, 0x1c, 0x97, 0xba, 0x2e, 0x36, 0x5b, 0xaf, 0x34, 0xe8,
-	0xa3, 0x83, 0xb5, 0x97, 0xf7, 0x53, 0x08, 0xb2, 0xb6, 0x64, 0x17, 0x30, 0x43, 0x9b, 0x58, 0xff,
-	0xbb, 0xc4, 0xbd, 0x84, 0x6e, 0x92, 0x3c, 0x33, 0xe4, 0xdc, 0x23, 0xe7, 0x7d, 0x72, 0xee, 0x91,
-	0xd1, 0x44, 0xd6, 0x7f, 0x23, 0xdc, 0x4b, 0x1c, 0xc8, 0xa9, 0x47, 0x4e, 0xfb, 0xe4, 0xd4, 0x23,
-	0xa3, 0xc5, 0x07, 0x32, 0xbd, 0x0d, 0xee, 0x25, 0x2c, 0x79, 0x05, 0x73, 0xeb, 0x38, 0x3b, 0x7b,
-	0x00, 0xed, 0xcd, 0xe7, 0x7e, 0x86, 0x9a, 0x2f, 0xf2, 0x8d, 0x34, 0x76, 0xb1, 0x53, 0x07, 0x3b,
-	0x63, 0x79, 0x37, 0xee, 0x92, 0x8d, 0x43, 0x07, 0xb2, 0xf3, 0x92, 0x77, 0x63, 0x9a, 0x24, 0xd4,
-	0x64, 0xf4, 0xe4, 0x61, 0x72, 0xe7, 0x1f, 0xf7, 0x12, 0xd4, 0x3c, 0xd2, 0xd7, 0x4d, 0x94, 0xfb,
-	0xba, 0xd8, 0xb0, 0xe7, 0xb4, 0x60, 0x7c, 0x6d, 0xbc, 0x13, 0x5a, 0xf2, 0x3b, 0x38, 0xc6, 0xdb,
-	0xe9, 0xe8, 0xd4, 0x8e, 0x9e, 0x27, 0xf7, 0x12, 0x58, 0x52, 0xcc, 0x31, 0xf3, 0xfe, 0x77, 0x00,
-	0x00, 0x00, 0xff, 0xff, 0x06, 0x31, 0x6d, 0x00, 0x42, 0x07, 0x00, 0x00,
+	// 533 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0xcc, 0x55, 0xc1, 0x6e, 0xd3, 0x40,
+	0x10, 0xc5, 0x75, 0xe3, 0x38, 0xd3, 0x00, 0xd5, 0x9e, 0x2c, 0x13, 0x24, 0x64, 0x38, 0x14, 0x55,
+	0x8a, 0xa0, 0x7c, 0x01, 0x70, 0xc8, 0x05, 0x2a, 0xcb, 0x11, 0x1f, 0x10, 0xbb, 0x69, 0xb2, 0xc5,
+	0xb1, 0x2d, 0xef, 0xee, 0x9d, 0x4f, 0xe2, 0xc0, 0x6f, 0xf1, 0x0f, 0xcc, 0xce, 0xee, 0xb6, 0x38,
+	0xb1, 0x09, 0xdc, 0x38, 0x65, 0x66, 0xde, 0xcc, 0xec, 0x7b, 0xb3, 0xb3, 0x31, 0x4c, 0xda, 0xa6,
+	0x98, 0x37, 0x6d, 0x2d, 0x6b, 0x36, 0xa2, 0x9f, 0x24, 0x86, 0x20, 0x55, 0xf9, 0x67, 0xb1, 0x61,
+	0xe7, 0xe0, 0xef, 0xc4, 0x26, 0xf2, 0x5e, 0x78, 0x17, 0xd3, 0x4c, 0x9b, 0xc9, 0x2b, 0xc2, 0xb2,
+	0xb5, 0x64, 0x53, 0xf0, 0x5a, 0x42, 0xc2, 0xcc, 0x6b, 0xb5, 0xb7, 0x8b, 0x4e, 0x28, 0xcf, 0xdb,
+	0x25, 0xdf, 0x3c, 0x08, 0x3f, 0xa4, 0x4a, 0x6c, 0x75, 0x93, 0x27, 0x70, 0x22, 0x85, 0xed, 0x81,
+	0x96, 0xf6, 0x5b, 0x49, 0xb9, 0x7e, 0x86, 0x96, 0x3e, 0x44, 0xca, 0x32, 0xf2, 0x29, 0xa0, 0x4d,
+	0x3a, 0x96, 0xdf, 0x44, 0xa7, 0xf6, 0x58, 0x7e, 0xa3, 0x6b, 0xca, 0x3c, 0x0a, 0x4d, 0x8f, 0x32,
+	0xd7, 0x3e, 0xbf, 0x8b, 0x26, 0xc6, 0xe7, 0x77, 0x8e, 0xe8, 0xf8, 0x81, 0xe8, 0x1b, 0x98, 0x38,
+	0x06, 0x82, 0xbd, 0x84, 0x53, 0x8c, 0x69, 0x12, 0xfe, 0xc5, 0xd9, 0xd5, 0x53, 0x23, 0x77, 0xee,
+	0xf0, 0x8c, 0xc0, 0xe4, 0x07, 0x92, 0x5e, 0x3a, 0xd2, 0x44, 0xca, 0x14, 0x4c, 0x35, 0x29, 0x41,
+	0x11, 0x25, 0x90, 0xb7, 0x89, 0x28, 0x12, 0x72, 0x2b, 0x89, 0x37, 0x92, 0xb8, 0x95, 0xe4, 0x2b,
+	0xcb, 0x1a, 0x2d, 0x2b, 0x74, 0xb4, 0x2f, 0x34, 0x38, 0x10, 0x3a, 0xfe, 0x67, 0xa1, 0xd0, 0x11,
+	0xba, 0x3c, 0x22, 0x74, 0xd9, 0x15, 0xfa, 0x1d, 0x85, 0xa6, 0x1f, 0xb7, 0x2b, 0xe9, 0x6e, 0x47,
+	0xde, 0xdf, 0x0e, 0x89, 0x90, 0xca, 0xde, 0x24, 0x5a, 0xff, 0x8f, 0x48, 0xc7, 0x78, 0x48, 0xa4,
+	0xc3, 0xad, 0xc8, 0x19, 0x84, 0x0b, 0xa7, 0xf1, 0x70, 0x8d, 0xb1, 0xdf, 0xe2, 0x48, 0xbf, 0x45,
+	0xb7, 0xdf, 0x35, 0x84, 0x9f, 0xea, 0x0d, 0xaf, 0xec, 0xcc, 0x56, 0x95, 0x9b, 0xd9, 0xaa, 0xd2,
+	0xbe, 0xaa, 0xdc, 0xcc, 0x54, 0xa5, 0xcf, 0x2b, 0x50, 0xb1, 0xdd, 0x68, 0x34, 0x75, 0x64, 0xc3,
+	0x1b, 0xb7, 0xd1, 0x68, 0x26, 0x97, 0x30, 0xc1, 0x7e, 0xb5, 0x92, 0x7f, 0xd1, 0x30, 0x89, 0x20,
+	0x58, 0x9a, 0x17, 0xb9, 0xf7, 0x98, 0xf0, 0xad, 0x86, 0x5f, 0xaa, 0x01, 0x6c, 0x66, 0x1f, 0xa1,
+	0x7e, 0xad, 0x87, 0x23, 0x98, 0xd9, 0x6d, 0x1f, 0x44, 0x69, 0xa0, 0x83, 0xe8, 0xe2, 0x8f, 0x28,
+	0x8d, 0xaa, 0x1f, 0x7d, 0xee, 0x84, 0xf7, 0xc3, 0x31, 0x49, 0x1d, 0x6c, 0x4c, 0x62, 0xfb, 0xd1,
+	0x67, 0x30, 0xbe, 0xe6, 0xc5, 0xd7, 0xfe, 0x0b, 0xb7, 0xe0, 0x60, 0xe5, 0xfb, 0xa6, 0x12, 0x83,
+	0x95, 0x1a, 0x1c, 0x96, 0xba, 0xca, 0xd7, 0x65, 0xa7, 0xd4, 0xdf, 0x47, 0x7b, 0x6b, 0xaf, 0x7e,
+	0x7a, 0xe0, 0x67, 0x4d, 0xc1, 0x2e, 0x61, 0x44, 0xe3, 0x62, 0x6e, 0xf3, 0xdc, 0x9e, 0xc5, 0x9d,
+	0x00, 0x36, 0x49, 0x1e, 0xb1, 0x39, 0x04, 0x66, 0x7a, 0xec, 0xfc, 0x01, 0x34, 0x5b, 0x14, 0x77,
+	0x23, 0x26, 0x1f, 0xd7, 0x0c, 0x07, 0x26, 0x8a, 0x96, 0xe7, 0x6b, 0xf6, 0xd8, 0xfd, 0x1f, 0xd0,
+	0xbe, 0xc4, 0xbf, 0xb9, 0x26, 0xf9, 0x2d, 0x9c, 0xd1, 0x7c, 0x6d, 0xba, 0x3b, 0xde, 0x2d, 0x58,
+	0xdc, 0x09, 0x98, 0x92, 0xd7, 0x30, 0xc6, 0xef, 0x41, 0xc9, 0xc5, 0xf6, 0xbe, 0x7b, 0xda, 0xed,
+	0x9e, 0xda, 0xd4, 0x3c, 0x20, 0xff, 0xdd, 0xaf, 0x00, 0x00, 0x00, 0xff, 0xff, 0x15, 0x8c, 0x90,
+	0x58, 0x71, 0x06, 0x00, 0x00,
 }

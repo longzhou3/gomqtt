@@ -10,26 +10,32 @@ package proto;
 // 
 
 service Rpc {
-    // 推送接口
-	rpc BPush (BPushMsg) 		returns (BPushRet) 	{}
-    rpc SPush (SPushMsg) 		returns (SPushRet) 	{}
-    rpc PChat (PChatMsg) 		returns (PChatRet) 	{}
-    rpc GChat (GChatMsg) 		returns (GChatRet) 	{}
-
+ 
     // 用户登陆相关接口
     rpc Login (LoginMsg)        returns (LoginRet) 	{}
     rpc Logout (LogoutMsg)      returns (LogoutRet) 	{}
 
-    // 用户设置相关接口
-    rpc SetNick (NickMsg)       returns (NickRet) 	{}
-    rpc SetApns (ApnsMsg)       returns (ApnsRet) 	{}
-    rpc SetLabel (LabelMsg)     returns (LabelRet) 	{}
+
 
     // 用户订阅相关
     rpc Subscribe (SubMsg)      returns (SubRet) 	{}
     rpc UnSubscribe (UnSubMsg)  returns (UnSubRet) 	{}
+
+    // 用户发布
+    rpc Publish(PubMsg)         returns (PubRet) {}
 }
 
+message PubMsg {
+    bytes msg = 1; 
+}
+
+
+
+// 
+message PubRet {
+    bool  r = 1;    //  true 成功， false 失败
+    bytes m = 2;    //  失败原因
+}
 
 // 广播
 message BPushMsg {
