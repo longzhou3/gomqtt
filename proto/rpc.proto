@@ -11,23 +11,23 @@ package proto;
 
 service Rpc {
     // 推送接口
-	rpc BPush (BPushMsg) 		returns (RetBPushMsg) 	{}
-    rpc SPush (SPushMsg) 		returns (RetSPushMsg) 	{}
-    rpc PChat (PChatMsg) 		returns (RetPChatMsg) 	{}
-    rpc GChat (GChatMsg) 		returns (RetGChatMsg) 	{}
+	rpc BPush (BPushMsg) 		returns (BPushRet) 	{}
+    rpc SPush (SPushMsg) 		returns (SPushRet) 	{}
+    rpc PChat (PChatMsg) 		returns (PChatRet) 	{}
+    rpc GChat (GChatMsg) 		returns (GChatRet) 	{}
 
     // 用户登陆相关接口
-    rpc Login (LoginMsg)        returns (RetLoginMsg) 	{}
-    rpc Logout (LogoutMsg)      returns (RetLogoutMsg) 	{}
+    rpc Login (LoginMsg)        returns (LoginRet) 	{}
+    rpc Logout (LogoutMsg)      returns (LogoutRet) 	{}
 
     // 用户设置相关接口
-    rpc SetNick (NickMsg)       returns (RetNickMsg) 	{}
-    rpc SetApns (ApnsMsg)       returns (RetApnsMsg) 	{}
-    rpc SetLabel (LabelMsg)     returns (RetLabelMsg) 	{}
+    rpc SetNick (NickMsg)       returns (NickRet) 	{}
+    rpc SetApns (ApnsMsg)       returns (ApnsRet) 	{}
+    rpc SetLabel (LabelMsg)     returns (LabelRet) 	{}
 
     // 用户订阅相关
-    rpc Subscribe (SubMsg)      returns (RetSubMsg) 	{}
-    rpc UnSubscribe (UnSubMsg)  returns (RetUnSubMsg) 	{}
+    rpc Subscribe (SubMsg)      returns (SubRet) 	{}
+    rpc UnSubscribe (UnSubMsg)  returns (UnSubRet) 	{}
 }
 
 
@@ -122,43 +122,43 @@ message UnSubMsg {
 }
 
 // 广播返回消息
-message RetBPushMsg {
+message BPushRet {
     bytes msg = 1;
 }
 
 // 单播返回消息
-message RetSPushMsg {
+message SPushRet {
     bytes msg = 1;
 }
 
 // 私聊返回消息
-message RetPChatMsg {
+message PChatRet {
     bytes msg = 1;
 }
 
 
 // 群播返回消息 
-message RetGChatMsg {
+message GChatRet {
     bytes msg = 1;
 }
 
 // 登陆消息返回消息
-message RetLoginMsg {
+message LoginRet {
     bytes msg = 1;
 }
 
 // 登出消息返回消息
-message RetLogoutMsg {
+message LogoutRet {
     bytes msg = 1;
 }
 
 // 订阅主题消息返回消息
-message RetSubMsg {
+message SubRet {
     bytes msg = 1;
 }
 
 // 取消订阅主题消息返回消息
-message RetUnSubMsg {
+message UnSubRet {
     bytes msg = 1;
 }
 
@@ -168,7 +168,7 @@ message NickMsg {
 }
 
 // 设置Nick返回消息
-message RetNickMsg {
+message NickRet {
     bytes msg = 1;
 }
 
@@ -178,7 +178,7 @@ message ApnsMsg {
 }
 
 // 设置Apns返回消息
-message RetApnsMsg {
+message ApnsRet {
     bytes msg = 1;
 }
 
@@ -190,6 +190,6 @@ message LabelMsg {
 }
 
 // 设置Label返回消息
-message RetLabelMsg {
+message LabelRet {
     bytes msg = 1;
 }

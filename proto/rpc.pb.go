@@ -21,20 +21,20 @@ It has these top-level messages:
 	LogoutMsg
 	SubMsg
 	UnSubMsg
-	RetBPushMsg
-	RetSPushMsg
-	RetPChatMsg
-	RetGChatMsg
-	RetLoginMsg
-	RetLogoutMsg
-	RetSubMsg
-	RetUnSubMsg
+	BPushRet
+	SPushRet
+	PChatRet
+	GChatRet
+	LoginRet
+	LogoutRet
+	SubRet
+	UnSubRet
 	NickMsg
-	RetNickMsg
+	NickRet
 	ApnsMsg
-	RetApnsMsg
+	ApnsRet
 	LabelMsg
-	RetLabelMsg
+	LabelRet
 */
 package proto
 
@@ -235,84 +235,84 @@ func (*UnSubMsg) ProtoMessage()               {}
 func (*UnSubMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{11} }
 
 // 广播返回消息
-type RetBPushMsg struct {
+type BPushRet struct {
 	Msg []byte `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
 }
 
-func (m *RetBPushMsg) Reset()                    { *m = RetBPushMsg{} }
-func (m *RetBPushMsg) String() string            { return proto1.CompactTextString(m) }
-func (*RetBPushMsg) ProtoMessage()               {}
-func (*RetBPushMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{12} }
+func (m *BPushRet) Reset()                    { *m = BPushRet{} }
+func (m *BPushRet) String() string            { return proto1.CompactTextString(m) }
+func (*BPushRet) ProtoMessage()               {}
+func (*BPushRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{12} }
 
 // 单播返回消息
-type RetSPushMsg struct {
+type SPushRet struct {
 	Msg []byte `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
 }
 
-func (m *RetSPushMsg) Reset()                    { *m = RetSPushMsg{} }
-func (m *RetSPushMsg) String() string            { return proto1.CompactTextString(m) }
-func (*RetSPushMsg) ProtoMessage()               {}
-func (*RetSPushMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{13} }
+func (m *SPushRet) Reset()                    { *m = SPushRet{} }
+func (m *SPushRet) String() string            { return proto1.CompactTextString(m) }
+func (*SPushRet) ProtoMessage()               {}
+func (*SPushRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{13} }
 
 // 私聊返回消息
-type RetPChatMsg struct {
+type PChatRet struct {
 	Msg []byte `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
 }
 
-func (m *RetPChatMsg) Reset()                    { *m = RetPChatMsg{} }
-func (m *RetPChatMsg) String() string            { return proto1.CompactTextString(m) }
-func (*RetPChatMsg) ProtoMessage()               {}
-func (*RetPChatMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{14} }
+func (m *PChatRet) Reset()                    { *m = PChatRet{} }
+func (m *PChatRet) String() string            { return proto1.CompactTextString(m) }
+func (*PChatRet) ProtoMessage()               {}
+func (*PChatRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{14} }
 
 // 群播返回消息
-type RetGChatMsg struct {
+type GChatRet struct {
 	Msg []byte `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
 }
 
-func (m *RetGChatMsg) Reset()                    { *m = RetGChatMsg{} }
-func (m *RetGChatMsg) String() string            { return proto1.CompactTextString(m) }
-func (*RetGChatMsg) ProtoMessage()               {}
-func (*RetGChatMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{15} }
+func (m *GChatRet) Reset()                    { *m = GChatRet{} }
+func (m *GChatRet) String() string            { return proto1.CompactTextString(m) }
+func (*GChatRet) ProtoMessage()               {}
+func (*GChatRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{15} }
 
 // 登陆消息返回消息
-type RetLoginMsg struct {
+type LoginRet struct {
 	Msg []byte `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
 }
 
-func (m *RetLoginMsg) Reset()                    { *m = RetLoginMsg{} }
-func (m *RetLoginMsg) String() string            { return proto1.CompactTextString(m) }
-func (*RetLoginMsg) ProtoMessage()               {}
-func (*RetLoginMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{16} }
+func (m *LoginRet) Reset()                    { *m = LoginRet{} }
+func (m *LoginRet) String() string            { return proto1.CompactTextString(m) }
+func (*LoginRet) ProtoMessage()               {}
+func (*LoginRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{16} }
 
 // 登出消息返回消息
-type RetLogoutMsg struct {
+type LogoutRet struct {
 	Msg []byte `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
 }
 
-func (m *RetLogoutMsg) Reset()                    { *m = RetLogoutMsg{} }
-func (m *RetLogoutMsg) String() string            { return proto1.CompactTextString(m) }
-func (*RetLogoutMsg) ProtoMessage()               {}
-func (*RetLogoutMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{17} }
+func (m *LogoutRet) Reset()                    { *m = LogoutRet{} }
+func (m *LogoutRet) String() string            { return proto1.CompactTextString(m) }
+func (*LogoutRet) ProtoMessage()               {}
+func (*LogoutRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{17} }
 
 // 订阅主题消息返回消息
-type RetSubMsg struct {
+type SubRet struct {
 	Msg []byte `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
 }
 
-func (m *RetSubMsg) Reset()                    { *m = RetSubMsg{} }
-func (m *RetSubMsg) String() string            { return proto1.CompactTextString(m) }
-func (*RetSubMsg) ProtoMessage()               {}
-func (*RetSubMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{18} }
+func (m *SubRet) Reset()                    { *m = SubRet{} }
+func (m *SubRet) String() string            { return proto1.CompactTextString(m) }
+func (*SubRet) ProtoMessage()               {}
+func (*SubRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{18} }
 
 // 取消订阅主题消息返回消息
-type RetUnSubMsg struct {
+type UnSubRet struct {
 	Msg []byte `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
 }
 
-func (m *RetUnSubMsg) Reset()                    { *m = RetUnSubMsg{} }
-func (m *RetUnSubMsg) String() string            { return proto1.CompactTextString(m) }
-func (*RetUnSubMsg) ProtoMessage()               {}
-func (*RetUnSubMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{19} }
+func (m *UnSubRet) Reset()                    { *m = UnSubRet{} }
+func (m *UnSubRet) String() string            { return proto1.CompactTextString(m) }
+func (*UnSubRet) ProtoMessage()               {}
+func (*UnSubRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{19} }
 
 // 设置Nick
 type NickMsg struct {
@@ -325,14 +325,14 @@ func (*NickMsg) ProtoMessage()               {}
 func (*NickMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{20} }
 
 // 设置Nick返回消息
-type RetNickMsg struct {
+type NickRet struct {
 	Msg []byte `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
 }
 
-func (m *RetNickMsg) Reset()                    { *m = RetNickMsg{} }
-func (m *RetNickMsg) String() string            { return proto1.CompactTextString(m) }
-func (*RetNickMsg) ProtoMessage()               {}
-func (*RetNickMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{21} }
+func (m *NickRet) Reset()                    { *m = NickRet{} }
+func (m *NickRet) String() string            { return proto1.CompactTextString(m) }
+func (*NickRet) ProtoMessage()               {}
+func (*NickRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{21} }
 
 // 设置Apns
 type ApnsMsg struct {
@@ -345,14 +345,14 @@ func (*ApnsMsg) ProtoMessage()               {}
 func (*ApnsMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{22} }
 
 // 设置Apns返回消息
-type RetApnsMsg struct {
+type ApnsRet struct {
 	Msg []byte `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
 }
 
-func (m *RetApnsMsg) Reset()                    { *m = RetApnsMsg{} }
-func (m *RetApnsMsg) String() string            { return proto1.CompactTextString(m) }
-func (*RetApnsMsg) ProtoMessage()               {}
-func (*RetApnsMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{23} }
+func (m *ApnsRet) Reset()                    { *m = ApnsRet{} }
+func (m *ApnsRet) String() string            { return proto1.CompactTextString(m) }
+func (*ApnsRet) ProtoMessage()               {}
+func (*ApnsRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{23} }
 
 // Label
 type LabelMsg struct {
@@ -365,14 +365,14 @@ func (*LabelMsg) ProtoMessage()               {}
 func (*LabelMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{24} }
 
 // 设置Label返回消息
-type RetLabelMsg struct {
+type LabelRet struct {
 	Msg []byte `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
 }
 
-func (m *RetLabelMsg) Reset()                    { *m = RetLabelMsg{} }
-func (m *RetLabelMsg) String() string            { return proto1.CompactTextString(m) }
-func (*RetLabelMsg) ProtoMessage()               {}
-func (*RetLabelMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{25} }
+func (m *LabelRet) Reset()                    { *m = LabelRet{} }
+func (m *LabelRet) String() string            { return proto1.CompactTextString(m) }
+func (*LabelRet) ProtoMessage()               {}
+func (*LabelRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{25} }
 
 func init() {
 	proto1.RegisterType((*BPushMsg)(nil), "proto.BPushMsg")
@@ -387,20 +387,20 @@ func init() {
 	proto1.RegisterType((*LogoutMsg)(nil), "proto.LogoutMsg")
 	proto1.RegisterType((*SubMsg)(nil), "proto.SubMsg")
 	proto1.RegisterType((*UnSubMsg)(nil), "proto.UnSubMsg")
-	proto1.RegisterType((*RetBPushMsg)(nil), "proto.RetBPushMsg")
-	proto1.RegisterType((*RetSPushMsg)(nil), "proto.RetSPushMsg")
-	proto1.RegisterType((*RetPChatMsg)(nil), "proto.RetPChatMsg")
-	proto1.RegisterType((*RetGChatMsg)(nil), "proto.RetGChatMsg")
-	proto1.RegisterType((*RetLoginMsg)(nil), "proto.RetLoginMsg")
-	proto1.RegisterType((*RetLogoutMsg)(nil), "proto.RetLogoutMsg")
-	proto1.RegisterType((*RetSubMsg)(nil), "proto.RetSubMsg")
-	proto1.RegisterType((*RetUnSubMsg)(nil), "proto.RetUnSubMsg")
+	proto1.RegisterType((*BPushRet)(nil), "proto.BPushRet")
+	proto1.RegisterType((*SPushRet)(nil), "proto.SPushRet")
+	proto1.RegisterType((*PChatRet)(nil), "proto.PChatRet")
+	proto1.RegisterType((*GChatRet)(nil), "proto.GChatRet")
+	proto1.RegisterType((*LoginRet)(nil), "proto.LoginRet")
+	proto1.RegisterType((*LogoutRet)(nil), "proto.LogoutRet")
+	proto1.RegisterType((*SubRet)(nil), "proto.SubRet")
+	proto1.RegisterType((*UnSubRet)(nil), "proto.UnSubRet")
 	proto1.RegisterType((*NickMsg)(nil), "proto.NickMsg")
-	proto1.RegisterType((*RetNickMsg)(nil), "proto.RetNickMsg")
+	proto1.RegisterType((*NickRet)(nil), "proto.NickRet")
 	proto1.RegisterType((*ApnsMsg)(nil), "proto.ApnsMsg")
-	proto1.RegisterType((*RetApnsMsg)(nil), "proto.RetApnsMsg")
+	proto1.RegisterType((*ApnsRet)(nil), "proto.ApnsRet")
 	proto1.RegisterType((*LabelMsg)(nil), "proto.LabelMsg")
-	proto1.RegisterType((*RetLabelMsg)(nil), "proto.RetLabelMsg")
+	proto1.RegisterType((*LabelRet)(nil), "proto.LabelRet")
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -415,20 +415,20 @@ const _ = grpc.SupportPackageIsVersion4
 
 type RpcClient interface {
 	// 推送接口
-	BPush(ctx context.Context, in *BPushMsg, opts ...grpc.CallOption) (*RetBPushMsg, error)
-	SPush(ctx context.Context, in *SPushMsg, opts ...grpc.CallOption) (*RetSPushMsg, error)
-	PChat(ctx context.Context, in *PChatMsg, opts ...grpc.CallOption) (*RetPChatMsg, error)
-	GChat(ctx context.Context, in *GChatMsg, opts ...grpc.CallOption) (*RetGChatMsg, error)
+	BPush(ctx context.Context, in *BPushMsg, opts ...grpc.CallOption) (*BPushRet, error)
+	SPush(ctx context.Context, in *SPushMsg, opts ...grpc.CallOption) (*SPushRet, error)
+	PChat(ctx context.Context, in *PChatMsg, opts ...grpc.CallOption) (*PChatRet, error)
+	GChat(ctx context.Context, in *GChatMsg, opts ...grpc.CallOption) (*GChatRet, error)
 	// 用户登陆相关接口
-	Login(ctx context.Context, in *LoginMsg, opts ...grpc.CallOption) (*RetLoginMsg, error)
-	Logout(ctx context.Context, in *LogoutMsg, opts ...grpc.CallOption) (*RetLogoutMsg, error)
+	Login(ctx context.Context, in *LoginMsg, opts ...grpc.CallOption) (*LoginRet, error)
+	Logout(ctx context.Context, in *LogoutMsg, opts ...grpc.CallOption) (*LogoutRet, error)
 	// 用户设置相关接口
-	SetNick(ctx context.Context, in *NickMsg, opts ...grpc.CallOption) (*RetNickMsg, error)
-	SetApns(ctx context.Context, in *ApnsMsg, opts ...grpc.CallOption) (*RetApnsMsg, error)
-	SetLabel(ctx context.Context, in *LabelMsg, opts ...grpc.CallOption) (*RetLabelMsg, error)
+	SetNick(ctx context.Context, in *NickMsg, opts ...grpc.CallOption) (*NickRet, error)
+	SetApns(ctx context.Context, in *ApnsMsg, opts ...grpc.CallOption) (*ApnsRet, error)
+	SetLabel(ctx context.Context, in *LabelMsg, opts ...grpc.CallOption) (*LabelRet, error)
 	// 用户订阅相关
-	Subscribe(ctx context.Context, in *SubMsg, opts ...grpc.CallOption) (*RetSubMsg, error)
-	UnSubscribe(ctx context.Context, in *UnSubMsg, opts ...grpc.CallOption) (*RetUnSubMsg, error)
+	Subscribe(ctx context.Context, in *SubMsg, opts ...grpc.CallOption) (*SubRet, error)
+	UnSubscribe(ctx context.Context, in *UnSubMsg, opts ...grpc.CallOption) (*UnSubRet, error)
 }
 
 type rpcClient struct {
@@ -439,8 +439,8 @@ func NewRpcClient(cc *grpc.ClientConn) RpcClient {
 	return &rpcClient{cc}
 }
 
-func (c *rpcClient) BPush(ctx context.Context, in *BPushMsg, opts ...grpc.CallOption) (*RetBPushMsg, error) {
-	out := new(RetBPushMsg)
+func (c *rpcClient) BPush(ctx context.Context, in *BPushMsg, opts ...grpc.CallOption) (*BPushRet, error) {
+	out := new(BPushRet)
 	err := grpc.Invoke(ctx, "/proto.Rpc/BPush", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -448,8 +448,8 @@ func (c *rpcClient) BPush(ctx context.Context, in *BPushMsg, opts ...grpc.CallOp
 	return out, nil
 }
 
-func (c *rpcClient) SPush(ctx context.Context, in *SPushMsg, opts ...grpc.CallOption) (*RetSPushMsg, error) {
-	out := new(RetSPushMsg)
+func (c *rpcClient) SPush(ctx context.Context, in *SPushMsg, opts ...grpc.CallOption) (*SPushRet, error) {
+	out := new(SPushRet)
 	err := grpc.Invoke(ctx, "/proto.Rpc/SPush", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -457,8 +457,8 @@ func (c *rpcClient) SPush(ctx context.Context, in *SPushMsg, opts ...grpc.CallOp
 	return out, nil
 }
 
-func (c *rpcClient) PChat(ctx context.Context, in *PChatMsg, opts ...grpc.CallOption) (*RetPChatMsg, error) {
-	out := new(RetPChatMsg)
+func (c *rpcClient) PChat(ctx context.Context, in *PChatMsg, opts ...grpc.CallOption) (*PChatRet, error) {
+	out := new(PChatRet)
 	err := grpc.Invoke(ctx, "/proto.Rpc/PChat", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -466,8 +466,8 @@ func (c *rpcClient) PChat(ctx context.Context, in *PChatMsg, opts ...grpc.CallOp
 	return out, nil
 }
 
-func (c *rpcClient) GChat(ctx context.Context, in *GChatMsg, opts ...grpc.CallOption) (*RetGChatMsg, error) {
-	out := new(RetGChatMsg)
+func (c *rpcClient) GChat(ctx context.Context, in *GChatMsg, opts ...grpc.CallOption) (*GChatRet, error) {
+	out := new(GChatRet)
 	err := grpc.Invoke(ctx, "/proto.Rpc/GChat", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -475,8 +475,8 @@ func (c *rpcClient) GChat(ctx context.Context, in *GChatMsg, opts ...grpc.CallOp
 	return out, nil
 }
 
-func (c *rpcClient) Login(ctx context.Context, in *LoginMsg, opts ...grpc.CallOption) (*RetLoginMsg, error) {
-	out := new(RetLoginMsg)
+func (c *rpcClient) Login(ctx context.Context, in *LoginMsg, opts ...grpc.CallOption) (*LoginRet, error) {
+	out := new(LoginRet)
 	err := grpc.Invoke(ctx, "/proto.Rpc/Login", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -484,8 +484,8 @@ func (c *rpcClient) Login(ctx context.Context, in *LoginMsg, opts ...grpc.CallOp
 	return out, nil
 }
 
-func (c *rpcClient) Logout(ctx context.Context, in *LogoutMsg, opts ...grpc.CallOption) (*RetLogoutMsg, error) {
-	out := new(RetLogoutMsg)
+func (c *rpcClient) Logout(ctx context.Context, in *LogoutMsg, opts ...grpc.CallOption) (*LogoutRet, error) {
+	out := new(LogoutRet)
 	err := grpc.Invoke(ctx, "/proto.Rpc/Logout", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -493,8 +493,8 @@ func (c *rpcClient) Logout(ctx context.Context, in *LogoutMsg, opts ...grpc.Call
 	return out, nil
 }
 
-func (c *rpcClient) SetNick(ctx context.Context, in *NickMsg, opts ...grpc.CallOption) (*RetNickMsg, error) {
-	out := new(RetNickMsg)
+func (c *rpcClient) SetNick(ctx context.Context, in *NickMsg, opts ...grpc.CallOption) (*NickRet, error) {
+	out := new(NickRet)
 	err := grpc.Invoke(ctx, "/proto.Rpc/SetNick", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -502,8 +502,8 @@ func (c *rpcClient) SetNick(ctx context.Context, in *NickMsg, opts ...grpc.CallO
 	return out, nil
 }
 
-func (c *rpcClient) SetApns(ctx context.Context, in *ApnsMsg, opts ...grpc.CallOption) (*RetApnsMsg, error) {
-	out := new(RetApnsMsg)
+func (c *rpcClient) SetApns(ctx context.Context, in *ApnsMsg, opts ...grpc.CallOption) (*ApnsRet, error) {
+	out := new(ApnsRet)
 	err := grpc.Invoke(ctx, "/proto.Rpc/SetApns", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -511,8 +511,8 @@ func (c *rpcClient) SetApns(ctx context.Context, in *ApnsMsg, opts ...grpc.CallO
 	return out, nil
 }
 
-func (c *rpcClient) SetLabel(ctx context.Context, in *LabelMsg, opts ...grpc.CallOption) (*RetLabelMsg, error) {
-	out := new(RetLabelMsg)
+func (c *rpcClient) SetLabel(ctx context.Context, in *LabelMsg, opts ...grpc.CallOption) (*LabelRet, error) {
+	out := new(LabelRet)
 	err := grpc.Invoke(ctx, "/proto.Rpc/SetLabel", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -520,8 +520,8 @@ func (c *rpcClient) SetLabel(ctx context.Context, in *LabelMsg, opts ...grpc.Cal
 	return out, nil
 }
 
-func (c *rpcClient) Subscribe(ctx context.Context, in *SubMsg, opts ...grpc.CallOption) (*RetSubMsg, error) {
-	out := new(RetSubMsg)
+func (c *rpcClient) Subscribe(ctx context.Context, in *SubMsg, opts ...grpc.CallOption) (*SubRet, error) {
+	out := new(SubRet)
 	err := grpc.Invoke(ctx, "/proto.Rpc/Subscribe", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -529,8 +529,8 @@ func (c *rpcClient) Subscribe(ctx context.Context, in *SubMsg, opts ...grpc.Call
 	return out, nil
 }
 
-func (c *rpcClient) UnSubscribe(ctx context.Context, in *UnSubMsg, opts ...grpc.CallOption) (*RetUnSubMsg, error) {
-	out := new(RetUnSubMsg)
+func (c *rpcClient) UnSubscribe(ctx context.Context, in *UnSubMsg, opts ...grpc.CallOption) (*UnSubRet, error) {
+	out := new(UnSubRet)
 	err := grpc.Invoke(ctx, "/proto.Rpc/UnSubscribe", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -542,20 +542,20 @@ func (c *rpcClient) UnSubscribe(ctx context.Context, in *UnSubMsg, opts ...grpc.
 
 type RpcServer interface {
 	// 推送接口
-	BPush(context.Context, *BPushMsg) (*RetBPushMsg, error)
-	SPush(context.Context, *SPushMsg) (*RetSPushMsg, error)
-	PChat(context.Context, *PChatMsg) (*RetPChatMsg, error)
-	GChat(context.Context, *GChatMsg) (*RetGChatMsg, error)
+	BPush(context.Context, *BPushMsg) (*BPushRet, error)
+	SPush(context.Context, *SPushMsg) (*SPushRet, error)
+	PChat(context.Context, *PChatMsg) (*PChatRet, error)
+	GChat(context.Context, *GChatMsg) (*GChatRet, error)
 	// 用户登陆相关接口
-	Login(context.Context, *LoginMsg) (*RetLoginMsg, error)
-	Logout(context.Context, *LogoutMsg) (*RetLogoutMsg, error)
+	Login(context.Context, *LoginMsg) (*LoginRet, error)
+	Logout(context.Context, *LogoutMsg) (*LogoutRet, error)
 	// 用户设置相关接口
-	SetNick(context.Context, *NickMsg) (*RetNickMsg, error)
-	SetApns(context.Context, *ApnsMsg) (*RetApnsMsg, error)
-	SetLabel(context.Context, *LabelMsg) (*RetLabelMsg, error)
+	SetNick(context.Context, *NickMsg) (*NickRet, error)
+	SetApns(context.Context, *ApnsMsg) (*ApnsRet, error)
+	SetLabel(context.Context, *LabelMsg) (*LabelRet, error)
 	// 用户订阅相关
-	Subscribe(context.Context, *SubMsg) (*RetSubMsg, error)
-	UnSubscribe(context.Context, *UnSubMsg) (*RetUnSubMsg, error)
+	Subscribe(context.Context, *SubMsg) (*SubRet, error)
+	UnSubscribe(context.Context, *UnSubMsg) (*UnSubRet, error)
 }
 
 func RegisterRpcServer(s *grpc.Server, srv RpcServer) {
@@ -813,42 +813,40 @@ var _Rpc_serviceDesc = grpc.ServiceDesc{
 }
 
 var fileDescriptor0 = []byte{
-	// 589 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0xcc, 0x54, 0xcd, 0x72, 0xd3, 0x30,
-	0x10, 0x6e, 0xea, 0xfc, 0xd8, 0x9b, 0x50, 0x82, 0xb8, 0x78, 0xc2, 0x5f, 0xc7, 0x5c, 0x3a, 0xc3,
-	0x4c, 0x06, 0x0a, 0x2f, 0x40, 0x39, 0xf8, 0x52, 0x3a, 0x99, 0x68, 0x78, 0x80, 0xd8, 0xa4, 0xae,
-	0x4b, 0x70, 0x3c, 0x91, 0x74, 0xe7, 0x55, 0x78, 0x03, 0x0e, 0x3c, 0x20, 0xd2, 0x4a, 0x72, 0x2c,
-	0x3b, 0x26, 0x70, 0xeb, 0x29, 0xd2, 0xb7, 0xdf, 0xae, 0xf6, 0xdb, 0x6f, 0x1d, 0x08, 0x76, 0x65,
-	0x3a, 0x2f, 0x77, 0x5b, 0xbe, 0x25, 0x03, 0xfc, 0x89, 0x7e, 0xf4, 0xc0, 0xbf, 0x5a, 0x08, 0x76,
-	0xf7, 0x99, 0x65, 0xe4, 0x0c, 0x4e, 0x39, 0x0b, 0x7b, 0xe7, 0xbd, 0x8b, 0xc9, 0x52, 0x9e, 0xd4,
-	0x7d, 0xc7, 0xc3, 0x53, 0x79, 0xf7, 0x96, 0xf2, 0x44, 0xa6, 0xe0, 0x71, 0xbe, 0x09, 0x3d, 0x04,
-	0xd4, 0x51, 0x21, 0xdf, 0xf3, 0xaf, 0x61, 0x1f, 0x53, 0xd4, 0x51, 0xe5, 0x6c, 0x92, 0xd0, 0xd7,
-	0x35, 0x36, 0x89, 0xba, 0xe7, 0xf7, 0x61, 0xa0, 0xef, 0xf9, 0x3d, 0x66, 0xb0, 0x2c, 0x1c, 0x99,
-	0x0c, 0x96, 0x45, 0x6f, 0x21, 0xb0, 0x1d, 0x30, 0xf2, 0x1a, 0xfa, 0x12, 0x53, 0x4d, 0x78, 0x17,
-	0xe3, 0xcb, 0xc7, 0xba, 0xd9, 0xb9, 0x8d, 0x2f, 0x31, 0x18, 0xfd, 0x96, 0x4d, 0x53, 0xdb, 0x34,
-	0x36, 0xa5, 0x13, 0x26, 0xaa, 0x29, 0x86, 0x88, 0x60, 0xb2, 0x6f, 0x8d, 0x08, 0x14, 0x72, 0xcb,
-	0xb1, 0x6f, 0xd9, 0xc4, 0x2d, 0xc7, 0xbb, 0x30, 0x5d, 0xcb, 0x93, 0x11, 0x3a, 0x68, 0x0a, 0x1d,
-	0xb6, 0x84, 0x8e, 0xfe, 0x5b, 0x28, 0x38, 0x42, 0xe9, 0x11, 0xa1, 0xd4, 0x15, 0xfa, 0x4b, 0x0a,
-	0x5d, 0x7c, 0xba, 0x5b, 0x71, 0xeb, 0x0e, 0xaf, 0xdc, 0x41, 0x11, 0x5c, 0xa0, 0x3b, 0xea, 0x2e,
-	0x1e, 0x8e, 0x48, 0xdb, 0x71, 0x97, 0x48, 0x1b, 0x37, 0x22, 0x9f, 0x83, 0x1f, 0x5b, 0x8d, 0xa6,
-	0x5e, 0xcf, 0xa9, 0x17, 0x1f, 0xa9, 0x17, 0xbb, 0xf5, 0x6e, 0xc0, 0xbf, 0xde, 0x66, 0x79, 0x61,
-	0x66, 0xb6, 0x2a, 0xec, 0xcc, 0x56, 0x85, 0xba, 0x8b, 0xc2, 0xce, 0x4c, 0x14, 0xea, 0xbd, 0x54,
-	0x2a, 0x36, 0x1b, 0x2d, 0x8f, 0x0a, 0xc9, 0xf2, 0xd2, 0x6e, 0xb4, 0x3c, 0x46, 0x6f, 0x20, 0x90,
-	0xf5, 0xb6, 0x82, 0xff, 0x43, 0xc1, 0x28, 0x84, 0x21, 0x15, 0xc9, 0x81, 0x8f, 0x29, 0x9a, 0x81,
-	0xff, 0xa5, 0xe8, 0x88, 0xbd, 0x82, 0xf1, 0x72, 0xcd, 0xaf, 0x6a, 0x2b, 0xdd, 0x98, 0x82, 0x26,
-	0xd0, 0x63, 0x84, 0x45, 0xf7, 0x1c, 0x35, 0x21, 0x3e, 0x46, 0xa8, 0x26, 0xd7, 0x26, 0x9c, 0xc3,
-	0x44, 0x13, 0xcc, 0x28, 0xda, 0x8c, 0x17, 0x10, 0xa8, 0x2e, 0xb5, 0xc6, 0xae, 0x17, 0xaa, 0x21,
-	0xb4, 0x09, 0xcf, 0x60, 0x74, 0x93, 0xa7, 0xdf, 0x0e, 0x07, 0x5f, 0x02, 0xc8, 0xec, 0xee, 0xb8,
-	0x4c, 0xfe, 0x58, 0x16, 0xec, 0x6f, 0xc9, 0xdd, 0x71, 0xb9, 0x83, 0xd7, 0xab, 0x64, 0xbd, 0x71,
-	0xa2, 0x5e, 0x63, 0x34, 0x2d, 0x82, 0x4d, 0xbf, 0xfc, 0xd9, 0x07, 0x6f, 0x59, 0xa6, 0x64, 0x0e,
-	0x03, 0x34, 0x91, 0x34, 0xff, 0xb8, 0x66, 0xc4, 0x00, 0x35, 0x9b, 0xa3, 0x13, 0xc5, 0xa7, 0x0e,
-	0x9f, 0x1e, 0xe0, 0x53, 0x87, 0x8f, 0x16, 0x93, 0xe6, 0xa7, 0x54, 0xe7, 0x5b, 0x4c, 0xf3, 0x63,
-	0x87, 0x1f, 0x1f, 0xe0, 0xc7, 0x0e, 0x1f, 0x17, 0xa0, 0xe2, 0xdb, 0x75, 0xa8, 0xf3, 0x2d, 0x26,
-	0xf9, 0xef, 0x60, 0xa8, 0xf7, 0x81, 0x4c, 0xf7, 0x09, 0x7a, 0x3d, 0x66, 0x4f, 0x9d, 0x0c, 0x0d,
-	0xe2, 0x13, 0x23, 0xaa, 0x6d, 0x24, 0x67, 0x86, 0x61, 0x3c, 0x9d, 0x3d, 0xd9, 0x67, 0x18, 0xa8,
-	0xe2, 0x2b, 0xe7, 0x2a, 0xbe, 0xb1, 0xb1, 0xce, 0x37, 0x10, 0xb6, 0xe4, 0x53, 0xe3, 0xd5, 0x5e,
-	0x85, 0x71, 0xce, 0x51, 0x61, 0x30, 0x7c, 0x22, 0x90, 0x2b, 0xc9, 0xd2, 0x5d, 0x9e, 0xac, 0xc9,
-	0x23, 0xeb, 0x04, 0x2e, 0xe9, 0x6c, 0x5a, 0xf3, 0x01, 0x11, 0xc9, 0xff, 0x00, 0x63, 0x5c, 0x62,
-	0x93, 0x61, 0x5f, 0xb1, 0x8b, 0x5d, 0x7f, 0xc5, 0x62, 0xd1, 0x49, 0x32, 0x44, 0xf0, 0xfd, 0x9f,
-	0x00, 0x00, 0x00, 0xff, 0xff, 0x0f, 0xef, 0xb0, 0x65, 0x84, 0x07, 0x00, 0x00,
+	// 556 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0xcc, 0x54, 0xcd, 0x6e, 0xd4, 0x30,
+	0x10, 0x66, 0x9b, 0xfd, 0x49, 0xa6, 0xa5, 0x54, 0x3e, 0x45, 0x66, 0x91, 0x50, 0xb8, 0x54, 0xaa,
+	0xb4, 0x82, 0xf2, 0x04, 0xc0, 0x21, 0x17, 0xa8, 0xaa, 0x44, 0x3c, 0xc0, 0x26, 0x6c, 0xd3, 0x94,
+	0x25, 0x1b, 0xad, 0xed, 0x7b, 0x1f, 0x89, 0x03, 0x0f, 0x88, 0x3d, 0xf6, 0x6c, 0xe3, 0x90, 0x50,
+	0xb8, 0xf5, 0xb4, 0x9e, 0xf9, 0xbe, 0x99, 0x9d, 0x6f, 0x3e, 0x3b, 0x10, 0xed, 0xdb, 0x72, 0xd5,
+	0xee, 0x77, 0x72, 0xc7, 0x66, 0xf8, 0x93, 0xdc, 0x4f, 0x20, 0xfc, 0x78, 0xad, 0xc4, 0xed, 0x17,
+	0x51, 0xb1, 0x53, 0x38, 0x92, 0x22, 0x9e, 0xbc, 0x9e, 0x9c, 0x9f, 0x64, 0xfa, 0x64, 0xe2, 0xbd,
+	0x8c, 0x8f, 0x74, 0x1c, 0x64, 0xfa, 0xc4, 0xce, 0x20, 0x90, 0x72, 0x1b, 0x07, 0x98, 0x30, 0x47,
+	0x93, 0xf9, 0x51, 0x7f, 0x8b, 0xa7, 0x58, 0x62, 0x8e, 0xa6, 0x66, 0x5b, 0xc4, 0xa1, 0xed, 0xb1,
+	0x2d, 0x4c, 0x5c, 0xdf, 0xc5, 0x91, 0x8d, 0xeb, 0x3b, 0xac, 0x10, 0x55, 0xbc, 0x70, 0x15, 0xa2,
+	0x4a, 0xde, 0x42, 0x44, 0x13, 0x08, 0xf6, 0x06, 0xa6, 0x3a, 0x67, 0x86, 0x08, 0xce, 0x8f, 0x2f,
+	0x5f, 0xd8, 0x61, 0x57, 0x84, 0x67, 0x08, 0x26, 0xbf, 0xf4, 0xd0, 0x39, 0x0d, 0x8d, 0x43, 0xd9,
+	0x82, 0x13, 0x33, 0x94, 0xc0, 0x8c, 0x12, 0x7a, 0x6e, 0x9b, 0x51, 0x28, 0xe4, 0x46, 0xe2, 0xdc,
+	0x7a, 0x88, 0x1b, 0x89, 0xb1, 0x72, 0x53, 0xeb, 0x93, 0x13, 0x3a, 0xeb, 0x0b, 0x9d, 0xff, 0x21,
+	0x74, 0xf1, 0xdf, 0x42, 0xc1, 0x13, 0x9a, 0x3f, 0x22, 0x34, 0xf7, 0x85, 0xfe, 0xd4, 0x42, 0xaf,
+	0x3f, 0xdd, 0xae, 0x25, 0xb9, 0x23, 0x0f, 0xee, 0xa0, 0x08, 0xa9, 0xd0, 0x1d, 0x13, 0xab, 0xa7,
+	0x23, 0x92, 0x26, 0x1e, 0x13, 0x49, 0xb8, 0x13, 0xb9, 0x84, 0x30, 0x25, 0x8d, 0xae, 0xdf, 0xc4,
+	0xeb, 0x97, 0x3e, 0xd2, 0x2f, 0xf5, 0xfb, 0x5d, 0x41, 0xf8, 0x79, 0x57, 0xd5, 0x8d, 0xdb, 0xd9,
+	0xba, 0xa1, 0x9d, 0xad, 0x1b, 0x13, 0xab, 0x86, 0x76, 0xa6, 0x1a, 0xf3, 0x7f, 0xa5, 0x56, 0xec,
+	0x6e, 0xb4, 0x3e, 0x9a, 0x4c, 0x55, 0xb7, 0x74, 0xa3, 0xf5, 0x31, 0xb9, 0x80, 0x48, 0xf7, 0xdb,
+	0x29, 0xf9, 0x0f, 0x0d, 0x93, 0x18, 0xe6, 0xb9, 0x2a, 0x06, 0x1e, 0x53, 0xc2, 0x21, 0xfc, 0xda,
+	0x8c, 0x60, 0x4b, 0xf7, 0x08, 0xb3, 0x8d, 0x1c, 0x58, 0xc1, 0xd2, 0xdd, 0xf6, 0x51, 0x14, 0x17,
+	0x3a, 0x8a, 0xa6, 0x7f, 0x45, 0x71, 0x55, 0xc3, 0xe8, 0x2b, 0x12, 0x3e, 0x0c, 0x73, 0x94, 0x3a,
+	0xda, 0x18, 0xc5, 0x0e, 0xa3, 0x2f, 0x61, 0x71, 0x55, 0x97, 0xdf, 0x87, 0x0d, 0x77, 0xe0, 0x68,
+	0xe5, 0x87, 0xb6, 0x11, 0xa3, 0x95, 0x06, 0x1c, 0x97, 0xba, 0x2e, 0x36, 0x5b, 0xaf, 0x34, 0xe8,
+	0xa3, 0x83, 0xb5, 0x97, 0xf7, 0x53, 0x08, 0xb2, 0xb6, 0x64, 0x17, 0x30, 0x43, 0x9b, 0x58, 0xff,
+	0xbb, 0xc4, 0xbd, 0x84, 0x6e, 0x92, 0x3c, 0x33, 0xe4, 0xdc, 0x23, 0xe7, 0x7d, 0x72, 0xee, 0x91,
+	0xd1, 0x44, 0xd6, 0x7f, 0x23, 0xdc, 0x4b, 0x1c, 0xc8, 0xa9, 0x47, 0x4e, 0xfb, 0xe4, 0xd4, 0x23,
+	0xa3, 0xc5, 0x07, 0x32, 0xbd, 0x0d, 0xee, 0x25, 0x2c, 0x79, 0x05, 0x73, 0xeb, 0x38, 0x3b, 0x7b,
+	0x00, 0xed, 0xcd, 0xe7, 0x7e, 0x86, 0x9a, 0x2f, 0xf2, 0x8d, 0x34, 0x76, 0xb1, 0x53, 0x07, 0x3b,
+	0x63, 0x79, 0x37, 0xee, 0x92, 0x8d, 0x43, 0x07, 0xb2, 0xf3, 0x92, 0x77, 0x63, 0x9a, 0x24, 0xd4,
+	0x64, 0xf4, 0xe4, 0x61, 0x72, 0xe7, 0x1f, 0xf7, 0x12, 0xd4, 0x3c, 0xd2, 0xd7, 0x4d, 0x94, 0xfb,
+	0xba, 0xd8, 0xb0, 0xe7, 0xb4, 0x60, 0x7c, 0x6d, 0xbc, 0x13, 0x5a, 0xf2, 0x3b, 0x38, 0xc6, 0xdb,
+	0xe9, 0xe8, 0xd4, 0x8e, 0x9e, 0x27, 0xf7, 0x12, 0x58, 0x52, 0xcc, 0x31, 0xf3, 0xfe, 0x77, 0x00,
+	0x00, 0x00, 0xff, 0xff, 0x06, 0x31, 0x6d, 0x00, 0x42, 0x07, 0x00, 0x00,
 }
