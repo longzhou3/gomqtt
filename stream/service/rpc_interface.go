@@ -66,7 +66,7 @@ func (rpc *Rpc) Login(ctx context.Context, msg *proto.LoginMsg) (*proto.LoginRet
 		return &proto.LoginRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, err
 	}
 	// insert cid
-	gStream.cache.Cids.add(msg.Cid, &accountMsg{acc: acc, appID: msg.Un})
+	gStream.cache.Cids.add(msg.Cid, &accountMsg{acc: acc, appID: msg.AppID})
 
 	log.Println(gStream.cache.Cids)
 	return &proto.LoginRet{R: true, M: []byte("ok")}, nil

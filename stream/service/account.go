@@ -121,22 +121,28 @@ func (acc *Account) NewUser(msg *proto.LoginMsg) error {
 	appID.Cid = msg.Cid
 	appID.Oline = ONLINE
 	appID.LastLogin = time.Now().Unix()
-	acc.AppIDs[tools.Bytes2String(msg.Un)] = appID
+	acc.AppIDs[tools.Bytes2String(msg.AppID)] = appID
 	return nil
 }
 
 func (acc *Account) Login(msg *proto.LoginMsg) error {
 	acc.Lock()
 	var appID *AppID
-	appID, ok := acc.AppIDs[tools.Bytes2String(msg.Un)]
+	appID, ok := acc.AppIDs[string(msg.AppID)]
 	if !ok {
 		appID = NewAppID()
-		acc.AppIDs[tools.Bytes2String(msg.Un)] = appID
+		acc.AppIDs[string(msg.AppID)] = appID
 	}
 	appID.Gip = msg.Gip
 	appID.Cid = msg.Cid
 	appID.Oline = ONLINE
 	appID.LastLogin = time.Now().Unix()
+
+	// 订阅
+	for _, topic := range msg.Ts {
+		appID.Topics[string(topic.Tp)] = topic
+	}
+
 	acc.Unlock()
 	return nil
 }
@@ -157,63 +163,48 @@ func (acc *Account) Logout(un []byte) error {
 // Subscribe
 func (acc *Account) Subscribe(un []byte, msg *proto.SubMsg) error {
 	acc.Lock()
-	appID, ok := acc.AppIDs[tools.Bytes2String(un)]
+	appID, ok := acc.AppIDs[string(un)]
 	if !ok {
 		acc.Unlock()
 		return fmt.Errorf("unfind appID %s  ", tools.Bytes2String(un))
 	} else {
 		for _, topic := range msg.Ts {
-			appID.Topics[tools.Bytes2String(topic.Tp)] = topic
+			appID.Topics[string(topic.Tp)] = topic
 		}
 	}
-	if msg.AppID != nil {
-		delete(acc.AppIDs, tools.Bytes2String(un))
-		acc.AppIDs[tools.Bytes2String(msg.AppID)] = appID
-	}
+	// if msg.AppID != nil {
+	// 	delete(acc.AppIDs, tools.Bytes2String(un))
+	// 	acc.AppIDs[string(msg.AppID)] = appID
+	// }
 	acc.Unlock()
 
-	Logger.Debug("Subscribe", zap.String("Gip", fmt.Sprintf("%s", appID.Gip)))
+	Logger.Info("Subscribe", zap.String("Gip", fmt.Sprintf("%s", appID.Gip)))
 	for _, topic := range appID.Topics {
-		Logger.Debug("Subscribe", zap.String("Topic", fmt.Sprintf("%s", topic.Tp)))
+		Logger.Info("Subscribe", zap.String("Topic", fmt.Sprintf("%s", topic.Tp)))
 	}
 
 	return nil
 }
 
-// func (acc *Account) SetAppID(un []byte, msg *proto.AppIDMsg) error {
-// 	acc.Lock()
-// 	appID, ok := acc.AppIDs[tools.Bytes2String(un)]
-// 	if !ok {
-// 		acc.Unlock()
-// 		return fmt.Errorf("unfind user %s  ", tools.Bytes2String(un))
-// 	} else {
-// 		delete(acc.AppIDs, tools.Bytes2String(un))
-// 		acc.AppIDs[tools.Bytes2String(msg.AppID)] = appID
-// 	}
-// 	acc.Unlock()
-
-// 	return nil
-// }
-
 // UnSubscribe
 func (acc *Account) UnSubscribe(un []byte, msg *proto.UnSubMsg) error {
 	acc.Lock()
-	appID, ok := acc.AppIDs[tools.Bytes2String(un)]
+	appID, ok := acc.AppIDs[string(un)]
 	if !ok {
 		acc.Unlock()
 		return fmt.Errorf("unfind appID %s  ", string(un))
 	} else {
 		for _, topic := range msg.Ts {
-			if _, ok := appID.Topics[tools.Bytes2String(topic.Tp)]; ok {
+			if _, ok := appID.Topics[string(topic.Tp)]; ok {
 				delete(appID.Topics, tools.Bytes2String(topic.Tp))
 			}
 		}
 	}
 	acc.Unlock()
 
-	Logger.Debug("UnSubscribe", zap.String("Gip", fmt.Sprintf("%s", appID.Gip)))
+	Logger.Info("UnSubscribe", zap.String("Gip", fmt.Sprintf("%s", appID.Gip)))
 	for _, topic := range appID.Topics {
-		Logger.Debug("UnSubscribe", zap.String("Topic", fmt.Sprintf("%s", topic.Tp)))
+		Logger.Info("UnSubscribe", zap.String("Topic", fmt.Sprintf("%s", topic.Tp)))
 	}
 	return nil
 }
