@@ -17,9 +17,11 @@ type connInfo struct {
 
 	stopped chan struct{}
 
-	relogin bool
+	relogin chan struct{}
 
 	rpc *rpcServie
+
+	test []byte
 }
 
 type connInfos struct {

@@ -7,6 +7,8 @@ keys = [
         "/gomqtt/gateway/loglevel",
         "/gomqtt/gateway/logpath",
         
+        "/gomqtt/gateway/webdomain",
+
         "/gomqtt/gateway/invoked",
         "/gomqtt/gateway/tcpaddr",
         "/gomqtt/gateway/enabletls",
@@ -18,8 +20,13 @@ keys = [
         "/gomqtt/gateway/etcd/rooms",
 
         "/gomqtt/gateway/qosmax",
-        "/gomqtt/gateway/maxkeepalive",
+        "/gomqtt/gateway/defaultkeepalive",
+        "/gomqtt/gateway/maxuserlen",
+        "/gomqtt/gateway/maxpasswordlen",
 
         "/gomqtt/gateway/dispatch/addr",
+        "/gomqtt/gateway/mutex/type",
+
+        
 ]
 reload_cmd = "/Users/sunfei/Documents/GoLibs/src/github.com/aiyun/gomqtt/gateway/gateway reload"

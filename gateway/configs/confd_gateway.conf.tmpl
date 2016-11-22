@@ -5,6 +5,9 @@ log_level = "{{getv "/gomqtt/gateway/loglevel"}}"
 log_path = "{{getv "/gomqtt/gateway/logpath"}}"
 
 
+[gateway]
+web_domain = "{{getv "/gomqtt/gateway/webdomain"}}"
+
 [provider]
 invoked = [
         {{range getvs "/gomqtt/gateway/invoked/*"}}
@@ -30,7 +33,18 @@ rooms = "{{getv "/gomqtt/gateway/etcd/rooms"}}"
 
 [mqtt]
 qos_max = {{getv  "/gomqtt/gateway/qosmax"}}
-max_keepalive = {{getv  "/gomqtt/gateway/maxkeepalive"}}
+default_keepalive = {{getv  "/gomqtt/gateway/defaultkeepalive"}}
+
+max_user_len = {{getv  "/gomqtt/gateway/maxuserlen"}}
+max_password_len = {{getv  "/gomqtt/gateway/maxpasswordlen"}}
 
 [dispatch]
 addr = "{{getv  "/gomqtt/gateway/dispatch/addr"}}"
+
+[mutex]
+#  the type of mutex login,when is mutex,only one client is allowed to connect to gateway
+# 1: disable mutx login
+# 2: mutex with Username
+# 3: mutex with Username and  ClientID
+# 4: mutex with ClientID 
+type = {{getv  "/gomqtt/gateway/mutex/type"}}

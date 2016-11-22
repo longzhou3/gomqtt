@@ -15,7 +15,6 @@ func processPacket(ci *connInfo, pt proto.Packet) error {
 
 	switch p := pt.(type) {
 	case *proto.DisconnectPacket: // recv Disconnect
-		Logger.Info("Disconnect")
 		err = errors.New("recv disconnect packet")
 
 	case *proto.PublishPacket: // recv publish
@@ -31,8 +30,8 @@ func processPacket(ci *connInfo, pt proto.Packet) error {
 		err = unsubscribe(ci, p)
 
 	case *proto.PingreqPacket:
-		Logger.Info("recv ping req")
 		pingReq(ci)
+
 	default:
 		Logger.Warn("recv invalid packet type", zap.String("invalid_type", fmt.Sprintf("%T", pt)), zap.Int64("cid", ci.id))
 	}

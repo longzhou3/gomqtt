@@ -28,6 +28,10 @@ type Config struct {
 		LogPath  string
 	}
 
+	Gateway struct {
+		WebDomain string
+	}
+
 	Provider struct {
 		Invoked   []string
 		TcpAddr   string
@@ -43,12 +47,20 @@ type Config struct {
 	}
 
 	Mqtt struct {
-		QosMax       byte
-		MaxKeepalive uint16
+		QosMax           byte
+		DefaultKeepalive uint16
+
+		MaxUserLen     int
+		MaxPasswordLen int
 	}
 
 	Dispatch struct {
 		Addr string
+	}
+
+	// Mutex login
+	Mutex struct {
+		Type int
 	}
 
 	StreamAddrs map[string]string
@@ -99,6 +111,9 @@ func loadConfig(staticConf bool) {
 	if err != nil {
 		Logger.Fatal("can't connect to etcd", zap.Error(err))
 	}
+
+	consist = consistent.New()
+	Consist = consistent.New()
 
 	watchEtcd(cli)
 	uploadEtcd(cli)
@@ -185,8 +200,15 @@ func watchEtcd(cli *clientv3.Client) {
 
 func uploadEtcd(cli *clientv3.Client) {
 	key := Conf.Etcd.Rooms + "/" + getHost()
-	ip := tools.LocalIP()
-	Logger.Debug("local ip", zap.String("ip", ip))
+
+	var addr string
+	if Conf.Gateway.WebDomain == "" {
+		addr = tools.LocalIP()
+	} else {
+		addr = Conf.Gateway.WebDomain
+	}
+
+	Logger.Debug("local ip", zap.String("ip", addr))
 
 	go func() {
 		for {
@@ -196,7 +218,7 @@ func uploadEtcd(cli *clientv3.Client) {
 				Logger.Warn("etcd grant error", zap.Error(err))
 			}
 
-			_, err = cli.Put(context.TODO(), key, ip, clientv3.WithLease(Grant.ID))
+			_, err = cli.Put(context.TODO(), key, addr, clientv3.WithLease(Grant.ID))
 			if err != nil {
 				Logger.Warn("etcd put error", zap.Error(err))
 			}
