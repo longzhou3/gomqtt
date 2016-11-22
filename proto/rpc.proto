@@ -15,9 +15,6 @@ service Rpc {
     rpc Login (LoginMsg)        returns (LoginRet) 	{}
     rpc Logout (LogoutMsg)      returns (LogoutRet) {}
 
-    // 用户设置相关
-    rpc SetAppID (AppIDMsg)    returns (AppIDRet) {}
-
     // 用户订阅相关
     rpc Subscribe (SubMsg)      returns (SubRet) 	{}
     rpc UnSubscribe (UnSubMsg)  returns (UnSubRet) 	{}
@@ -117,17 +114,6 @@ message LoginRet {
     bytes m = 2;    //  失败原因
 }
 
-message AppIDMsg {
-    int64 cid   = 1;      // 链接id
-    bytes appID = 2;      // appid
-}
-
-
-message AppIDRet  {
-    bool  r = 1;    //  true 成功， false 失败
-    bytes m = 2;    //  失败原因
-}
-
 // 登出消息
 message LogoutMsg {
     int64  cid     = 1;      // 链接id
@@ -148,7 +134,8 @@ message Topic {
 // 订阅主题消息
 message SubMsg {
              int64 cid     = 1;      // 链接id
-    repeated Topic ts      = 2;      // topic列表
+             bytes appID   = 2;      // appid
+    repeated Topic ts      = 3;      // topic列表
 }
 
 // 订阅主题消息返回消息
