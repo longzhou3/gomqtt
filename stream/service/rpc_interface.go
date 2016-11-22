@@ -56,63 +56,44 @@ func (r *Rpc) Close() error {
 
 // 群流程
 
-// ---------------- 消息推送相关接口  ----------------
-
-// BPush 广播推送
-func (rpc *Rpc) BPush(ctx context.Context, bm *proto.BPushMsg) (*proto.BPushRet, error) {
-
-	return &proto.BPushRet{}, nil
-}
-
-// SPush 单播推送
-func (rpc *Rpc) SPush(ctx context.Context, sm *proto.SPushMsg) (*proto.SPushRet, error) {
-
-	return &proto.SPushRet{}, nil
-}
-
-// PChat 私聊
-func (rpc *Rpc) PChat(ctx context.Context, pm *proto.PChatMsg) (*proto.PChatRet, error) {
-
-	return &proto.PChatRet{}, nil
-}
-
-// GChat 群聊
-func (rpc *Rpc) GChat(ctx context.Context, gm *proto.GChatMsg) (*proto.GChatRet, error) {
-
-	return &proto.GChatRet{}, nil
-}
-
 // ---------------- 用户相关接口  ----------------
 
 // Login 登陆
 func (rpc *Rpc) Login(ctx context.Context, msg *proto.LoginMsg) (*proto.LoginRet, error) {
 	err := gStream.cache.As.Login(msg)
 	if err != nil {
-		return &proto.LoginRet{Msg: []byte(fmt.Sprint("%s", err.Error()))}, err
+		return &proto.LoginRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, err
 	}
-
-	return &proto.LoginRet{Msg: []byte("ok")}, nil
+	return &proto.LoginRet{R: true, M: []byte("ok")}, nil
 }
 
 // Logout 登出
 func (rpc *Rpc) Logout(ctx context.Context, msg *proto.LogoutMsg) (*proto.LogoutRet, error) {
-
-	return &proto.LogoutRet{Msg: []byte("Logout 成功调用")}, nil
+	err := gStream.cache.As.Logout(msg)
+	if err != nil {
+		return &proto.LogoutRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, err
+	}
+	return &proto.LogoutRet{R: true, M: []byte("Logout 成功调用")}, nil
 }
 
 // ---------------- 订阅相关接口  ----------------
 
 // Subscribe 订阅
 func (rpc *Rpc) Subscribe(ctx context.Context, msg *proto.SubMsg) (*proto.SubRet, error) {
-
-	return &proto.SubRet{Msg: []byte("Subscribe 成功调用")}, nil
+	err := gStream.cache.As.Subscribe(msg)
+	if err != nil {
+		return &proto.SubRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, err
+	}
+	return &proto.SubRet{R: true, M: []byte("Subscribe 成功调用")}, nil
 }
 
 // UnSubscribe 取消订阅
 func (rpc *Rpc) UnSubscribe(ctx context.Context, msg *proto.UnSubMsg) (*proto.UnSubRet, error) {
 
-	return &proto.UnSubRet{Msg: []byte("UnSubscribe 成功调用")}, nil
+	return &proto.UnSubRet{R: true, M: []byte("UnSubscribe 成功调用")}, nil
 }
+
+// Publish 客户端请求
 func (rpc *Rpc) Publish(ctx context.Context, msg *proto.PubMsg) (*proto.PubRet, error) {
 	return &proto.PubRet{R: false, M: []byte("UnSubscribe 成功调用")}, nil
 }
@@ -159,4 +140,30 @@ func (rpc *Rpc) Publish(ctx context.Context, msg *proto.PubMsg) (*proto.PubRet, 
 // func (rpc *Rpc) SetLabel(ctx context.Context, msg *proto.LabelMsg) (*proto.LabelRet, error) {
 
 // 	return &proto.LabelRet{Msg: []byte("SetLabel 成功调用")}, nil
+// }
+
+// ---------------- 消息推送相关接口  ----------------
+
+// // BPush 广播推送
+// func (rpc *Rpc) BPush(ctx context.Context, bm *proto.BPushMsg) (*proto.BPushRet, error) {
+
+// 	return &proto.BPushRet{}, nil
+// }
+
+// // SPush 单播推送
+// func (rpc *Rpc) SPush(ctx context.Context, sm *proto.SPushMsg) (*proto.SPushRet, error) {
+
+// 	return &proto.SPushRet{}, nil
+// }
+
+// // PChat 私聊
+// func (rpc *Rpc) PChat(ctx context.Context, pm *proto.PChatMsg) (*proto.PChatRet, error) {
+
+// 	return &proto.PChatRet{}, nil
+// }
+
+// // GChat 群聊
+// func (rpc *Rpc) GChat(ctx context.Context, gm *proto.GChatMsg) (*proto.GChatRet, error) {
+
+// 	return &proto.GChatRet{}, nil
 // }
