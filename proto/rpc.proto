@@ -24,7 +24,10 @@ service Rpc {
 }
 
 message PubMsg {
-    bytes msg = 1; 
+    bytes  an      = 1;      // 账户名
+    bytes  un      = 2;      // 子用户名
+    int64  cid     = 3;      // 链接id
+    bytes  msg     = 4;      // 用户push信息 
 }
 
 // 
@@ -117,6 +120,7 @@ message LoginRet {
 message LogoutMsg {
     bytes  an      = 1;      // 账户名
     bytes  un      = 2;      // 子用户名
+    int64  cid     = 3;      // 链接id
 }
 
 // 登出消息返回消息
@@ -127,7 +131,10 @@ message LogoutRet {
 
 // 订阅主题消息
 message SubMsg {
-    bytes  ts = 1;        // topic列表
+             bytes  an      = 1;      // 账户名
+             bytes  un      = 2;      // 子用户名
+             int64  cid     = 3;      // 链接id
+    repeated bytes  ts      = 4;      // topic列表
 }
 
 // 订阅主题消息返回消息
@@ -138,8 +145,12 @@ message SubRet {
 
 // 取消订阅主题消息
 message UnSubMsg {
-    bytes  ts = 1;        // topic列表
+             bytes  an      = 1;      // 账户名
+             bytes  un      = 2;      // 子用户名
+             int64  cid     = 3;      // 链接id
+    repeated bytes  ts      = 4;      // topic列表
 }
+
 
 // 取消订阅主题消息返回消息
 message UnSubRet {
