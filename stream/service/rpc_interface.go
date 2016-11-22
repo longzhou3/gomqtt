@@ -1,6 +1,7 @@
 package service
 
 import (
+	"log"
 	"net"
 
 	context "golang.org/x/net/context"
@@ -62,6 +63,7 @@ func (r *Rpc) Close() error {
 func (rpc *Rpc) Login(ctx context.Context, msg *proto.LoginMsg) (*proto.LoginRet, error) {
 	err := gStream.cache.As.Login(msg)
 	if err != nil {
+		log.Println("login err ", err)
 		return &proto.LoginRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, err
 	}
 	return &proto.LoginRet{R: true, M: []byte("ok")}, nil
@@ -71,6 +73,7 @@ func (rpc *Rpc) Login(ctx context.Context, msg *proto.LoginMsg) (*proto.LoginRet
 func (rpc *Rpc) Logout(ctx context.Context, msg *proto.LogoutMsg) (*proto.LogoutRet, error) {
 	err := gStream.cache.As.Logout(msg)
 	if err != nil {
+		log.Println("Logout err ", err)
 		return &proto.LogoutRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, err
 	}
 	return &proto.LogoutRet{R: true, M: []byte("Logout 成功调用")}, nil
@@ -82,6 +85,7 @@ func (rpc *Rpc) Logout(ctx context.Context, msg *proto.LogoutMsg) (*proto.Logout
 func (rpc *Rpc) Subscribe(ctx context.Context, msg *proto.SubMsg) (*proto.SubRet, error) {
 	err := gStream.cache.As.Subscribe(msg)
 	if err != nil {
+		log.Println("Subscribe err ", err)
 		return &proto.SubRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, err
 	}
 	return &proto.SubRet{R: true, M: []byte("Subscribe 成功调用")}, nil
@@ -89,7 +93,11 @@ func (rpc *Rpc) Subscribe(ctx context.Context, msg *proto.SubMsg) (*proto.SubRet
 
 // UnSubscribe 取消订阅
 func (rpc *Rpc) UnSubscribe(ctx context.Context, msg *proto.UnSubMsg) (*proto.UnSubRet, error) {
-
+	err := gStream.cache.As.UnSubscribe(msg)
+	if err != nil {
+		log.Println("UnSubscribe err ", err)
+		return &proto.UnSubRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, err
+	}
 	return &proto.UnSubRet{R: true, M: []byte("UnSubscribe 成功调用")}, nil
 }
 

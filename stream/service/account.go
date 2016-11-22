@@ -1,7 +1,7 @@
 package service
 
 import (
-	"bytes"
+	"log"
 	"sync"
 	"time"
 
@@ -123,9 +123,10 @@ func (acc *Account) NewUser(msg *proto.LoginMsg) error {
 
 func (acc *Account) Login(msg *proto.LoginMsg) error {
 	acc.Lock()
+	var user *User
 	user, ok := acc.Users[string(msg.Un)]
 	if !ok {
-		user := NewUser()
+		user = NewUser()
 		acc.Users[string(msg.Un)] = user
 	}
 	user.Gip = msg.Gip
@@ -161,11 +162,12 @@ func (acc *Account) Subscribe(msg *proto.SubMsg) error {
 		acc.Unlock()
 		return fmt.Errorf("unfind %s, %s", string(msg.An), string(msg.Un))
 	} else {
-		if user.Cid != msg.Cid {
-			acc.Unlock()
-			return fmt.Errorf("user's Cid diff, old cid is %d, get cid is %d", user.Cid, msg.Cid)
-		}
-		user.Topics = msg.Ts
+		// if user.Cid != msg.Cid {
+		// 	acc.Unlock()
+		// 	return fmt.Errorf("user's Cid diff, old cid is %d, get cid is %d", user.Cid, msg.Cid)
+		// }
+		// user.Topics = msg.Ts
+		log.Println(user)
 	}
 	acc.Unlock()
 	return nil
@@ -179,18 +181,19 @@ func (acc *Account) UnSubscribe(msg *proto.UnSubMsg) error {
 		acc.Unlock()
 		return fmt.Errorf("unfind %s, %s", string(msg.An), string(msg.Un))
 	} else {
-		if user.Cid != msg.Cid {
-			acc.Unlock()
-			return fmt.Errorf("user's Cid diff, old cid is %d, get cid is %d", user.Cid, msg.Cid)
-		}
-		// delete topics from user's topics
-		for _, unSubtopic := range msg.Ts {
-			for index, topic := range user.Topics {
-				if bytes.Equal(unSubtopic, topic) {
-					user.Topics = append(user.Topics[:index], user.Topics[index+1:]...)
-				}
-			}
-		}
+		// if user.Cid != msg.Cid {
+		// 	acc.Unlock()
+		// 	return fmt.Errorf("user's Cid diff, old cid is %d, get cid is %d", user.Cid, msg.Cid)
+		// }
+		// // delete topics from user's topics
+		// for _, unSubtopic := range msg.Ts {
+		// 	for index, topic := range user.Topics {
+		// 		if bytes.Equal(unSubtopic, topic) {
+		// 			user.Topics = append(user.Topics[:index], user.Topics[index+1:]...)
+		// 		}
+		// 	}
+		// }
+		log.Println(user)
 	}
 	acc.Unlock()
 	return nil
