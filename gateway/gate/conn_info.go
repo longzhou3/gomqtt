@@ -22,6 +22,9 @@ type connInfo struct {
 	rpc *rpcServie
 
 	test []byte
+
+	acc  []byte
+	user []byte
 }
 
 type connInfos struct {

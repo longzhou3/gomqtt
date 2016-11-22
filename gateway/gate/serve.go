@@ -9,6 +9,7 @@ import (
 	"github.com/uber-go/zap"
 
 	rpc "github.com/aiyun/gomqtt/proto"
+	"github.com/aiyun/gomqtt/uuid"
 )
 
 func serve(c net.Conn) {
@@ -23,7 +24,7 @@ func serve(c net.Conn) {
 	ci := &connInfo{}
 
 	//generate a uuid for this conn
-	ci.id = 1
+	ci.id = uuid.Gen()
 	ci.c = c
 	Logger.Debug("a new connection has established", zap.Int64("cid", ci.id), zap.String("ip", c.RemoteAddr().String()))
 
@@ -46,18 +47,20 @@ func serve(c net.Conn) {
 	err, code := initConnection(ci)
 	reply.SetReturnCode(code)
 	if err != nil {
-		Logger.Info("user connect failed", zap.Int64("cid", ci.id), zap.Error(err), zap.String("user", tools.Bytes2String(ci.cp.Username())), zap.String("password", tools.Bytes2String(ci.cp.Password())))
+		Logger.Info("user connect failed", zap.Int64("cid", ci.id), zap.Error(err), zap.String("acc", tools.Bytes2String(ci.acc)),
+			zap.String("user", tools.Bytes2String(ci.user)), zap.String("password", tools.Bytes2String(ci.cp.Password())))
 		service.WritePacket(ci.c, reply)
 		return
 	}
 
 	if err := service.WritePacket(ci.c, reply); err != nil {
-		Logger.Info("write connecaccept failed", zap.Int64("cid", ci.id), zap.Error(err), zap.String("user", tools.Bytes2String(ci.cp.Username())), zap.String("password", tools.Bytes2String(ci.cp.Password())))
+		Logger.Info("write connecaccept failed", zap.Int64("cid", ci.id), zap.Error(err),
+			zap.String("acc", tools.Bytes2String(ci.acc)), zap.String("user", tools.Bytes2String(ci.user)), zap.String("password", tools.Bytes2String(ci.cp.Password())))
 		return
 	}
 
-	Logger.Debug("user connected ok!", zap.String("user", tools.Bytes2String(ci.cp.Username())), zap.String("password", tools.Bytes2String(ci.cp.Password())), zap.Int64("cid", ci.id),
-		zap.Float64("keepalive", float64(ci.cp.KeepAlive())))
+	Logger.Debug("user connected ok!", zap.String("acc", tools.Bytes2String(ci.acc)),
+		zap.String("user", tools.Bytes2String(ci.user)), zap.String("password", tools.Bytes2String(ci.cp.Password())), zap.Int64("cid", ci.id), zap.Float64("keepalive", float64(ci.cp.KeepAlive())))
 
 	// save ci
 	saveCI(ci)
@@ -75,8 +78,6 @@ func serve(c net.Conn) {
 
 STOP:
 	ci.rpc.logout(&rpc.LogoutMsg{
-		An:  ci.cp.Username(),
-		Un:  ci.cp.ClientId(),
 		Cid: ci.id,
 	})
 }

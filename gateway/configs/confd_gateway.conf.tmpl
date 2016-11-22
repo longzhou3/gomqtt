@@ -8,6 +8,9 @@ log_path = "{{getv "/gomqtt/gateway/logpath"}}"
 [gateway]
 web_domain = "{{getv "/gomqtt/gateway/webdomain"}}"
 
+# server_id need to be global unique,because it is used in uuid generate
+server_id = {{getv "/gomqtt/gateway/serverid/1"}}
+
 [provider]
 invoked = [
         {{range getvs "/gomqtt/gateway/invoked/*"}}

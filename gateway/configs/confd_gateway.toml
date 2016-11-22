@@ -8,6 +8,7 @@ keys = [
         "/gomqtt/gateway/logpath",
         
         "/gomqtt/gateway/webdomain",
+        "/gomqtt/gateway/serverid/1",
 
         "/gomqtt/gateway/invoked",
         "/gomqtt/gateway/tcpaddr",

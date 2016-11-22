@@ -35,8 +35,11 @@ func initConnection(ci *connInfo) (error, proto.ConnackCode) {
 
 	ci.cp = cp
 
+	// transfer account and user
+	accTrans(ci)
+
 	// validate the user
-	ok = userValidate(ci.cp.Username(), ci.cp.Password())
+	ok = userValidate(ci.acc, ci.cp.Password())
 	if !ok {
 		return errors.New("validate failed"), proto.ErrIdentifierRejected
 	}
@@ -45,7 +48,7 @@ func initConnection(ci *connInfo) (error, proto.ConnackCode) {
 	mutexLogin(ci)
 
 	// connect to stream
-	ip, err := consist.Get(tools.Bytes2String(ci.cp.Username()))
+	ip, err := consist.Get(tools.Bytes2String(ci.acc))
 	if err != nil {
 		return err, proto.ErrServerUnavailable
 	}
@@ -56,8 +59,8 @@ func initConnection(ci *connInfo) (error, proto.ConnackCode) {
 	}
 
 	err = ci.rpc.login(&rpc.LoginMsg{
-		An:  ci.cp.Username(),
-		Un:  ci.cp.ClientId(),
+		An:  ci.acc,
+		Un:  ci.user,
 		Cid: ci.id,
 		Gip: tools.String2Bytes(ci.c.LocalAddr().String()),
 	})

@@ -30,6 +30,7 @@ type Config struct {
 
 	Gateway struct {
 		WebDomain string
+		ServerId  int
 	}
 
 	Provider struct {
@@ -167,8 +168,6 @@ func watchEtcd(cli *clientv3.Client) {
 				consist.Add(v)
 			}
 
-			fmt.Println(consist.Members())
-			fmt.Println(rpcRoutes)
 			// Logger.Debug("get new stream addrs", zap.Object("addrs", Conf.StreamAddrs))
 		}
 	}()

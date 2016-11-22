@@ -3,6 +3,8 @@ package gate
 import (
 	"fmt"
 	"time"
+
+	"github.com/aiyun/gomqtt/uuid"
 )
 
 type Gate struct {
@@ -20,6 +22,9 @@ func (g *Gate) Start(isStatic bool) {
 
 	// wait for rpc connections inited
 	time.Sleep(6 * time.Second)
+
+	// start uuid service
+	uuid.Init(Conf.Gateway.ServerId, "ts16", Logger)
 
 	// init providers
 	providersStart()

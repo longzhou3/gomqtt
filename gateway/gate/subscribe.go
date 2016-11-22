@@ -13,8 +13,6 @@ func subscribe(ci *connInfo, p *proto.SubscribePacket) error {
 	topics, rets := topicsAndRets(p)
 
 	err := ci.rpc.subscribe(&rpc.SubMsg{
-		An:  ci.cp.Username(),
-		Un:  ci.cp.ClientId(),
 		Cid: ci.id,
 		Ts:  topics,
 	})
@@ -36,8 +34,6 @@ func subscribe(ci *connInfo, p *proto.SubscribePacket) error {
 func unsubscribe(ci *connInfo, p *proto.UnsubscribePacket) error {
 	topics := topics(p)
 	err := ci.rpc.unSubscribe(&rpc.UnSubMsg{
-		An:  ci.cp.Username(),
-		Un:  ci.cp.ClientId(),
 		Cid: ci.id,
 		Ts:  topics,
 	})
