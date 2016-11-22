@@ -27,6 +27,7 @@ func recvPacket(ci *connInfo) {
 
 		err = processPacket(ci, pt)
 		if err != nil {
+			Logger.Info("process packet error", zap.Error(err), zap.Int64("cid", ci.id))
 			break
 		}
 

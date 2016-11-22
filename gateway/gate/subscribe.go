@@ -3,18 +3,23 @@ package gate
 import (
 	proto "github.com/aiyun/gomqtt/mqtt/protocol"
 	"github.com/aiyun/gomqtt/mqtt/service"
+
+	"fmt"
+
+	rpc "github.com/aiyun/gomqtt/proto"
 )
 
 func subscribe(ci *connInfo, p *proto.SubscribePacket) error {
-	var rets []byte
+	topics, rets := topicsAndRets(p)
 
-	for i, t := range p.Topics() {
-		qos, err := subToStream(t, p.Qos()[i])
-		if err != nil {
-
-		}
-
-		rets = append(rets, qos)
+	err := ci.rpc.subscribe(&rpc.SubMsg{
+		An:  ci.cp.Username(),
+		Un:  ci.cp.ClientId(),
+		Cid: ci.id,
+		Ts:  topics,
+	})
+	if err != nil {
+		return fmt.Errorf("subscribe error: %v", err)
 	}
 
 	// give back the suback
@@ -29,6 +34,17 @@ func subscribe(ci *connInfo, p *proto.SubscribePacket) error {
 }
 
 func unsubscribe(ci *connInfo, p *proto.UnsubscribePacket) error {
+	topics := topics(p)
+	err := ci.rpc.unSubscribe(&rpc.UnSubMsg{
+		An:  ci.cp.Username(),
+		Un:  ci.cp.ClientId(),
+		Cid: ci.id,
+		Ts:  topics,
+	})
+	if err != nil {
+		return fmt.Errorf("unSubscribe error: %v", err)
+	}
+
 	pb := proto.NewUnsubackPacket()
 	pb.SetPacketID(p.PacketID())
 
@@ -36,6 +52,40 @@ func unsubscribe(ci *connInfo, p *proto.UnsubscribePacket) error {
 	return nil
 }
 
-func subToStream(t []byte, qos byte) (byte, error) {
-	return 1, nil
+func topicsAndRets(p *proto.SubscribePacket) ([]*rpc.Topic, []byte) {
+	rets := make([]byte, 0, len(p.Topics()))
+	topics := make([]*rpc.Topic, 0, len(p.Topics()))
+
+	for i, t := range p.Topics() {
+		var qos byte
+		if p.Qos()[i] > Conf.Mqtt.QosMax {
+			qos = Conf.Mqtt.QosMax
+		} else {
+			qos = p.Qos()[i]
+		}
+
+		topic := &rpc.Topic{
+			Qos: int32(qos),
+			Tp:  t,
+		}
+
+		topics = append(topics, topic)
+		rets = append(rets, qos)
+	}
+
+	return topics, rets
+}
+
+func topics(p *proto.UnsubscribePacket) []*rpc.Topic {
+	topics := make([]*rpc.Topic, 0, len(p.Topics()))
+
+	for _, t := range p.Topics() {
+		topic := &rpc.Topic{
+			Tp: t,
+		}
+
+		topics = append(topics, topic)
+	}
+
+	return topics
 }

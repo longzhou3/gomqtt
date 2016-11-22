@@ -3,13 +3,11 @@ package gate
 import (
 	"context"
 	"errors"
-	"log"
 
 	"google.golang.org/grpc"
 
 	rpc "github.com/aiyun/gomqtt/proto"
 	"github.com/corego/tools"
-	"github.com/uber-go/zap"
 )
 
 func initRpc() {
@@ -68,19 +66,23 @@ func (r *rpcServie) logout(msg *rpc.LogoutMsg) error {
 func (r *rpcServie) subscribe(msg *rpc.SubMsg) error {
 	req, err := r.client.Subscribe(context.Background(), msg)
 	if err != nil {
-		Logger.Error("Subscribe", zap.Error(err))
 		return err
 	}
-	log.Println(req)
+
+	if !req.R {
+		return errors.New(tools.Bytes2String(req.M))
+	}
 	return nil
 }
 
 func (r *rpcServie) unSubscribe(msg *rpc.UnSubMsg) error {
 	req, err := r.client.UnSubscribe(context.Background(), msg)
 	if err != nil {
-		Logger.Error("UnSubscribe", zap.Error(err))
 		return err
 	}
-	log.Println(req)
+
+	if !req.R {
+		return errors.New(tools.Bytes2String(req.M))
+	}
 	return nil
 }

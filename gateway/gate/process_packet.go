@@ -7,7 +7,6 @@ import (
 
 	proto "github.com/aiyun/gomqtt/mqtt/protocol"
 	"github.com/aiyun/gomqtt/mqtt/service"
-	"github.com/uber-go/zap"
 )
 
 func processPacket(ci *connInfo, pt proto.Packet) error {
@@ -33,7 +32,7 @@ func processPacket(ci *connInfo, pt proto.Packet) error {
 		pingReq(ci)
 
 	default:
-		Logger.Warn("recv invalid packet type", zap.String("invalid_type", fmt.Sprintf("%T", pt)), zap.Int64("cid", ci.id))
+		err = fmt.Errorf("recv invalid packet type: %T", pt)
 	}
 
 	return err
