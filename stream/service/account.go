@@ -161,6 +161,10 @@ func (acc *Account) Subscribe(msg *proto.SubMsg) error {
 		acc.Unlock()
 		return fmt.Errorf("unfind %s, %s", string(msg.An), string(msg.Un))
 	} else {
+		if user.Cid != msg.Cid {
+			acc.Unlock()
+			return fmt.Errorf("user's Cid diff, old cid is %d, get cid is %d", user.Cid, msg.Cid)
+		}
 		user.Topics = msg.Ts
 	}
 	acc.Unlock()
@@ -175,6 +179,10 @@ func (acc *Account) UnSubscribe(msg *proto.UnSubMsg) error {
 		acc.Unlock()
 		return fmt.Errorf("unfind %s, %s", string(msg.An), string(msg.Un))
 	} else {
+		if user.Cid != msg.Cid {
+			acc.Unlock()
+			return fmt.Errorf("user's Cid diff, old cid is %d, get cid is %d", user.Cid, msg.Cid)
+		}
 		// delete topics from user's topics
 		for _, unSubtopic := range msg.Ts {
 			for index, topic := range user.Topics {
