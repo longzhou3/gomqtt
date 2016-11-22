@@ -1,14 +1,13 @@
 package service
 
 import (
+	"fmt"
 	"log"
 	"net"
 
 	context "golang.org/x/net/context"
 
 	"google.golang.org/grpc"
-
-	"fmt"
 
 	"github.com/aiyun/gomqtt/proto"
 	"github.com/uber-go/zap"
@@ -61,42 +60,52 @@ func (r *Rpc) Close() error {
 
 // Login 登陆
 func (rpc *Rpc) Login(ctx context.Context, msg *proto.LoginMsg) (*proto.LoginRet, error) {
-	err := gStream.cache.As.Login(msg)
+	acc, err := gStream.cache.As.Login(msg)
 	if err != nil {
 		log.Println("login err ", err)
 		return &proto.LoginRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, err
 	}
+	// insert cid
+	gStream.cache.Cids.add(msg.Cid, &accountMsg{acc: acc, appID: msg.Un})
+
+	log.Println(gStream.cache.Cids)
 	return &proto.LoginRet{R: true, M: []byte("ok")}, nil
 }
 
 // Logout 登出
 func (rpc *Rpc) Logout(ctx context.Context, msg *proto.LogoutMsg) (*proto.LogoutRet, error) {
-	err := gStream.cache.As.Logout(msg)
-	if err != nil {
-		log.Println("Logout err ", err)
-		return &proto.LogoutRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, err
+	if acc, ok := gStream.cache.Cids.get(msg.Cid); ok {
+		gStream.cache.Cids.delete(msg.Cid)
+		acc.acc.Logout(acc.appID)
+	} else {
+		return &proto.LogoutRet{R: false, M: []byte(fmt.Sprint("unfind cid %d", msg.Cid))}, nil
 	}
-	return &proto.LogoutRet{R: true, M: []byte("Logout 成功调用")}, nil
+	return &proto.LogoutRet{R: true, M: []byte("ok")}, nil
 }
 
 // ---------------- 订阅相关接口  ----------------
 
 // Subscribe 订阅
 func (rpc *Rpc) Subscribe(ctx context.Context, msg *proto.SubMsg) (*proto.SubRet, error) {
-	err := gStream.cache.As.Subscribe(msg)
-	if err != nil {
-		log.Println("Subscribe err ", err)
-		return &proto.SubRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, err
+	log.Println(gStream.cache.Cids)
+	if acc, ok := gStream.cache.Cids.get(msg.Cid); ok {
+		err := acc.acc.Subscribe(acc.appID, msg)
+		if err != nil {
+			log.Println("Subscribe err ", err)
+			return &proto.SubRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, err
+		}
 	}
 	return &proto.SubRet{R: true, M: []byte("Subscribe 成功调用")}, nil
 }
 
 // UnSubscribe 取消订阅
 func (rpc *Rpc) UnSubscribe(ctx context.Context, msg *proto.UnSubMsg) (*proto.UnSubRet, error) {
-	err := gStream.cache.As.UnSubscribe(msg)
-	if err != nil {
-		log.Println("UnSubscribe err ", err)
-		return &proto.UnSubRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, err
+	if acc, ok := gStream.cache.Cids.get(msg.Cid); ok {
+		err := acc.acc.UnSubscribe(acc.appID, msg)
+		if err != nil {
+			log.Println("UnSubscribe err ", err)
+			return &proto.UnSubRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, err
+		}
 	}
 	return &proto.UnSubRet{R: true, M: []byte("UnSubscribe 成功调用")}, nil
 }
@@ -105,6 +114,18 @@ func (rpc *Rpc) UnSubscribe(ctx context.Context, msg *proto.UnSubMsg) (*proto.Un
 func (rpc *Rpc) Publish(ctx context.Context, msg *proto.PubMsg) (*proto.PubRet, error) {
 	return &proto.PubRet{R: false, M: []byte("UnSubscribe 成功调用")}, nil
 }
+
+// SetAppID 设置AppID
+// func (rpc *Rpc) SetAppID(ctx context.Context, msg *proto.AppIDMsg) (*proto.AppIDRet, error) {
+// 	if acc, ok := gStream.cache.Cids.get(msg.Cid); ok {
+// 		err := acc.acc.SetAppID(acc.user, msg)
+// 		if err != nil {
+// 			log.Println("SetAppID err ", err)
+// 			return &proto.AppIDRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, err
+// 		}
+// 	}
+// 	return &proto.AppIDRet{R: false, M: []byte("UnSubscribe 成功调用")}, nil
+// }
 
 // // BPull 拉取广播推送
 // func (rpc *Rpc) BPull(ctx context.Context, msg *proto.BPushMsg) (*proto.BPushRet, error) {

@@ -1,13 +1,13 @@
 package service
 
 import (
-	"log"
+	"fmt"
 	"sync"
 	"time"
 
-	"fmt"
-
-	"github.com/aiyun/gomqtt/proto"
+	proto "github.com/aiyun/gomqtt/proto"
+	"github.com/corego/tools"
+	"github.com/uber-go/zap"
 )
 
 const (
@@ -28,7 +28,7 @@ func NewAccounts() *Accounts {
 }
 
 // Login 登陆
-func (ats *Accounts) Login(msg *proto.LoginMsg) error {
+func (ats *Accounts) Login(msg *proto.LoginMsg) (*Account, error) {
 	ats.Lock()
 	var err error
 	acc, ok := ats.Accounts[string(msg.An)]
@@ -37,58 +37,62 @@ func (ats *Accounts) Login(msg *proto.LoginMsg) error {
 	} else {
 		// 数据库中拉取
 		// New Account
-		acc := NewAccount()
+		acc = NewAccount()
 		acc.Login(msg)
 		ats.Accounts[string(msg.An)] = acc
 	}
 	ats.Unlock()
-	return err
+	return acc, err
 }
 
 // Logout 登出
 func (ats *Accounts) Logout(msg *proto.LogoutMsg) error {
-	ats.Lock()
-	var err error
-	acc, ok := ats.Accounts[string(msg.An)]
-	if ok {
-		err = acc.Logout(msg)
-	} else {
-		err = fmt.Errorf("unfind user, an is %s, un is %s", string(msg.An), string(msg.Un))
-	}
-	ats.Unlock()
-	return err
+
+	// ats.Lock()
+	// var err error
+	// acc, ok := ats.Accounts[string(msg.An)]
+	// if ok {
+	// 	err = acc.Logout(msg)
+	// } else {
+	// 	err = fmt.Errorf("unfind user, an is %s, un is %s", string(msg.An), string(msg.Un))
+	// }
+	// ats.Unlock()
+	// return err
+	return nil
 }
 
 // Subscribe 订阅
 func (ats *Accounts) Subscribe(msg *proto.SubMsg) error {
-	ats.Lock()
-	var err error
-	acc, ok := ats.Accounts[string(msg.An)]
-	if ok {
-		err = acc.Subscribe(msg)
-	} else {
-		err = fmt.Errorf("unfind user, an is %s, un is %s", string(msg.An), string(msg.Un))
-	}
-	ats.Unlock()
-	return err
+	// ats.Lock()
+	// var err error
+	// acc, ok := ats.Accounts[string(msg.An)]
+	// if ok {
+	// 	err = acc.Subscribe(msg)
+	// } else {
+	// 	err = fmt.Errorf("unfind user, an is %s, un is %s", string(msg.An), string(msg.Un))
+	// }
+	// ats.Unlock()
+	// return err
+	return nil
 }
 
 // UnSubscribe 取消订阅
 func (ats *Accounts) UnSubscribe(msg *proto.UnSubMsg) error {
-	ats.Lock()
-	var err error
-	acc, ok := ats.Accounts[string(msg.An)]
-	if ok {
-		err = acc.UnSubscribe(msg)
-	} else {
-		err = fmt.Errorf("unfind user, an is %s, un is %s", string(msg.An), string(msg.Un))
-	}
-	ats.Unlock()
-	return err
+	// ats.Lock()
+	// var err error
+	// acc, ok := ats.Accounts[string(msg.An)]
+	// if ok {
+	// 	err = acc.UnSubscribe(msg)
+	// } else {
+	// 	err = fmt.Errorf("unfind user, an is %s, un is %s", string(msg.An), string(msg.Un))
+	// }
+	// ats.Unlock()
+	// return err
+	return nil
 }
 
 // GetSubUser 获取子用户
-func (ats *Accounts) GetUser(acName string, uName string) (*User, bool) {
+func (ats *Accounts) GetUser(acName string, uName string) (*AppID, bool) {
 	// ats.RLock()
 	return nil, false
 }
@@ -101,116 +105,134 @@ func (ats *Accounts) GetAccount(uname string) (*Account, bool) {
 
 type Account struct {
 	sync.RWMutex
-	Users map[string]*User //子用户
+	AppIDs map[string]*AppID //子用户
 }
 
 func NewAccount() *Account {
 	account := &Account{
-		Users: make(map[string]*User),
+		AppIDs: make(map[string]*AppID),
 	}
 	return account
 }
 
 func (acc *Account) NewUser(msg *proto.LoginMsg) error {
-	user := NewUser()
-	user.Gip = msg.Gip
-	user.Cid = msg.Cid
-	user.Oline = ONLINE
-	user.LastLogin = time.Now().Unix()
-	acc.Users[string(msg.Un)] = user
+	appID := NewAppID()
+	appID.Gip = msg.Gip
+	appID.Cid = msg.Cid
+	appID.Oline = ONLINE
+	appID.LastLogin = time.Now().Unix()
+	acc.AppIDs[tools.Bytes2String(msg.Un)] = appID
 	return nil
 }
 
 func (acc *Account) Login(msg *proto.LoginMsg) error {
 	acc.Lock()
-	var user *User
-	user, ok := acc.Users[string(msg.Un)]
+	var appID *AppID
+	appID, ok := acc.AppIDs[tools.Bytes2String(msg.Un)]
 	if !ok {
-		user = NewUser()
-		acc.Users[string(msg.Un)] = user
+		appID = NewAppID()
+		acc.AppIDs[tools.Bytes2String(msg.Un)] = appID
 	}
-	user.Gip = msg.Gip
-	user.Cid = msg.Cid
-	user.Oline = ONLINE
-	user.LastLogin = time.Now().Unix()
+	appID.Gip = msg.Gip
+	appID.Cid = msg.Cid
+	appID.Oline = ONLINE
+	appID.LastLogin = time.Now().Unix()
 	acc.Unlock()
 	return nil
 }
 
-func (acc *Account) Logout(msg *proto.LogoutMsg) error {
+func (acc *Account) Logout(un []byte) error {
 	acc.Lock()
-	user, ok := acc.Users[string(msg.Un)]
+	appID, ok := acc.AppIDs[tools.Bytes2String(un)]
 	if !ok {
 		acc.Unlock()
-		return fmt.Errorf("unfind %s, %s", string(msg.An), string(msg.Un))
+		return fmt.Errorf("unfind appID %s", tools.Bytes2String(un))
 	}
-	if user.Cid != msg.Cid {
-		acc.Unlock()
-		return fmt.Errorf("user's Cid diff, old cid is %d, get cid is %d", user.Cid, msg.Cid)
-	}
-	user.Oline = OFFLINE
-	user.LastLogout = time.Now().Unix()
+	appID.Oline = OFFLINE
+	appID.LastLogout = time.Now().Unix()
 	acc.Unlock()
 	return nil
 }
 
 // Subscribe
-func (acc *Account) Subscribe(msg *proto.SubMsg) error {
+func (acc *Account) Subscribe(un []byte, msg *proto.SubMsg) error {
 	acc.Lock()
-	user, ok := acc.Users[string(msg.Un)]
+	appID, ok := acc.AppIDs[tools.Bytes2String(un)]
 	if !ok {
 		acc.Unlock()
-		return fmt.Errorf("unfind %s, %s", string(msg.An), string(msg.Un))
+		return fmt.Errorf("unfind appID %s  ", tools.Bytes2String(un))
 	} else {
-		// if user.Cid != msg.Cid {
-		// 	acc.Unlock()
-		// 	return fmt.Errorf("user's Cid diff, old cid is %d, get cid is %d", user.Cid, msg.Cid)
-		// }
-		// user.Topics = msg.Ts
-		log.Println(user)
+		for _, topic := range msg.Ts {
+			appID.Topics[tools.Bytes2String(topic.Tp)] = topic
+		}
+	}
+	if msg.AppID != nil {
+		delete(acc.AppIDs, tools.Bytes2String(un))
+		acc.AppIDs[tools.Bytes2String(msg.AppID)] = appID
 	}
 	acc.Unlock()
+
+	Logger.Debug("Subscribe", zap.String("Gip", fmt.Sprintf("%s", appID.Gip)))
+	for _, topic := range appID.Topics {
+		Logger.Debug("Subscribe", zap.String("Topic", fmt.Sprintf("%s", topic.Tp)))
+	}
+
 	return nil
 }
+
+// func (acc *Account) SetAppID(un []byte, msg *proto.AppIDMsg) error {
+// 	acc.Lock()
+// 	appID, ok := acc.AppIDs[tools.Bytes2String(un)]
+// 	if !ok {
+// 		acc.Unlock()
+// 		return fmt.Errorf("unfind user %s  ", tools.Bytes2String(un))
+// 	} else {
+// 		delete(acc.AppIDs, tools.Bytes2String(un))
+// 		acc.AppIDs[tools.Bytes2String(msg.AppID)] = appID
+// 	}
+// 	acc.Unlock()
+
+// 	return nil
+// }
 
 // UnSubscribe
-func (acc *Account) UnSubscribe(msg *proto.UnSubMsg) error {
+func (acc *Account) UnSubscribe(un []byte, msg *proto.UnSubMsg) error {
 	acc.Lock()
-	user, ok := acc.Users[string(msg.Un)]
+	appID, ok := acc.AppIDs[tools.Bytes2String(un)]
 	if !ok {
 		acc.Unlock()
-		return fmt.Errorf("unfind %s, %s", string(msg.An), string(msg.Un))
+		return fmt.Errorf("unfind appID %s  ", string(un))
 	} else {
-		// if user.Cid != msg.Cid {
-		// 	acc.Unlock()
-		// 	return fmt.Errorf("user's Cid diff, old cid is %d, get cid is %d", user.Cid, msg.Cid)
-		// }
-		// // delete topics from user's topics
-		// for _, unSubtopic := range msg.Ts {
-		// 	for index, topic := range user.Topics {
-		// 		if bytes.Equal(unSubtopic, topic) {
-		// 			user.Topics = append(user.Topics[:index], user.Topics[index+1:]...)
-		// 		}
-		// 	}
-		// }
-		log.Println(user)
+		for _, topic := range msg.Ts {
+			if _, ok := appID.Topics[tools.Bytes2String(topic.Tp)]; ok {
+				delete(appID.Topics, tools.Bytes2String(topic.Tp))
+			}
+		}
 	}
 	acc.Unlock()
+
+	Logger.Debug("UnSubscribe", zap.String("Gip", fmt.Sprintf("%s", appID.Gip)))
+	for _, topic := range appID.Topics {
+		Logger.Debug("UnSubscribe", zap.String("Topic", fmt.Sprintf("%s", topic.Tp)))
+	}
 	return nil
 }
 
-// User 子用户
-type User struct {
-	Cid        int64    // 连接版本号
-	Gip        []byte   // 网关地址
-	Oline      bool     // 是否在线
-	LastLogin  int64    // 最后登录时间
-	LastLogout int64    // 最后登出时间
-	ApnsToken  []byte   // apns token
-	Topics     [][]byte // topic列表
+// AppID appid
+type AppID struct {
+	Cid        int64  // 连接版本号
+	Gip        []byte // 网关地址
+	Oline      bool   // 是否在线
+	LastLogin  int64  // 最后登录时间
+	LastLogout int64  // 最后登出时间
+	ApnsToken  []byte // apns token
+	Topics     map[string]*proto.Topic
+	// Topics     [][]byte // topic列表
 }
 
-func NewUser() *User {
-	user := &User{}
-	return user
+func NewAppID() *AppID {
+	appID := &AppID{
+		Topics: make(map[string]*proto.Topic),
+	}
+	return appID
 }
