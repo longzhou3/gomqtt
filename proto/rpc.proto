@@ -128,7 +128,7 @@ message LogoutRet {
 message Topic {
     int32 qos = 1;  // 订阅等级
     bytes tp  = 2;  // 订阅主题
-    int32 ty  = 3;  // 主题类型
+    bytes ty  = 3;  // 主题类型
 }
 
 // 订阅主题消息
