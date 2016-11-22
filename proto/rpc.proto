@@ -102,10 +102,11 @@ message GChatMsgs {
 
 // 登陆消息
 message LoginMsg {
-    bytes  an      = 1;      // 账户名
-    bytes  un      = 2;      // 子用户名
-    int64  cid     = 3;      // 链接id
-    bytes  gip     = 4;      // gateway ip地址
+    bytes  an         = 1;      // 账户名
+    bytes  appID      = 2;      // appid
+    int64  cid        = 3;      // 链接id
+    bytes  gip        = 4;      // gateway ip地址
+    repeated Topic ts = 5;      // topic列表
 }
 
 // 登陆消息返回消息
@@ -134,8 +135,7 @@ message Topic {
 // 订阅主题消息
 message SubMsg {
              int64 cid     = 1;      // 链接id
-             bytes appID   = 2;      // appid
-    repeated Topic ts      = 3;      // topic列表
+    repeated Topic ts      = 2;      // topic列表
 }
 
 // 订阅主题消息返回消息
