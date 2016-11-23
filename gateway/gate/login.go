@@ -1,7 +1,11 @@
 package gate
 
 import (
+	"strconv"
+
 	"github.com/corego/tools"
+
+	"fmt"
 
 	proto "github.com/aiyun/gomqtt/mqtt/protocol"
 	"github.com/aiyun/gomqtt/mqtt/service"
@@ -30,6 +34,11 @@ func login(ci *connInfo, p *proto.SubscribePacket) error {
 	if err != nil {
 		return err
 	}
+
+	// subscribe the cid topic in nats
+	cstr := strconv.FormatInt(ci.id, 10)
+	_, err = nc.Subscribe(cstr, sub2nats)
+	return fmt.Errorf("sub to nats error: %v", err)
 
 	// give back the suback
 	pb := proto.NewSubackPacket()

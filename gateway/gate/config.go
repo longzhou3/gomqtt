@@ -2,8 +2,8 @@ package gate
 
 import (
 	"context"
+	"errors"
 	"io/ioutil"
-	"log"
 	"time"
 
 	"stathat.com/c/consistent"
@@ -17,6 +17,7 @@ import (
 	"github.com/corego/tools"
 	"github.com/coreos/etcd/clientv3"
 	"github.com/naoina/toml"
+	"github.com/nats-io/nats"
 	"github.com/uber-go/zap"
 )
 
@@ -31,6 +32,7 @@ type Config struct {
 	Gateway struct {
 		WebDomain string
 		ServerId  int
+		NatsAddrs []string
 	}
 
 	Provider struct {
@@ -83,7 +85,10 @@ var consist *consistent.Consistent
 var rpcRoutes = make(map[string]*rpcServie)
 var mux = &sync.RWMutex{}
 
-func loadConfig(staticConf bool) {
+// nats.conn
+var nc *nats.Conn
+
+func loadConfig(staticConf bool) error {
 	var contents []byte
 	var err error
 
@@ -95,19 +100,30 @@ func loadConfig(staticConf bool) {
 	}
 
 	if err != nil {
-		log.Fatal("load config error", zap.Error(err))
+		return fmt.Errorf("load config error:%v", err)
 	}
 
 	tbl, err := toml.Parse(contents)
 	if err != nil {
-		log.Fatal("parse config error", zap.Error(err))
+		return fmt.Errorf("parse config error:%v", err)
 	}
 
-	toml.UnmarshalTable(tbl, Conf)
+	err = toml.UnmarshalTable(tbl, Conf)
+	if err != nil {
+		return err
+	}
 
 	InitLogger(Conf.Common.LogPath, Conf.Common.LogLevel, Conf.Common.IsDebug)
 
-	checkConfig()
+	err = checkConfig()
+	if err != nil {
+		return err
+	}
+
+	nc, err = initNatsConn()
+	if err != nil {
+		return err
+	}
 
 	// stream hot update
 	cli, err := clientv3.New(clientv3.Config{
@@ -115,7 +131,7 @@ func loadConfig(staticConf bool) {
 		DialTimeout: 5 * time.Second,
 	})
 	if err != nil {
-		Logger.Fatal("can't connect to etcd", zap.Error(err))
+		return fmt.Errorf("can't connect to etcd:%v", err)
 	}
 
 	consist = consistent.New()
@@ -125,20 +141,24 @@ func loadConfig(staticConf bool) {
 	uploadEtcd(cli)
 
 	fmt.Println(Conf)
+
+	return nil
 }
 
-func checkConfig() {
+func checkConfig() error {
 	if Conf.Mqtt.MinKeepalive < 10 {
-		Logger.Fatal("mqtt.minkeepalive mustn't below 10")
+		return errors.New("mqtt.minkeepalive mustn't below 10")
 	}
 
 	if Conf.Mqtt.DefaultKeepalive < 10 {
-		Logger.Fatal("mqtt.defaultkeepalive mustn't below 10")
+		return errors.New("mqtt.defaultkeepalive mustn't below 10")
 	}
 
 	if Conf.Mqtt.MaxKeepalive > 300 {
-		Logger.Fatal("mqtt.defaultkeepalive mustn't above 300")
+		return errors.New("mqtt.defaultkeepalive mustn't above 300")
 	}
+
+	return nil
 }
 
 // update the stream addrs

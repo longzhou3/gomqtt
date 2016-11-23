@@ -10,6 +10,11 @@ web_domain = "{{getv "/gomqtt/gateway/webdomain"}}"
 
 # server_id need to be global unique,because it is used in uuid generate
 server_id = {{getv "/gomqtt/gateway/serverid/1"}}
+nats_addrs = [
+ 	{{range getvs "/gomqtt/gateway/natsaddrs/*"}}
+        "{{.}}",
+        {{end}}
+]
 
 [provider]
 invoked = [
