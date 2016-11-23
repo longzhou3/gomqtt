@@ -45,64 +45,6 @@ func (ats *Accounts) Login(msg *proto.LoginMsg) (*Account, error) {
 	return acc, err
 }
 
-// Logout 登出
-func (ats *Accounts) Logout(msg *proto.LogoutMsg) error {
-
-	// ats.Lock()
-	// var err error
-	// acc, ok := ats.Accounts[string(msg.An)]
-	// if ok {
-	// 	err = acc.Logout(msg)
-	// } else {
-	// 	err = fmt.Errorf("unfind user, an is %s, un is %s", string(msg.An), string(msg.Un))
-	// }
-	// ats.Unlock()
-	// return err
-	return nil
-}
-
-// Subscribe 订阅
-func (ats *Accounts) Subscribe(msg *proto.SubMsg) error {
-	// ats.Lock()
-	// var err error
-	// acc, ok := ats.Accounts[string(msg.An)]
-	// if ok {
-	// 	err = acc.Subscribe(msg)
-	// } else {
-	// 	err = fmt.Errorf("unfind user, an is %s, un is %s", string(msg.An), string(msg.Un))
-	// }
-	// ats.Unlock()
-	// return err
-	return nil
-}
-
-// UnSubscribe 取消订阅
-func (ats *Accounts) UnSubscribe(msg *proto.UnSubMsg) error {
-	// ats.Lock()
-	// var err error
-	// acc, ok := ats.Accounts[string(msg.An)]
-	// if ok {
-	// 	err = acc.UnSubscribe(msg)
-	// } else {
-	// 	err = fmt.Errorf("unfind user, an is %s, un is %s", string(msg.An), string(msg.Un))
-	// }
-	// ats.Unlock()
-	// return err
-	return nil
-}
-
-// GetSubUser 获取子用户
-func (ats *Accounts) GetUser(acName string, uName string) (*AppID, bool) {
-	// ats.RLock()
-	return nil, false
-}
-
-// GetAccount 获取根用户
-func (ats *Accounts) GetAccount(uname string) (*Account, bool) {
-
-	return nil, false
-}
-
 type Account struct {
 	sync.RWMutex
 	AppIDs map[string]*AppID //子用户
@@ -172,10 +114,6 @@ func (acc *Account) Subscribe(un []byte, msg *proto.SubMsg) error {
 			appID.Topics[string(topic.Tp)] = topic
 		}
 	}
-	// if msg.AppID != nil {
-	// 	delete(acc.AppIDs, tools.Bytes2String(un))
-	// 	acc.AppIDs[string(msg.AppID)] = appID
-	// }
 	acc.Unlock()
 
 	Logger.Info("Subscribe", zap.String("Gip", fmt.Sprintf("%s", appID.Gip)))
