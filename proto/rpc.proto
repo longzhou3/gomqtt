@@ -104,9 +104,10 @@ message GChatMsgs {
 message LoginMsg {
     bytes  an         = 1;      // 账户名
     bytes  appID      = 2;      // appid
-    int64  cid        = 3;      // 链接id
-    bytes  gip        = 4;      // gateway ip地址
-    repeated Topic ts = 5;      // topic列表
+    int32  pT         = 3;      // payload协议类型
+    int64  cid        = 4;      // 链接id
+    bytes  gip        = 5;      // gateway ip地址
+    repeated Topic ts = 6;      // topic列表
 }
 
 // 登陆消息返回消息
