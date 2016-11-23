@@ -36,7 +36,10 @@ type connInfo struct {
 	// 当前连接时异常的，必须断开
 	appID []byte
 
-	isSubed bool
+	isSubed        bool
+	isInstantLogin bool
+
+	payloadProtoType int32
 }
 
 type connInfos struct {

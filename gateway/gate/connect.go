@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/aiyun/gomqtt/global"
 	proto "github.com/aiyun/gomqtt/mqtt/protocol"
 	"github.com/aiyun/gomqtt/mqtt/service"
 	"github.com/corego/tools"
@@ -64,6 +65,18 @@ func initConnection(ci *connInfo) (error, proto.ConnackCode) {
 		ci.cp.SetKeepAlive(Conf.Mqtt.MaxKeepalive)
 
 	default:
+	}
+
+	if ci.appID != nil {
+		// subscribe and login
+		topics := make([][]byte, 1)
+		qoses := make([]byte, 1)
+		ci.payloadProtoType = global.PayloadText
+		err = loginAndSub(ci, topics, qoses, 1)
+		if err != nil {
+			return err, proto.ErrServerUnavailable
+		}
+		ci.isInstantLogin = true
 	}
 
 	return nil, proto.ConnectionAccepted

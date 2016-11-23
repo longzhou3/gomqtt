@@ -12,7 +12,7 @@ import (
 )
 
 func subscribe(ci *connInfo, p *proto.SubscribePacket) error {
-	topics, rets, err := topicsAndRets(ci, p)
+	topics, rets, err := topicsAndRets(ci, p.Topics(), p.Qos())
 	if err != nil {
 		return err
 	}
@@ -57,11 +57,11 @@ func unsubscribe(ci *connInfo, p *proto.UnsubscribePacket) error {
 	return nil
 }
 
-func topicsAndRets(ci *connInfo, p *proto.SubscribePacket) ([]*rpc.Topic, []byte, error) {
-	rets := make([]byte, 0, len(p.Topics()))
-	topics := make([]*rpc.Topic, 0, len(p.Topics()))
+func topicsAndRets(ci *connInfo, tps [][]byte, qoses []byte) ([]*rpc.Topic, []byte, error) {
+	rets := make([]byte, 0, len(tps))
+	topics := make([]*rpc.Topic, 0, len(tps))
 
-	for i, t := range p.Topics() {
+	for i, t := range tps {
 		tp, ty, err := topicTrans(t)
 		if err != nil {
 			return nil, nil, err
@@ -69,14 +69,18 @@ func topicsAndRets(ci *connInfo, p *proto.SubscribePacket) ([]*rpc.Topic, []byte
 
 		// set master topic
 		if ty == 1000 {
-			ci.appID = tp
+			// get appid and payload proto type
+			err = appidTrans(ci, tp)
+			if err != nil {
+				return nil, nil, err
+			}
 		}
 
 		var qos byte
-		if p.Qos()[i] > Conf.Mqtt.QosMax {
+		if qoses[i] > Conf.Mqtt.QosMax {
 			qos = Conf.Mqtt.QosMax
 		} else {
-			qos = p.Qos()[i]
+			qos = qoses[i]
 		}
 
 		topic := &rpc.Topic{

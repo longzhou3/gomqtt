@@ -23,11 +23,14 @@ func processPacket(ci *connInfo, pt proto.Packet) error {
 		err = puback(ci, p)
 
 	case *proto.SubscribePacket:
-		if !ci.isSubed {
-			err = login(ci, p)
-			ci.isSubed = true
+		if ci.isInstantLogin {
+			err = errors.New("you cant subscribe any topics after instant login")
 		} else {
-			err = subscribe(ci, p)
+			if !ci.isSubed {
+				err = loginAndSub(ci, p.Topics(), p.Qos(), p.PacketID())
+			} else {
+				err = subscribe(ci, p)
+			}
 		}
 
 	case *proto.UnsubscribePacket:
