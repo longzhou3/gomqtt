@@ -8,6 +8,7 @@ import (
 	"github.com/tinylib/msgp/msgp"
 )
 
+//
 // DecodeMsg implements msgp.Decodable
 func (z *ProtoBufMsg) DecodeMsg(dc *msgp.Reader) (err error) {
 	var field []byte

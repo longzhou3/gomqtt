@@ -1,7 +1,7 @@
 package global
 
 /* MessagePack protocol */
-
+//
 // ProtoBufMsg publish msg to client
 type ProtoBufMsg struct {
 	Cid    int64    `msg:"ci"`
