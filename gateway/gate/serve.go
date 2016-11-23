@@ -43,6 +43,7 @@ func serve(c net.Conn) {
 
 	ci.stopped = make(chan struct{})
 	ci.relogin = make(chan struct{})
+	ci.pub2C = make(chan []byte, 10)
 
 	//----------------Connection init---------------------------------------------
 	reply := proto.NewConnackPacket()

@@ -15,6 +15,9 @@ type connInfo struct {
 	inCount  int
 	outCount int
 
+	// publish to client
+	pub2C chan []byte
+
 	stopped chan struct{}
 
 	relogin chan struct{}

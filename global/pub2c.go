@@ -1,5 +1,7 @@
 package global
 
+/* MessagePack protocol */
+
 // Pub2C publish msg to client
 type Pub2C struct {
 	Cid  int64     `msg:"ci"`
