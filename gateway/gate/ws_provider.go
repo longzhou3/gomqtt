@@ -5,7 +5,7 @@ type WsProvider struct {
 }
 
 func (tp *WsProvider) Start() {
-    Logger.Debug("websocket provider startted") 
+	Logger.Debug("websocket provider startted")
 }
 
 func (tp *WsProvider) Close() error {

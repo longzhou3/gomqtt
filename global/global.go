@@ -2,6 +2,8 @@ package global
 
 // topic types
 const (
+	// Master Topic
+	MTopic = 1000
 	// Private Chat Topic
 	PChatTopic = 2000
 

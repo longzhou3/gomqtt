@@ -23,7 +23,12 @@ func processPacket(ci *connInfo, pt proto.Packet) error {
 		err = puback(ci, p)
 
 	case *proto.SubscribePacket:
-		err = subscribe(ci, p)
+		if !ci.isSubed {
+			err = login(ci, p)
+			ci.isSubed = true
+		} else {
+			err = subscribe(ci, p)
+		}
 
 	case *proto.UnsubscribePacket:
 		err = unsubscribe(ci, p)

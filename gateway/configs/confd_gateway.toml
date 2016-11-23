@@ -22,6 +22,8 @@ keys = [
 
         "/gomqtt/gateway/qosmax",
         "/gomqtt/gateway/defaultkeepalive",
+         "/gomqtt/gateway/minkeepalive",
+          "/gomqtt/gateway/maxkeepalive",
         "/gomqtt/gateway/maxuserlen",
         "/gomqtt/gateway/maxpasswordlen",
 

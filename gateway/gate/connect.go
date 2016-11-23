@@ -2,16 +2,12 @@ package gate
 
 import (
 	"errors"
+	"fmt"
 	"time"
-
-	"github.com/corego/tools"
 
 	proto "github.com/aiyun/gomqtt/mqtt/protocol"
 	"github.com/aiyun/gomqtt/mqtt/service"
-
-	"fmt"
-
-	rpc "github.com/aiyun/gomqtt/proto"
+	"github.com/corego/tools"
 )
 
 func initConnection(ci *connInfo) (error, proto.ConnackCode) {
@@ -44,9 +40,6 @@ func initConnection(ci *connInfo) (error, proto.ConnackCode) {
 		return errors.New("validate failed"), proto.ErrIdentifierRejected
 	}
 
-	// check mutex login
-	mutexLogin(ci)
-
 	// connect to stream
 	ip, err := consist.Get(tools.Bytes2String(ci.acc))
 	if err != nil {
@@ -58,19 +51,19 @@ func initConnection(ci *connInfo) (error, proto.ConnackCode) {
 		return fmt.Errorf("no stream rpc available: %v", ip), proto.ErrServerUnavailable
 	}
 
-	err = ci.rpc.login(&rpc.LoginMsg{
-		An:  ci.acc,
-		Un:  ci.user,
-		Cid: ci.id,
-		Gip: tools.String2Bytes(ci.c.LocalAddr().String()),
-	})
-	if err != nil {
-		return err, proto.ErrServerUnavailable
-	}
-
 	// if keepalive == 0 ,we should specify a default keepalive
-	if ci.cp.KeepAlive() == 0 || ci.cp.KeepAlive() < 15 {
+	kp := ci.cp.KeepAlive()
+	switch {
+	case kp == 0:
 		ci.cp.SetKeepAlive(Conf.Mqtt.DefaultKeepalive)
+
+	case kp < Conf.Mqtt.MinKeepalive:
+		ci.cp.SetKeepAlive(Conf.Mqtt.MinKeepalive)
+
+	case kp > Conf.Mqtt.MaxKeepalive:
+		ci.cp.SetKeepAlive(Conf.Mqtt.MaxKeepalive)
+
+	default:
 	}
 
 	return nil, proto.ConnectionAccepted

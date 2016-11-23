@@ -1,6 +1,8 @@
 package gate
 
 import (
+	"errors"
+
 	proto "github.com/aiyun/gomqtt/mqtt/protocol"
 	"github.com/aiyun/gomqtt/mqtt/service"
 
@@ -10,9 +12,12 @@ import (
 )
 
 func subscribe(ci *connInfo, p *proto.SubscribePacket) error {
-	topics, rets := topicsAndRets(p)
+	topics, rets, err := topicsAndRets(ci, p)
+	if err != nil {
+		return err
+	}
 
-	err := ci.rpc.subscribe(&rpc.SubMsg{
+	err = ci.rpc.subscribe(&rpc.SubMsg{
 		Cid: ci.id,
 		Ts:  topics,
 	})
@@ -32,8 +37,12 @@ func subscribe(ci *connInfo, p *proto.SubscribePacket) error {
 }
 
 func unsubscribe(ci *connInfo, p *proto.UnsubscribePacket) error {
-	topics := topics(p)
-	err := ci.rpc.unSubscribe(&rpc.UnSubMsg{
+	topics, err := topics(p)
+	if err != nil {
+		return err
+	}
+
+	err = ci.rpc.unSubscribe(&rpc.UnSubMsg{
 		Cid: ci.id,
 		Ts:  topics,
 	})
@@ -48,11 +57,21 @@ func unsubscribe(ci *connInfo, p *proto.UnsubscribePacket) error {
 	return nil
 }
 
-func topicsAndRets(p *proto.SubscribePacket) ([]*rpc.Topic, []byte) {
+func topicsAndRets(ci *connInfo, p *proto.SubscribePacket) ([]*rpc.Topic, []byte, error) {
 	rets := make([]byte, 0, len(p.Topics()))
 	topics := make([]*rpc.Topic, 0, len(p.Topics()))
 
 	for i, t := range p.Topics() {
+		tp, ty, err := topicTrans(t)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		// set master topic
+		if ty == 1000 {
+			ci.appID = tp
+		}
+
 		var qos byte
 		if p.Qos()[i] > Conf.Mqtt.QosMax {
 			qos = Conf.Mqtt.QosMax
@@ -62,26 +81,41 @@ func topicsAndRets(p *proto.SubscribePacket) ([]*rpc.Topic, []byte) {
 
 		topic := &rpc.Topic{
 			Qos: int32(qos),
-			Tp:  t,
+			Tp:  tp,
+			Ty:  int32(ty),
 		}
 
 		topics = append(topics, topic)
 		rets = append(rets, qos)
 	}
 
-	return topics, rets
+	// 主topic必须在第一次订阅提供，因此这里需要验证主topic是否存在
+	if ci.appID == nil {
+		return nil, nil, errors.New("need provide master topic")
+	}
+
+	return topics, rets, nil
 }
 
-func topics(p *proto.UnsubscribePacket) []*rpc.Topic {
+func topics(p *proto.UnsubscribePacket) ([]*rpc.Topic, error) {
 	topics := make([]*rpc.Topic, 0, len(p.Topics()))
 
 	for _, t := range p.Topics() {
+		tp, ty, err := topicTrans(t)
+		if err != nil {
+			return nil, err
+		}
+
+		// forbid to unsubsribe master topic
+		if ty == 1000 {
+			return nil, errors.New("forbid to unsubsribe master topic")
+		}
 		topic := &rpc.Topic{
-			Tp: t,
+			Tp: tp,
 		}
 
 		topics = append(topics, topic)
 	}
 
-	return topics
+	return topics, nil
 }

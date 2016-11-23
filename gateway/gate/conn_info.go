@@ -23,8 +23,16 @@ type connInfo struct {
 
 	test []byte
 
-	acc  []byte
-	user []byte
+	acc []byte
+
+	// appID只能是以下几种形式：
+	// 1.username--appid传递的，这里的appid是在服务器做了Topics管理的(动态Topics管理)
+	// 2.通过主topic type == 1000 来传递的，这里是静态类型的appid.在这种情况下，connect时首先将
+	// appid设置为ClientID，然后后续subscribe时，再替换为主topic，若没有主topic，那么
+	// 当前连接时异常的，必须断开
+	appID []byte
+
+	isSubed bool
 }
 
 type connInfos struct {

@@ -44,25 +44,25 @@ func mutexLogin(ci *connInfo) {
 		al.RUnlock()
 
 		if ok {
-			c, ok := acc.users[string(ci.user)]
+			c, ok := acc.users[string(ci.appID)]
 			if ok {
 				c.stopped <- struct{}{}
 
 				<-c.relogin
 			}
 
-			acc.users[string(ci.user)] = ci
+			acc.users[string(ci.appID)] = ci
 		} else {
 			accounts[string(ci.acc)] = &account{
 				users: map[string]*connInfo{
-					tools.Bytes2String(ci.user): ci,
+					tools.Bytes2String(ci.appID): ci,
 				},
 			}
 		}
 
 	case 4: //mutex with clientid
 		al.RLock()
-		acc, ok := accounts[string(ci.user)]
+		acc, ok := accounts[string(ci.appID)]
 		al.RUnlock()
 
 		if ok {
@@ -75,7 +75,7 @@ func mutexLogin(ci *connInfo) {
 
 		//update now one
 		al.Lock()
-		accounts[string(ci.user)] = &account{
+		accounts[string(ci.appID)] = &account{
 			ci: ci,
 		}
 		al.Unlock()
@@ -97,11 +97,11 @@ func delMutex(ci *connInfo) {
 	case 3:
 		al.Lock()
 		acc, _ := accounts[string(ci.acc)]
-		delete(acc.users, tools.Bytes2String(ci.user))
+		delete(acc.users, tools.Bytes2String(ci.appID))
 		al.Unlock()
 	case 4:
 		al.Lock()
-		delete(accounts, tools.Bytes2String(ci.user))
+		delete(accounts, tools.Bytes2String(ci.appID))
 		al.Unlock()
 	}
 }

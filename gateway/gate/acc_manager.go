@@ -4,5 +4,4 @@ package gate
 
 func accTrans(ci *connInfo) {
 	ci.acc = ci.cp.Username()
-	ci.user = ci.cp.ClientId()
 }

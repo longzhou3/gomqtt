@@ -34,7 +34,9 @@ func serve(c net.Conn) {
 		// 要保证所有全局结构中引用当前ci的地方，都删除
 		delCI(ci.id)
 
-		delMutex(ci)
+		if ci.isSubed {
+			delMutex(ci)
+		}
 
 		close(ci.relogin)
 	}()
@@ -48,19 +50,19 @@ func serve(c net.Conn) {
 	reply.SetReturnCode(code)
 	if err != nil {
 		Logger.Info("user connect failed", zap.Int64("cid", ci.id), zap.Error(err), zap.String("acc", tools.Bytes2String(ci.acc)),
-			zap.String("user", tools.Bytes2String(ci.user)), zap.String("password", tools.Bytes2String(ci.cp.Password())))
+			zap.String("user", tools.Bytes2String(ci.appID)), zap.String("password", tools.Bytes2String(ci.cp.Password())))
 		service.WritePacket(ci.c, reply)
 		return
 	}
 
 	if err := service.WritePacket(ci.c, reply); err != nil {
 		Logger.Info("write connecaccept failed", zap.Int64("cid", ci.id), zap.Error(err),
-			zap.String("acc", tools.Bytes2String(ci.acc)), zap.String("user", tools.Bytes2String(ci.user)), zap.String("password", tools.Bytes2String(ci.cp.Password())))
+			zap.String("acc", tools.Bytes2String(ci.acc)), zap.String("user", tools.Bytes2String(ci.appID)), zap.String("password", tools.Bytes2String(ci.cp.Password())))
 		return
 	}
 
 	Logger.Debug("user connected ok!", zap.String("acc", tools.Bytes2String(ci.acc)),
-		zap.String("user", tools.Bytes2String(ci.user)), zap.String("password", tools.Bytes2String(ci.cp.Password())), zap.Int64("cid", ci.id), zap.Float64("keepalive", float64(ci.cp.KeepAlive())))
+		zap.String("user", tools.Bytes2String(ci.appID)), zap.String("password", tools.Bytes2String(ci.cp.Password())), zap.Int64("cid", ci.id), zap.Float64("keepalive", float64(ci.cp.KeepAlive())))
 
 	// save ci
 	saveCI(ci)

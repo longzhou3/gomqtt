@@ -48,8 +48,11 @@ type Config struct {
 	}
 
 	Mqtt struct {
-		QosMax           byte
+		QosMax byte
+
 		DefaultKeepalive uint16
+		MinKeepalive     uint16
+		MaxKeepalive     uint16
 
 		MaxUserLen     int
 		MaxPasswordLen int
@@ -104,6 +107,8 @@ func loadConfig(staticConf bool) {
 
 	InitLogger(Conf.Common.LogPath, Conf.Common.LogLevel, Conf.Common.IsDebug)
 
+	checkConfig()
+
 	// stream hot update
 	cli, err := clientv3.New(clientv3.Config{
 		Endpoints:   Conf.Etcd.Addrs,
@@ -120,6 +125,20 @@ func loadConfig(staticConf bool) {
 	uploadEtcd(cli)
 
 	fmt.Println(Conf)
+}
+
+func checkConfig() {
+	if Conf.Mqtt.MinKeepalive < 10 {
+		Logger.Fatal("mqtt.minkeepalive mustn't below 10")
+	}
+
+	if Conf.Mqtt.DefaultKeepalive < 10 {
+		Logger.Fatal("mqtt.defaultkeepalive mustn't below 10")
+	}
+
+	if Conf.Mqtt.MaxKeepalive > 300 {
+		Logger.Fatal("mqtt.defaultkeepalive mustn't above 300")
+	}
 }
 
 // update the stream addrs

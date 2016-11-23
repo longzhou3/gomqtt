@@ -1,7 +1,6 @@
 package gate
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/aiyun/gomqtt/uuid"
@@ -16,8 +15,6 @@ func New() *Gate {
 
 func (g *Gate) Start(isStatic bool) {
 	// init configurations
-	fmt.Println(isStatic)
-
 	loadConfig(isStatic)
 
 	// wait for rpc connections inited

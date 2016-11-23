@@ -36,7 +36,10 @@ rooms = "{{getv "/gomqtt/gateway/etcd/rooms"}}"
 
 [mqtt]
 qos_max = {{getv  "/gomqtt/gateway/qosmax"}}
+
 default_keepalive = {{getv  "/gomqtt/gateway/defaultkeepalive"}}
+min_keepalive = {{getv  "/gomqtt/gateway/minkeepalive"}}
+max_keepalive = {{getv  "/gomqtt/gateway/maxkeepalive"}}
 
 max_user_len = {{getv  "/gomqtt/gateway/maxuserlen"}}
 max_password_len = {{getv  "/gomqtt/gateway/maxpasswordlen"}}
