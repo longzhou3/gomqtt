@@ -4,6 +4,7 @@ import (
 	"net"
 	"sync"
 
+	"github.com/aiyun/gomqtt/global"
 	proto "github.com/aiyun/gomqtt/mqtt/protocol"
 )
 
@@ -16,7 +17,7 @@ type connInfo struct {
 	outCount int
 
 	// publish to client
-	pub2C chan []byte
+	pub2C chan *global.Pub2C
 
 	stopped chan struct{}
 

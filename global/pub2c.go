@@ -10,7 +10,7 @@ type Pub2C struct {
 
 // PubMsg package
 type PubMsg struct {
-	Qos   int    `msg:"q"`
+	Qos   int32  `msg:"q"`
 	MsgID []byte `msg:"mi"`
 	Msg   []byte `msg:"m"`
 }

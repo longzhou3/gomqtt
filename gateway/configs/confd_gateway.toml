@@ -9,7 +9,8 @@ keys = [
         
         "/gomqtt/gateway/webdomain",
         "/gomqtt/gateway/serverid/1",
-
+        "/gomqtt/gateway/natsaddrs",
+        
         "/gomqtt/gateway/invoked",
         "/gomqtt/gateway/tcpaddr",
         "/gomqtt/gateway/enabletls",

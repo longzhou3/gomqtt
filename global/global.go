@@ -16,3 +16,10 @@ const (
 	// Broadcast PUsh Topic
 	BPushTopic = 5000
 )
+
+// proto types
+const (
+	Text     = 1
+	ProtoBuf = 2
+	Json     = 3
+)

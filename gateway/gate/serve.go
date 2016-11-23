@@ -3,6 +3,7 @@ package gate
 import (
 	"net"
 
+	"github.com/aiyun/gomqtt/global"
 	proto "github.com/aiyun/gomqtt/mqtt/protocol"
 	"github.com/aiyun/gomqtt/mqtt/service"
 	"github.com/corego/tools"
@@ -43,7 +44,7 @@ func serve(c net.Conn) {
 
 	ci.stopped = make(chan struct{})
 	ci.relogin = make(chan struct{})
-	ci.pub2C = make(chan []byte, 10)
+	ci.pub2C = make(chan *global.Pub2C, 10)
 
 	//----------------Connection init---------------------------------------------
 	reply := proto.NewConnackPacket()
@@ -76,6 +77,8 @@ func serve(c net.Conn) {
 		case <-ci.stopped:
 			Logger.Info("user's main thread is going to stop")
 			goto STOP
+		case m := <-ci.pub2C:
+			pub2c(m)
 		}
 	}
 

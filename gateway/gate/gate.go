@@ -1,6 +1,7 @@
 package gate
 
 import (
+	"log"
 	"time"
 
 	"github.com/aiyun/gomqtt/uuid"
@@ -14,8 +15,12 @@ func New() *Gate {
 }
 
 func (g *Gate) Start(isStatic bool) {
+
 	// init configurations
-	loadConfig(isStatic)
+	err := loadConfig(isStatic)
+	if err != nil {
+		log.Fatal("config load error: %v", err)
+	}
 
 	// wait for rpc connections inited
 	time.Sleep(6 * time.Second)
