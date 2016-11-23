@@ -55,10 +55,57 @@ func NewAccMsg() *AccMsg {
 }
 
 type AppMsgIDs struct {
-
 	// 单播
+	SIDs *SPushID
 	// 私聊
+	PIDs *PPushID
 	// 广播
+	BIDs *BPushID
+	// 群聊
+	GIDs *GPushID
+}
+
+func NewAppMsgIDs() *AppMsgIDs {
+	apms := &AppMsgIDs{}
+	return apms
+}
+
+type MsgID struct {
+	Qos int
+}
+
+type SPushID struct {
+	IDs map[string]*MsgID
+}
+
+func NewSPushID() *SPushID {
+	return &SPushID{IDs: make(map[string]*MsgID)}
+}
+
+type PPushID struct {
+	IDs map[string]*MsgID
+}
+
+func NewPPushID() *PPushID {
+	return &PPushID{IDs: make(map[string]*MsgID)}
+}
+
+type BPushID struct {
+	IDs   []*MsgID
+	Index map[string]int
+}
+
+func NewBPushID() *BPushID {
+	return &BPushID{IDs: make([]*MsgID, 0), Index: make(map[string]int)}
+}
+
+type GPushID struct {
+	IDs   []*MsgID
+	Index map[string]int
+}
+
+func NewGPushID() *GPushID {
+	return &GPushID{IDs: make([]*MsgID, 0), Index: make(map[string]int)}
 }
 
 func NewMsgIdCache() *MsgIdCache {

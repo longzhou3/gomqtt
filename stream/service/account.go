@@ -77,6 +77,7 @@ func (acc *Account) Login(msg *proto.LoginMsg) error {
 	}
 	appID.Gip = msg.Gip
 	appID.Cid = msg.Cid
+	appID.PT = msg.PT
 	appID.Oline = ONLINE
 	appID.LastLogin = time.Now().Unix()
 
@@ -151,6 +152,7 @@ func (acc *Account) UnSubscribe(un []byte, msg *proto.UnSubMsg) error {
 type AppID struct {
 	Cid        int64  // 连接版本号
 	Gip        []byte // 网关地址
+	PT         int32  // payload 协议
 	Oline      bool   // 是否在线
 	LastLogin  int64  // 最后登录时间
 	LastLogout int64  // 最后登出时间
