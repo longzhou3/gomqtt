@@ -17,9 +17,9 @@ const (
 	BPushTopic = 5000
 )
 
-// proto types
+// payload proto types
 const (
-	Text     = 1
-	ProtoBuf = 2
-	Json     = 3
+	PayloadText     = 1
+	PayloadProtoBuf = 2
+	PayloadJson     = 3
 )
