@@ -20,8 +20,10 @@ service Rpc {
     rpc UnSubscribe (UnSubMsg)  returns (UnSubRet) 	{}
 
     // 用户发布
-    rpc Publish(PubMsg)         returns (PubRet) {}
+    rpc Publish(PubMsg)         returns (PubRet)     {}
     rpc PubText(PubTextMsg)     returns (PubTextRet) {}
+    rpc PubAck(PubAckMsg)       returns (PubAckRet)  {}
+
     // rpc Publish(PubMsg)      returns (PubRet) {}
     // rpc Publish(PubMsg)      returns (PubRet) {}
 }
@@ -36,6 +38,19 @@ message PubTextMsg {
     bytes  msg     = 6;      // 用户push信息 
 }
 
+
+// 消息Ack
+message PubAckMsg {
+    int64 cid = 1;
+    bytes mid = 2;
+}
+
+
+// 消息Ack消息结构返回结果
+message PubAckRet {
+    bool  r = 1;    //  true 成功， false 失败
+    bytes m = 2;    //  失败原因
+}
 
 // 推送text消息结构返回结果
 message PubTextRet {
