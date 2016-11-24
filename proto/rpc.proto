@@ -122,7 +122,7 @@ message GChatMsgs {
 
 // 登陆消息
 message LoginMsg {
-    bytes  an         = 1;      // 账户名
+    bytes  acc        = 1;      // 账户名
     bytes  appID      = 2;      // appid
     int32  pT         = 3;      // payload协议类型
     int64  cid        = 4;      // 链接id
