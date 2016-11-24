@@ -28,7 +28,7 @@ service Rpc {
 
 // 推送text消息结构
 message PubTextMsg {
-    bytes  cid     = 1;      // 链接id
+    int64  cid     = 1;      // 链接id
     bytes  toAcc   = 2;      // to accound
     bytes  ttp     = 3;      // to topic 
     int32  qos     = 4;      // Qos
