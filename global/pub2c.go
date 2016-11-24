@@ -16,12 +16,14 @@ type TextMsgs struct {
 
 // TextMsg package
 type TextMsg struct {
+	Acc   []byte `msg:"ac"`
+	Topic []byte `msg:"t"`
 	Qos   int32  `msg:"q"`
 	MsgID []byte `msg:"mi"`
 	Msg   []byte `msg:"m"`
 }
 
-type ProtoMsg struct {
-	Cid int64  `msg:"ci"`
-	Msg []byte `msg:"m"`
-}
+// @Delete
+// type ProtoMsg struct {
+// 	Msg []byte `msg:"m"`
+// }
