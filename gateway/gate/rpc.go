@@ -63,6 +63,19 @@ func (r *rpcServie) logout(msg *rpc.LogoutMsg) error {
 	return nil
 }
 
+func (r *rpcServie) pubText(msg *rpc.PubTextMsg) error {
+	req, err := r.client.PubText(context.Background(), msg)
+	if err != nil {
+		return err
+	}
+
+	if !req.R {
+		return errors.New(tools.Bytes2String(req.M))
+	}
+
+	return nil
+}
+
 func (r *rpcServie) subscribe(msg *rpc.SubMsg) error {
 	req, err := r.client.Subscribe(context.Background(), msg)
 	if err != nil {

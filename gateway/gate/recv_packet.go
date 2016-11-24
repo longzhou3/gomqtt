@@ -9,6 +9,8 @@ import (
 	"github.com/uber-go/zap"
 )
 
+//@ToDo
+// 将recvPacket合并到主goroutine
 func recvPacket(ci *connInfo) {
 	defer func() {
 		close(ci.stopped)
@@ -17,14 +19,13 @@ func recvPacket(ci *connInfo) {
 	wait := time.Duration(ci.cp.KeepAlive()+10) * time.Second
 
 	for {
-		// We need to considering about the network delay,so here allows 10 seconds delay.
 		if !ci.isSubed {
 			// if not subscribed，only wait for 10 second
 			ci.c.SetReadDeadline(time.Now().Add(time.Duration(Conf.Mqtt.MinKeepalive-5) * time.Second))
 		} else {
 			ci.c.SetReadDeadline(time.Now().Add(wait))
 		}
-
+		// We need to considering about the network delay,so here allows 10 seconds delay.
 		pt, buf, n, err := service.ReadPacket(ci.c)
 		if err != nil {
 			nerr, ok := err.(net.Error)

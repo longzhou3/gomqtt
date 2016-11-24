@@ -9,7 +9,28 @@ import (
 	proto "github.com/aiyun/gomqtt/mqtt/protocol"
 	"github.com/aiyun/gomqtt/mqtt/service"
 	"github.com/corego/tools"
+	"github.com/uber-go/zap"
 )
+
+func connect(ci *connInfo) error {
+	reply := proto.NewConnackPacket()
+	err, code := initConnection(ci)
+	reply.SetReturnCode(code)
+	if err != nil {
+		Logger.Info("user connect failed", zap.Int64("cid", ci.id), zap.Error(err), zap.String("acc", tools.Bytes2String(ci.acc)),
+			zap.String("user", tools.Bytes2String(ci.appID)), zap.String("password", tools.Bytes2String(ci.cp.Password())))
+		service.WritePacket(ci.c, reply)
+		return err
+	}
+
+	if err := service.WritePacket(ci.c, reply); err != nil {
+		Logger.Info("write connecaccept failed", zap.Int64("cid", ci.id), zap.Error(err),
+			zap.String("acc", tools.Bytes2String(ci.acc)), zap.String("user", tools.Bytes2String(ci.appID)), zap.String("password", tools.Bytes2String(ci.cp.Password())))
+		return err
+	}
+
+	return nil
+}
 
 func initConnection(ci *connInfo) (error, proto.ConnackCode) {
 	// wait for connect and init connection
