@@ -232,13 +232,13 @@ func (z *TextMsg) DecodeMsg(dc *msgp.Reader) (err error) {
 			return
 		}
 		switch msgp.UnsafeString(field) {
-		case "tac":
-			z.ToAcc, err = dc.ReadBytes(z.ToAcc)
+		case "fac":
+			z.FAcc, err = dc.ReadBytes(z.FAcc)
 			if err != nil {
 				return
 			}
-		case "t":
-			z.Topic, err = dc.ReadBytes(z.Topic)
+		case "ft":
+			z.FTopic, err = dc.ReadBytes(z.FTopic)
 			if err != nil {
 				return
 			}
@@ -270,21 +270,21 @@ func (z *TextMsg) DecodeMsg(dc *msgp.Reader) (err error) {
 // EncodeMsg implements msgp.Encodable
 func (z *TextMsg) EncodeMsg(en *msgp.Writer) (err error) {
 	// map header, size 5
-	// write "tac"
-	err = en.Append(0x85, 0xa3, 0x74, 0x61, 0x63)
+	// write "fac"
+	err = en.Append(0x85, 0xa3, 0x66, 0x61, 0x63)
 	if err != nil {
 		return err
 	}
-	err = en.WriteBytes(z.ToAcc)
+	err = en.WriteBytes(z.FAcc)
 	if err != nil {
 		return
 	}
-	// write "t"
-	err = en.Append(0xa1, 0x74)
+	// write "ft"
+	err = en.Append(0xa2, 0x66, 0x74)
 	if err != nil {
 		return err
 	}
-	err = en.WriteBytes(z.Topic)
+	err = en.WriteBytes(z.FTopic)
 	if err != nil {
 		return
 	}
@@ -322,12 +322,12 @@ func (z *TextMsg) EncodeMsg(en *msgp.Writer) (err error) {
 func (z *TextMsg) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
 	// map header, size 5
-	// string "tac"
-	o = append(o, 0x85, 0xa3, 0x74, 0x61, 0x63)
-	o = msgp.AppendBytes(o, z.ToAcc)
-	// string "t"
-	o = append(o, 0xa1, 0x74)
-	o = msgp.AppendBytes(o, z.Topic)
+	// string "fac"
+	o = append(o, 0x85, 0xa3, 0x66, 0x61, 0x63)
+	o = msgp.AppendBytes(o, z.FAcc)
+	// string "ft"
+	o = append(o, 0xa2, 0x66, 0x74)
+	o = msgp.AppendBytes(o, z.FTopic)
 	// string "q"
 	o = append(o, 0xa1, 0x71)
 	o = msgp.AppendInt32(o, z.Qos)
@@ -356,13 +356,13 @@ func (z *TextMsg) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			return
 		}
 		switch msgp.UnsafeString(field) {
-		case "tac":
-			z.ToAcc, bts, err = msgp.ReadBytesBytes(bts, z.ToAcc)
+		case "fac":
+			z.FAcc, bts, err = msgp.ReadBytesBytes(bts, z.FAcc)
 			if err != nil {
 				return
 			}
-		case "t":
-			z.Topic, bts, err = msgp.ReadBytesBytes(bts, z.Topic)
+		case "ft":
+			z.FTopic, bts, err = msgp.ReadBytesBytes(bts, z.FTopic)
 			if err != nil {
 				return
 			}
@@ -394,7 +394,7 @@ func (z *TextMsg) UnmarshalMsg(bts []byte) (o []byte, err error) {
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *TextMsg) Msgsize() (s int) {
-	s = 1 + 4 + msgp.BytesPrefixSize + len(z.ToAcc) + 2 + msgp.BytesPrefixSize + len(z.Topic) + 2 + msgp.Int32Size + 3 + msgp.BytesPrefixSize + len(z.MsgID) + 2 + msgp.BytesPrefixSize + len(z.Msg)
+	s = 1 + 4 + msgp.BytesPrefixSize + len(z.FAcc) + 3 + msgp.BytesPrefixSize + len(z.FTopic) + 2 + msgp.Int32Size + 3 + msgp.BytesPrefixSize + len(z.MsgID) + 2 + msgp.BytesPrefixSize + len(z.Msg)
 	return
 }
 
