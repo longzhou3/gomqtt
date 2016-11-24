@@ -23,6 +23,5 @@ type TextMsg struct {
 
 type ProtoMsg struct {
 	Cid int64  `msg:"ci"`
-	PT  int    `msg:"p"`
 	Msg []byte `msg:"m"`
 }
