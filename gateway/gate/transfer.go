@@ -65,3 +65,11 @@ func appidTrans(ci *connInfo, tp []byte) error {
 
 	return errors.New("invalid payload proto type")
 }
+
+func qosTrans(q byte) byte {
+	if q > Conf.Mqtt.QosMax {
+		q = Conf.Mqtt.QosMax
+	}
+
+	return q
+}

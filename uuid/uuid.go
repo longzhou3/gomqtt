@@ -37,3 +37,8 @@ func Gen() int64 {
 
 	return id
 }
+
+func GenStr() string {
+	s := gen.Gen()
+	return s
+}

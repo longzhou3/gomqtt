@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/corego/tools"
+	"github.com/nats-io/nats"
 
 	"fmt"
 
@@ -23,10 +24,9 @@ func loginAndSub(ci *connInfo, tps [][]byte, qoses []byte, pid uint16) error {
 	// check mutex login
 	mutexLogin(ci)
 
-	fmt.Println("proto type: ----------", ci.payloadProtoType)
 	// 这里的AppID先设置为CLientId，具体参见connInfo结构
 	err = ci.rpc.login(&rpc.LoginMsg{
-		An:    ci.acc,
+		Acc:   ci.acc,
 		AppID: ci.appID,
 		PT:    ci.payloadProtoType,
 		Cid:   ci.id,
@@ -34,15 +34,19 @@ func loginAndSub(ci *connInfo, tps [][]byte, qoses []byte, pid uint16) error {
 		Ts:    topics,
 	})
 	if err != nil {
-		return err
+		return fmt.Errorf("login rpc error: %v", err)
 	}
 
 	// subscribe the cid topic in nats
 	cstr := strconv.FormatInt(ci.id, 10)
-	_, err = nc.Subscribe(cstr, sub2nats)
+	h, err := nc.Subscribe(cstr, func(m *nats.Msg) {
+		pub2c(ci, m)
+	})
 	if err != nil {
 		return fmt.Errorf("sub to nats error: %v", err)
 	}
+
+	ci.natsHandler = h
 
 	// give back the suback
 	pb := proto.NewSubackPacket()

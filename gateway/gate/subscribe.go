@@ -22,7 +22,7 @@ func subscribe(ci *connInfo, p *proto.SubscribePacket) error {
 		Ts:  topics,
 	})
 	if err != nil {
-		return fmt.Errorf("subscribe error: %v", err)
+		return fmt.Errorf("subscribe rpc error: %v", err)
 	}
 
 	// give back the suback
@@ -76,12 +76,7 @@ func topicsAndRets(ci *connInfo, tps [][]byte, qoses []byte) ([]*rpc.Topic, []by
 			}
 		}
 
-		var qos byte
-		if qoses[i] > Conf.Mqtt.QosMax {
-			qos = Conf.Mqtt.QosMax
-		} else {
-			qos = qoses[i]
-		}
+		qos := qosTrans(qoses[i])
 
 		topic := &rpc.Topic{
 			Qos: int32(qos),
