@@ -30,7 +30,7 @@ service Rpc {
 message PubTextMsg {
     bytes  cid     = 1;      // 链接id
     bytes  acc     = 2;      // accound
-    bytes  tc      = 3;      // topic 
+    bytes  tp      = 3;      // topic 
     int32  qos     = 4;      // Qos
     bytes  mid     = 5;      // msgid
     bytes  msg     = 6;      // 用户push信息 
@@ -56,7 +56,7 @@ message PubRet {
 
 // 广播
 message BPushMsg {
-    bytes  ts       = 1;        // topic
+    bytes  tp       = 1;        // topic
     int64  rt       = 2;        // 接到消息时间
     int64  ttl      = 3;        // 消息到期时间
     bytes  mid      = 4;        // 消息id
@@ -93,7 +93,7 @@ message SPushMsgs {
 
 // 私聊
 message PChatMsg {
-    bytes  tt       = 1;        // 目标主题
+    bytes  tp       = 1;        // 目标主题
     bytes  tu       = 2;        // 目标用户
     bytes  ft       = 3;        // 来源主题
     bytes  fu       = 4;        // 来源用户
