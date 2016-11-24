@@ -232,8 +232,8 @@ func (z *TextMsg) DecodeMsg(dc *msgp.Reader) (err error) {
 			return
 		}
 		switch msgp.UnsafeString(field) {
-		case "ac":
-			z.Acc, err = dc.ReadBytes(z.Acc)
+		case "tac":
+			z.ToAcc, err = dc.ReadBytes(z.ToAcc)
 			if err != nil {
 				return
 			}
@@ -270,12 +270,12 @@ func (z *TextMsg) DecodeMsg(dc *msgp.Reader) (err error) {
 // EncodeMsg implements msgp.Encodable
 func (z *TextMsg) EncodeMsg(en *msgp.Writer) (err error) {
 	// map header, size 5
-	// write "ac"
-	err = en.Append(0x85, 0xa2, 0x61, 0x63)
+	// write "tac"
+	err = en.Append(0x85, 0xa3, 0x74, 0x61, 0x63)
 	if err != nil {
 		return err
 	}
-	err = en.WriteBytes(z.Acc)
+	err = en.WriteBytes(z.ToAcc)
 	if err != nil {
 		return
 	}
@@ -322,9 +322,9 @@ func (z *TextMsg) EncodeMsg(en *msgp.Writer) (err error) {
 func (z *TextMsg) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
 	// map header, size 5
-	// string "ac"
-	o = append(o, 0x85, 0xa2, 0x61, 0x63)
-	o = msgp.AppendBytes(o, z.Acc)
+	// string "tac"
+	o = append(o, 0x85, 0xa3, 0x74, 0x61, 0x63)
+	o = msgp.AppendBytes(o, z.ToAcc)
 	// string "t"
 	o = append(o, 0xa1, 0x74)
 	o = msgp.AppendBytes(o, z.Topic)
@@ -356,8 +356,8 @@ func (z *TextMsg) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			return
 		}
 		switch msgp.UnsafeString(field) {
-		case "ac":
-			z.Acc, bts, err = msgp.ReadBytesBytes(bts, z.Acc)
+		case "tac":
+			z.ToAcc, bts, err = msgp.ReadBytesBytes(bts, z.ToAcc)
 			if err != nil {
 				return
 			}
@@ -394,7 +394,7 @@ func (z *TextMsg) UnmarshalMsg(bts []byte) (o []byte, err error) {
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *TextMsg) Msgsize() (s int) {
-	s = 1 + 3 + msgp.BytesPrefixSize + len(z.Acc) + 2 + msgp.BytesPrefixSize + len(z.Topic) + 2 + msgp.Int32Size + 3 + msgp.BytesPrefixSize + len(z.MsgID) + 2 + msgp.BytesPrefixSize + len(z.Msg)
+	s = 1 + 4 + msgp.BytesPrefixSize + len(z.ToAcc) + 2 + msgp.BytesPrefixSize + len(z.Topic) + 2 + msgp.Int32Size + 3 + msgp.BytesPrefixSize + len(z.MsgID) + 2 + msgp.BytesPrefixSize + len(z.Msg)
 	return
 }
 

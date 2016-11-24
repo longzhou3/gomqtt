@@ -16,7 +16,7 @@ type TextMsgs struct {
 
 // TextMsg package
 type TextMsg struct {
-	Acc   []byte `msg:"ac"`
+	ToAcc []byte `msg:"tac"`
 	Topic []byte `msg:"t"`
 	Qos   int32  `msg:"q"`
 	MsgID []byte `msg:"mi"`
