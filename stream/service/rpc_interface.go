@@ -60,23 +60,26 @@ func (r *Rpc) Close() error {
 
 // Login 登陆
 func (rpc *Rpc) Login(ctx context.Context, msg *proto.LoginMsg) (*proto.LoginRet, error) {
-	acc, err := gStream.cache.As.Login(msg)
+	err := gStream.cache.As.Login(msg)
 	if err != nil {
 		log.Println("login err ", err)
 		return &proto.LoginRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, err
 	}
 	// insert cid
-	gStream.cache.Cids.add(msg.Cid, &accountMsg{acc: acc, appID: msg.AppID})
-
-	log.Println(gStream.cache.Cids)
+	gStream.cache.Cids.add(msg)
 	return &proto.LoginRet{R: true, M: []byte("ok")}, nil
 }
 
 // Logout 登出
 func (rpc *Rpc) Logout(ctx context.Context, msg *proto.LogoutMsg) (*proto.LogoutRet, error) {
+	var err error
 	if acc, ok := gStream.cache.Cids.get(msg.Cid); ok {
 		gStream.cache.Cids.delete(msg.Cid)
-		acc.acc.Logout(acc.appID)
+		// acc.acc.Logout(acc.appID)
+		err = gStream.cache.As.Logout(acc.acc, acc.appID)
+		if err != nil {
+			return &proto.LogoutRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, nil
+		}
 	} else {
 		return &proto.LogoutRet{R: false, M: []byte(fmt.Sprint("unfind cid %d", msg.Cid))}, nil
 	}
@@ -87,32 +90,58 @@ func (rpc *Rpc) Logout(ctx context.Context, msg *proto.LogoutMsg) (*proto.Logout
 
 // Subscribe 订阅
 func (rpc *Rpc) Subscribe(ctx context.Context, msg *proto.SubMsg) (*proto.SubRet, error) {
-	log.Println(gStream.cache.Cids)
-	if acc, ok := gStream.cache.Cids.get(msg.Cid); ok {
-		err := acc.acc.Subscribe(acc.appID, msg)
-		if err != nil {
-			log.Println("Subscribe err ", err)
-			return &proto.SubRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, err
-		}
-	}
+	// if acc, ok := gStream.cache.Cids.get(msg.Cid); ok {
+	// 	err := acc.acc.Subscribe(acc.appID, msg)
+	// 	if err != nil {
+	// 		log.Println("Subscribe err ", err)
+	// 		return &proto.SubRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, err
+	// 	}
+	// }
 	return &proto.SubRet{R: true, M: []byte("Subscribe 成功调用")}, nil
 }
 
 // UnSubscribe 取消订阅
 func (rpc *Rpc) UnSubscribe(ctx context.Context, msg *proto.UnSubMsg) (*proto.UnSubRet, error) {
-	if acc, ok := gStream.cache.Cids.get(msg.Cid); ok {
-		err := acc.acc.UnSubscribe(acc.appID, msg)
-		if err != nil {
-			log.Println("UnSubscribe err ", err)
-			return &proto.UnSubRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, err
-		}
-	}
+	// if acc, ok := gStream.cache.Cids.get(msg.Cid); ok {
+	// 	err := acc.acc.UnSubscribe(acc.appID, msg)
+	// 	if err != nil {
+	// 		log.Println("UnSubscribe err ", err)
+	// 		return &proto.UnSubRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, err
+	// 	}
+	// }
 	return &proto.UnSubRet{R: true, M: []byte("UnSubscribe 成功调用")}, nil
 }
 
 // Publish 客户端请求
 func (rpc *Rpc) Publish(ctx context.Context, msg *proto.PubMsg) (*proto.PubRet, error) {
+	// if acc, ok := gStream.cache.Cids.get(msg.Cid); ok {
+
+	// }
 	return &proto.PubRet{R: false, M: []byte("UnSubscribe 成功调用")}, nil
+}
+
+// @Explain
+// gateway推送来的消息只包含topic和acc,stream要通过acc和topic来查找cid, 所以cid要和topic的关系映射起来
+// PubText
+func (rpc *Rpc) PubText(ctx context.Context, msg *proto.PubTextMsg) (*proto.PubTextRet, error) {
+	accMsg, ok := gStream.cache.Cids.get(msg.Cid)
+	if !ok {
+		return &proto.PubTextRet{R: false, M: []byte(fmt.Sprint("unfind cid %d", msg.Cid))}, nil
+	}
+	if acc, appid, ok := gStream.cache.As.GetAccAndAppID(accMsg.acc, accMsg.appID); ok {
+		// 通过 acc topic找到cid
+		if err := gStream.cache.As.PubText(acc, appid, msg); err != nil {
+			return &proto.PubTextRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, nil
+		}
+	}
+
+	return &proto.PubTextRet{R: true, M: []byte("PubText 成功调用")}, nil
+}
+
+// 	(ctx context.Context, in *PubAckMsg, opts ...grpc.CallOption) (*PubAckRet, error)
+func (rpc *Rpc) PubAck(ctx context.Context, msg *proto.PubAckMsg) (*proto.PubAckRet, error) {
+
+	return &proto.PubAckRet{R: true, M: []byte("PubAck 成功调用")}, nil
 }
 
 // SetAppID 设置AppID

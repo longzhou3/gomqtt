@@ -1,8 +1,10 @@
 package service
 
 import (
+	"log"
 	"time"
 
+	"github.com/aiyun/gomqtt/global"
 	"github.com/nats-io/nats"
 	"github.com/uber-go/zap"
 )
@@ -27,19 +29,19 @@ func initnatsInfo(addrs []string) (*nats.Conn, error) {
 	return nc, nil
 }
 
-// push 推送消息至nats服务
-// func (ns *natsInfo) push(subject string, pm *basic.PushMessage) error {
-// 	msgpStart := time.Now()
-// 	b, err := pm.MarshalMsg(nil)
-// 	if err != nil {
-// 		return err
-// 	}
+// pushText 推送消息至nats服务
+func (ns *natsInfo) pushText(subject string, msg *global.TextMsgs) error {
 
-// 	natsStart := time.Now()
-// 	err = ns.nc.Publish(subject, b)
+	b, err := msg.MarshalMsg(nil)
+	if err != nil {
+		return err
+	}
 
-// 	return err
-// }
+	log.Println("pushText --- nats", subject, msg)
+
+	err = ns.nc.Publish(subject, b)
+	return err
+}
 
 // apnspush apnspush
 // func (ns *natsInfo) apnspush(subject string, data []byte) error {

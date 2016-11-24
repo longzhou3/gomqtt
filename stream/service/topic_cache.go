@@ -8,10 +8,22 @@ import (
 
 type btCache struct {
 	sync.RWMutex
-	bts map[string]*accMsg
+	bts map[string]*bpushAppIDs
 }
 
-func (bc *btCache) get(topic []byte) (*accMsg, bool) {
+type bpushAppIDs struct {
+	acc   []byte
+	appID map[string]int64
+}
+
+func newbpushAppIDs() *bpushAppIDs {
+	bpushAppIDs := &bpushAppIDs{
+		appID: make(map[string]int64),
+	}
+	return bpushAppIDs
+}
+
+func (bc *btCache) get(topic []byte) (*bpushAppIDs, bool) {
 	bc.RLock()
 	if at, ok := bc.bts[string(topic)]; ok {
 		bc.RUnlock()
@@ -24,10 +36,10 @@ func (bc *btCache) get(topic []byte) (*accMsg, bool) {
 func (bc *btCache) insert(acc []byte, topic []byte, appid []byte) error {
 	bc.Lock()
 	if acc, ok := bc.bts[string(topic)]; ok {
-		acc.appID[string(appid)] = true
+		acc.appID[string(appid)] = 0
 	} else {
-		acc := newaccMsg()
-		acc.appID[string(appid)] = true
+		acc := newbpushAppIDs()
+		acc.appID[string(appid)] = 0
 		bc.bts[string(topic)] = acc
 	}
 	bc.Unlock()
@@ -45,14 +57,5 @@ func (bc *btCache) delete(acc []byte, topic []byte, appid []byte) error {
 }
 
 func newbtCache() *btCache {
-	return &btCache{bts: make(map[string]*accMsg)}
-}
-
-type accMsg struct {
-	acc   []byte
-	appID map[string]bool
-}
-
-func newaccMsg() *accMsg {
-	return &accMsg{appID: make(map[string]bool)}
+	return &btCache{bts: make(map[string]*bpushAppIDs)}
 }

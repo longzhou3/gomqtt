@@ -4,6 +4,7 @@ import (
 	"unsafe"
 
 	"github.com/labstack/echo"
+	"github.com/uber-go/zap"
 )
 
 type Stream struct {
@@ -11,6 +12,7 @@ type Stream struct {
 	rpc   *Rpc
 	cache *Cache
 	hash  *Hash
+	nats  *natsInfo
 }
 
 var gStream *Stream
@@ -38,10 +40,17 @@ func (s *Stream) Init() {
 	hash := NewHash()
 	//	init other
 
+	// @ToDo
+	nats, err := newnatsInfo([]string{"nats://10.7.14.236:4222", "nats://10.7.14.26:4222"})
+	if err != nil {
+		Logger.Panic("nats", zap.Error(err))
+	}
+
 	s.rpc = rpc
 	s.upa = upa
 	s.cache = cache
 	s.hash = hash
+	s.nats = nats
 
 	gStream = s
 }
