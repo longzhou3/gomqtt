@@ -249,8 +249,6 @@ func (acc *Account) PubText(facc *Account, appid *AppID, msg *proto.PubTextMsg) 
 			gStream.nats.pushText(tycid.nastTopic, msg)
 		}
 	}
-	// insert mem
-
 	return nil
 }
 

@@ -10,6 +10,7 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/aiyun/gomqtt/proto"
+	"github.com/corego/tools"
 	"github.com/uber-go/zap"
 )
 
@@ -27,6 +28,13 @@ func (rpc *Rpc) Init() {
 }
 
 func (rpc *Rpc) Start() {
+
+	// var addr string
+	if Conf.GrpcC.Addr == "" {
+		Conf.GrpcC.Addr = tools.LocalIP() + ":" + Conf.GrpcC.Port
+	}
+	Logger.Info("addr", zap.String("addr", Conf.GrpcC.Addr))
+
 	l, err := net.Listen("tcp", Conf.GrpcC.Addr)
 	if err != nil {
 		Logger.Panic("Init", zap.Error(err))

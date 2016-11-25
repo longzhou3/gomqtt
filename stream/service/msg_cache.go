@@ -4,6 +4,7 @@ import (
 	"sync"
 )
 
+// NewMsgCache   key:msgid, value:msg
 type MsgCache struct {
 	sync.RWMutex
 	Msgs map[string][]byte
@@ -40,6 +41,7 @@ func (msgCache *MsgCache) Get(msgid string) ([]byte, bool) {
 	return nil, false
 }
 
+// MsgIdCache
 type MsgIdCache struct {
 	sync.RWMutex
 	AccMsg map[string]*AccMsg

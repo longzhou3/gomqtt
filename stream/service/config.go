@@ -13,6 +13,7 @@ type Config struct {
 	CommonC *CommonConfig
 	EtcdC   *EtcdConfig
 	GrpcC   *GrpcConfig
+	NatsC   *NatsConfig
 
 	StreamAddrs map[string]string
 }
@@ -39,6 +40,11 @@ type EtcdConfig struct {
 
 type GrpcConfig struct {
 	Addr string
+	Port string
+}
+
+type NatsConfig struct {
+	Addrs []string
 }
 
 var Conf = &Config{}
@@ -48,6 +54,7 @@ func initConf() {
 		CommonC: &CommonConfig{},
 		EtcdC:   &EtcdConfig{},
 		GrpcC:   &GrpcConfig{},
+		NatsC:   &NatsConfig{},
 	}
 }
 
@@ -83,6 +90,9 @@ func loadConfig(staticConf bool) {
 
 	// 解析grpc
 	parseGrpc(tbl)
+
+	// 解析nats
+	parseNats(tbl)
 
 	Conf.Show()
 
@@ -126,6 +136,20 @@ func parseGrpc(tbl *ast.Table) {
 		err := toml.UnmarshalTable(subTbl, Conf.GrpcC)
 		if err != nil {
 			log.Fatalln("[FATAL] parseGrpc: ", err, subTbl)
+		}
+	}
+}
+
+func parseNats(tbl *ast.Table) {
+	if val, ok := tbl.Fields["nats"]; ok {
+		subTbl, ok := val.(*ast.Table)
+		if !ok {
+			log.Fatalln("[FATAL] parse nats config: ", subTbl)
+		}
+
+		err := toml.UnmarshalTable(subTbl, Conf.NatsC)
+		if err != nil {
+			log.Fatalln("[FATAL] parseNats: ", err, subTbl)
 		}
 	}
 }
