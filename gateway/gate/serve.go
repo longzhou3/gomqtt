@@ -1,7 +1,9 @@
 package gate
 
 import (
+	"fmt"
 	"net"
+	"time"
 
 	proto "github.com/aiyun/gomqtt/mqtt/protocol"
 
@@ -11,17 +13,19 @@ import (
 	rpc "github.com/aiyun/gomqtt/proto"
 	"github.com/aiyun/gomqtt/uuid"
 	"github.com/nats-io/nats"
+
+	"github.com/aiyun/gomqtt/mqtt/service"
 )
 
 type connInfo struct {
 	id int64
-	c  net.Conn
+
+	c net.Conn
+
 	cp *proto.ConnectPacket
 
 	inCount  int
 	outCount int
-
-	stopped chan struct{}
 
 	relogin chan struct{}
 
@@ -78,7 +82,6 @@ func serve(c net.Conn) {
 		close(ci.relogin)
 	}()
 
-	ci.stopped = make(chan struct{})
 	ci.relogin = make(chan struct{})
 	ci.idMap = make(map[uint16][][]byte)
 
@@ -91,16 +94,47 @@ func serve(c net.Conn) {
 	Logger.Debug("user connected ok!", zap.String("acc", tools.Bytes2String(ci.acc)),
 		zap.String("user", tools.Bytes2String(ci.appID)), zap.String("password", tools.Bytes2String(ci.cp.Password())), zap.Int64("cid", ci.id), zap.Float64("keepalive", float64(ci.cp.KeepAlive())))
 
-	go recvPacket(ci)
-
-	// loop reading data
+	wait := time.Duration(ci.cp.KeepAlive()+10) * time.Second
 	for {
-		select {
-		case <-ci.stopped:
-			Logger.Info("user's main thread is going to stop", zap.Int64("cid", ci.id))
+		if !ci.isSubed {
+			// if not subscribed，only wait for 10 second
+			ci.c.SetReadDeadline(time.Now().Add(time.Duration(Conf.Mqtt.MinKeepalive-5) * time.Second))
+		} else {
+			ci.c.SetReadDeadline(time.Now().Add(wait))
+		}
+
+		// We need to considering about the network delay,so here allows 10 seconds delay.
+		pt, buf, n, err := service.ReadPacket(ci.c)
+		if err != nil {
+			nerr, ok := err.(net.Error)
+			if ok && nerr.Timeout() {
+				Logger.Debug("user connect but not subscribed, disconnected", zap.Int64("cid", ci.id))
+			} else {
+				Logger.Warn("Read packet error", zap.Error(err), zap.String("buf", fmt.Sprintf("%v", buf)), zap.Int("bytes", n), zap.Int64("cid", ci.id))
+			}
+
 			goto STOP
 		}
+
+		err = processPacket(ci, pt)
+		if err != nil {
+			Logger.Info("process packet error", zap.Error(err), zap.Int64("cid", ci.id))
+			goto STOP
+		}
+
+		ci.inCount++
 	}
+
+	// go recvPacket(ci)
+
+	// loop reading data
+	// for {
+	// 	select {
+	// 	case <-ci.stopped:
+	// 		Logger.Info("user's main thread is going to stop", zap.Int64("cid", ci.id))
+	// 		goto STOP
+	// 	}
+	// }
 
 STOP:
 	if ci.isSubed {

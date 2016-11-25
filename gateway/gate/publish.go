@@ -8,6 +8,7 @@ import (
 	"github.com/aiyun/gomqtt/mqtt/service"
 	"github.com/aiyun/gomqtt/uuid"
 	"github.com/corego/tools"
+	"github.com/uber-go/zap"
 
 	"bytes"
 
@@ -30,6 +31,8 @@ func publish(ci *connInfo, p *proto.PublishPacket) error {
 
 		qos := qosTrans(p.QoS())
 
+		Logger.Debug("client publish", zap.String("topic", string(tps[0])),
+			zap.String("acc", string(tps[1])))
 		err := ci.rpc.pubText(&rpc.PubTextMsg{
 			Cid:   ci.id,
 			ToAcc: tps[1],
@@ -56,6 +59,19 @@ func publish(ci *connInfo, p *proto.PublishPacket) error {
 	return nil
 }
 
+// 将消息ID反映射后，投递到stream删除
 func puback(ci *connInfo, p *proto.PubackPacket) error {
+	mid := p.PacketID()
+	id, ok := ci.idMap[mid]
+	if ok {
+		err := ci.rpc.puback(&rpc.PubAckMsg{
+			Cid: ci.id,
+			Mid: id,
+		})
+		if err == nil {
+			delete(ci.idMap, mid)
+		}
+	}
+
 	return nil
 }

@@ -25,7 +25,7 @@ func mutexLogin(ci *connInfo) {
 
 		if ok {
 			// kick off the former connections
-			acc.ci.stopped <- struct{}{}
+			acc.ci.c.Close()
 
 			// wait for kick off done
 			<-acc.ci.relogin
@@ -38,7 +38,7 @@ func mutexLogin(ci *connInfo) {
 		}
 		al.Unlock()
 
-	case 3: //mutex with account + user(Username + clientID)
+	case 3: //mutex with account + appid(Username + appid)
 		al.RLock()
 		acc, ok := accounts[string(ci.acc)]
 		al.RUnlock()
@@ -46,7 +46,7 @@ func mutexLogin(ci *connInfo) {
 		if ok {
 			c, ok := acc.users[string(ci.appID)]
 			if ok {
-				c.stopped <- struct{}{}
+				c.c.Close()
 
 				<-c.relogin
 			}
@@ -62,12 +62,12 @@ func mutexLogin(ci *connInfo) {
 
 	case 4: //mutex with clientid
 		al.RLock()
-		acc, ok := accounts[string(ci.appID)]
+		acc, ok := accounts[string(ci.cp.ClientId())]
 		al.RUnlock()
 
 		if ok {
 			// kick off the former connections
-			acc.ci.stopped <- struct{}{}
+			acc.ci.c.Close()
 
 			// wait for kick off done
 			<-acc.ci.relogin
@@ -75,7 +75,7 @@ func mutexLogin(ci *connInfo) {
 
 		//update now one
 		al.Lock()
-		accounts[string(ci.appID)] = &account{
+		accounts[string(ci.cp.ClientId())] = &account{
 			ci: ci,
 		}
 		al.Unlock()
@@ -101,7 +101,7 @@ func delMutex(ci *connInfo) {
 		al.Unlock()
 	case 4:
 		al.Lock()
-		delete(accounts, tools.Bytes2String(ci.appID))
+		delete(accounts, tools.Bytes2String(ci.cp.ClientId()))
 		al.Unlock()
 	}
 }

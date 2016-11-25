@@ -71,6 +71,5 @@ func (sd *Ts16) gen(ct *int64, inc *int64) string {
 		s = fmt.Sprintf("%d%02d%04d", now.Unix(), sid, *inc)
 	}
 
-	fmt.Println(sid, *inc)
 	return s
 }

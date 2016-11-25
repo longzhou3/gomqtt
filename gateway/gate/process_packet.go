@@ -23,9 +23,11 @@ func processPacket(ci *connInfo, pt proto.Packet) error {
 		err = puback(ci, p)
 
 	case *proto.SubscribePacket:
+		// 如果是通过appid管理的topic订阅方案，那么不允许再主动订阅
 		if ci.isInstantLogin {
 			err = errors.New("you cant subscribe any topics after instant login")
 		} else {
+			// 还未订阅，进行登录和订阅
 			if !ci.isSubed {
 				err = loginAndSub(ci, p.Topics(), p.Qos(), p.PacketID())
 			} else {
