@@ -39,11 +39,10 @@ message PubTextMsg {
 }
 
 
-
 // 消息Ack
 message PubAckMsg {
-    int64 cid = 1;
-    bytes mid = 2;
+                int64 cid = 1;  // 链接cid
+    repeated    bytes mid = 2;  // 消息ID列表
 }
 
 
