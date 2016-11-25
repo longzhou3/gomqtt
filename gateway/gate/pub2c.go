@@ -3,7 +3,6 @@ package gate
 import (
 	"bytes"
 	"fmt"
-	"time"
 
 	"github.com/aiyun/gomqtt/global"
 	"github.com/nats-io/nats"
@@ -12,30 +11,6 @@ import (
 	proto "github.com/aiyun/gomqtt/mqtt/protocol"
 	"github.com/aiyun/gomqtt/mqtt/service"
 )
-
-func initNatsConn() (*nats.Conn, error) {
-	opts := nats.DefaultOptions
-	opts.Servers = Conf.Gateway.NatsAddrs
-	opts.MaxReconnect = 1000
-	opts.ReconnectWait = 5 * time.Second
-
-	nc, err := opts.Connect()
-	if err != nil {
-		return nil, err
-	}
-
-	// Setup callbacks to be notified on disconnects and reconnects
-	nc.Opts.DisconnectedCB = func(nc *nats.Conn) {
-		Logger.Error("nats disconnected")
-	}
-
-	// See who we are connected to on reconnect.
-	nc.Opts.ReconnectedCB = func(nc *nats.Conn) {
-		Logger.Info("nats reconnected")
-	}
-
-	return nc, nil
-}
 
 func pub2c(ci *connInfo, msg *nats.Msg) {
 	switch ci.payloadProtoType {

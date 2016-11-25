@@ -32,7 +32,7 @@ func (g *Gate) Start(isStatic bool) {
 	providersStart()
 
 	// init addmin service
-	go adminStart()
+	// go adminStart()
 
 	// start the monitors
 	// monitorsStart()

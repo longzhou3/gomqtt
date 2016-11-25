@@ -44,6 +44,8 @@ type SetToken struct {
 	AppID []byte `msg:"ai"`
 
 	Token []byte `msg:"t"`
+	// token对应的广播Topics
+	Topics [][]byte `msg:"tps"`
 }
 
 type DelToken struct {

@@ -3,10 +3,12 @@ package service
 import (
 	"io/ioutil"
 	"log"
+	"time"
 
 	"fmt"
 
 	"github.com/naoina/toml"
+	"github.com/nats-io/nats"
 	"github.com/uber-go/zap"
 )
 
@@ -16,6 +18,10 @@ type Config struct {
 		IsDebug  bool
 		LogLevel string
 		LogPath  string
+	}
+
+	Apns struct {
+		NatsAddrs []string
 	}
 }
 
@@ -47,4 +53,33 @@ func loadConfig(staticConf bool) {
 
 	// 初始化Logger
 	InitLogger(Conf.Common.LogPath, Conf.Common.LogLevel, Conf.Common.IsDebug)
+
+	nc, err = initNatsConn()
+	if err != nil {
+		Logger.Fatal("init nats error", zap.Error(err))
+	}
+}
+
+func initNatsConn() (*nats.Conn, error) {
+	opts := nats.DefaultOptions
+	opts.Servers = Conf.Apns.NatsAddrs
+	opts.MaxReconnect = 1000
+	opts.ReconnectWait = 5 * time.Second
+
+	nc, err := opts.Connect()
+	if err != nil {
+		return nil, err
+	}
+
+	// Setup callbacks to be notified on disconnects and reconnects
+	nc.Opts.DisconnectedCB = func(nc *nats.Conn) {
+		Logger.Error("nats disconnected")
+	}
+
+	// See who we are connected to on reconnect.
+	nc.Opts.ReconnectedCB = func(nc *nats.Conn) {
+		Logger.Info("nats reconnected")
+	}
+
+	return nc, nil
 }
