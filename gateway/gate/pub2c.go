@@ -3,6 +3,7 @@ package gate
 import (
 	"bytes"
 	"fmt"
+	"time"
 
 	"github.com/aiyun/gomqtt/global"
 	"github.com/nats-io/nats"
@@ -10,9 +11,17 @@ import (
 
 	proto "github.com/aiyun/gomqtt/mqtt/protocol"
 	"github.com/aiyun/gomqtt/mqtt/service"
+
+	rpc "github.com/aiyun/gomqtt/proto"
 )
 
 func pub2c(ci *connInfo, msg *nats.Msg) {
+	//如果还未登录成功，等待500毫秒
+	//这里解决stream登录和订阅消息的异步问题: login rpc还没返回，但是订阅的消息已经发送古来
+	if !ci.isSubed {
+		time.Sleep(500 * time.Millisecond)
+	}
+
 	switch ci.payloadProtoType {
 	case global.PayloadProtobuf:
 
@@ -43,7 +52,7 @@ func pubText(ci *connInfo, m *global.TextMsgs) error {
 		p.SetTopic(topic)
 		p.SetPayload(msg.Msg)
 
-		id, err := mapID(ci, [][]byte{msg.MsgID}, msg.Qos)
+		id, err := mapTextID(ci, msg.FTopic, msg.MsgID, msg.Qos)
 		if err != nil {
 			return err
 		}
@@ -59,7 +68,7 @@ func pubText(ci *connInfo, m *global.TextMsgs) error {
 	return nil
 }
 
-func mapID(ci *connInfo, ids [][]byte, qos int32) (uint16, error) {
+func mapTextID(ci *connInfo, topic []byte, mid []byte, qos int32) (uint16, error) {
 	id, err := getID(ci)
 	if err != nil {
 		return 0, err
@@ -67,7 +76,37 @@ func mapID(ci *connInfo, ids [][]byte, qos int32) (uint16, error) {
 
 	// 只有在qos不为0时，才保存id映射，为后面ack的删除做备用
 	if qos != 0 {
-		ci.idMap[id] = ids
+		acks := make([]*rpc.AckTopicMsgID, 1)
+		acks[0] = &rpc.AckTopicMsgID{
+			Tp:  topic,
+			Mid: mid,
+		}
+
+		ci.rwm.Lock()
+		ci.idMap[id] = acks
+		ci.rwm.Unlock()
+	}
+
+	return id, nil
+}
+
+func mapID(ci *connInfo, topic []byte, ids [][]byte, qos int32) (uint16, error) {
+	id, err := getID(ci)
+	if err != nil {
+		return 0, err
+	}
+
+	// 只有在qos不为0时，才保存id映射，为后面ack的删除做备用
+	if qos != 0 {
+		acks := make([]*rpc.AckTopicMsgID, len(ids))
+		for k, v := range ids {
+			acks[k] = &rpc.AckTopicMsgID{
+				Tp:  topic,
+				Mid: v,
+			}
+		}
+
+		ci.idMap[id] = acks
 	}
 
 	return id, nil

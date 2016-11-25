@@ -17,8 +17,11 @@ func processPacket(ci *connInfo, pt proto.Packet) error {
 		err = errors.New("recv disconnect packet")
 
 	case *proto.PublishPacket: // recv publish
-		err = publish(ci, p)
+		if !ci.isSubed {
+			return errors.New("publish need sub and login")
+		}
 
+		err = publish(ci, p)
 	case *proto.PubackPacket:
 		err = puback(ci, p)
 

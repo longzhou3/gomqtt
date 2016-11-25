@@ -77,4 +77,6 @@ func start(cmd *cobra.Command, args []string) {
 	chSig := make(chan os.Signal)
 	signal.Notify(chSig, syscall.SIGINT, syscall.SIGTERM)
 	<-chSig
+
+	s.Stopped = true
 }

@@ -1,12 +1,16 @@
 package service
 
 import (
+	"context"
 	"io/ioutil"
 	"log"
+	"os"
 	"time"
 
 	"fmt"
 
+	"github.com/corego/tools"
+	"github.com/coreos/etcd/clientv3"
 	"github.com/naoina/toml"
 	"github.com/nats-io/nats"
 	"github.com/uber-go/zap"
@@ -21,11 +25,30 @@ type Config struct {
 	}
 
 	Apns struct {
-		NatsAddrs []string
+		ClusterServers int
+	}
+
+	Etcd struct {
+		Addrs     []string
+		ApnsAddrs string
+	}
+
+	Nats struct {
+		Addrs []string
+
+		PubApnsTopic string
+		PubApnsGroup string
+
+		SetTokenTopic string
+		SetTokenGroup string
+
+		DelTokenTopic string
+		DelTokenGroup string
 	}
 }
 
 var Conf = &Config{}
+var etcdCli *clientv3.Client
 
 func loadConfig(staticConf bool) {
 	var contents []byte
@@ -58,11 +81,22 @@ func loadConfig(staticConf bool) {
 	if err != nil {
 		Logger.Fatal("init nats error", zap.Error(err))
 	}
+
+	// stream hot update
+	etcdCli, err = clientv3.New(clientv3.Config{
+		Endpoints:   Conf.Etcd.Addrs,
+		DialTimeout: 5 * time.Second,
+	})
+	if err != nil {
+		Logger.Fatal("connect to etcd error", zap.Error(err))
+	}
+
+	uploadEtcd(etcdCli)
 }
 
 func initNatsConn() (*nats.Conn, error) {
 	opts := nats.DefaultOptions
-	opts.Servers = Conf.Apns.NatsAddrs
+	opts.Servers = Conf.Nats.Addrs
 	opts.MaxReconnect = 1000
 	opts.ReconnectWait = 5 * time.Second
 
@@ -82,4 +116,44 @@ func initNatsConn() (*nats.Conn, error) {
 	}
 
 	return nc, nil
+}
+
+func uploadEtcd(cli *clientv3.Client) {
+	key := Conf.Etcd.ApnsAddrs + "/" + getHost()
+
+	addr := tools.LocalIP()
+
+	Logger.Debug("apns local ip", zap.String("ip", addr))
+
+	go func() {
+		for {
+			// upload self ip
+			Grant, err := etcdCli.Grant(context.TODO(), 15)
+			if err != nil {
+				Logger.Warn("etcd grant error", zap.Error(err))
+			}
+
+			_, err = etcdCli.Put(context.TODO(), key, addr, clientv3.WithLease(Grant.ID))
+			if err != nil {
+				Logger.Warn("etcd put error", zap.Error(err))
+			}
+
+			time.Sleep(5 * time.Second)
+		}
+	}()
+
+}
+
+func getHost() string {
+	host, err := os.Hostname()
+	if err != nil {
+		Logger.Fatal("get hostname error", zap.Error(err))
+	}
+
+	// in debug enviroment,we need to start several nodes in one machine,so pid is needed
+	if Conf.Common.IsDebug {
+		return fmt.Sprintf("%s-%d", host, os.Getpid())
+	}
+
+	return host
 }

@@ -3,6 +3,7 @@ package gate
 import (
 	"fmt"
 	"net"
+	"sync"
 	"time"
 
 	proto "github.com/aiyun/gomqtt/mqtt/protocol"
@@ -45,11 +46,12 @@ type connInfo struct {
 	isSubed        bool
 	isInstantLogin bool
 
+	isNatsSubed      bool
 	payloadProtoType int32
 
-	msgID uint16
-	idMap map[uint16][][]byte
-
+	msgID       uint16
+	idMap       map[uint16][]*rpc.AckTopicMsgID
+	rwm         *sync.RWMutex
 	natsHandler *nats.Subscription
 }
 
@@ -71,20 +73,23 @@ func serve(c net.Conn) {
 	defer func() {
 		c.Close()
 
-		if ci.isSubed {
-			delMutex(ci)
+		if ci.isNatsSubed {
 			err := ci.natsHandler.Unsubscribe()
 			if err != nil {
 				Logger.Info("unsubscribe error", zap.Error(err), zap.Int64("cid", ci.id))
 			}
 		}
 
+		if ci.isSubed {
+			delMutex(ci)
+		}
+
 		close(ci.relogin)
 	}()
 
 	ci.relogin = make(chan struct{})
-	ci.idMap = make(map[uint16][][]byte)
-
+	ci.idMap = make(map[uint16][]*rpc.AckTopicMsgID)
+	ci.rwm = &sync.RWMutex{}
 	//----------------Connection init---------------------------------------------
 	err := connect(ci)
 	if err != nil {
@@ -122,7 +127,6 @@ func serve(c net.Conn) {
 			goto STOP
 		}
 
-		ci.inCount++
 	}
 
 	// go recvPacket(ci)

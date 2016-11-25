@@ -24,6 +24,17 @@ func loginAndSub(ci *connInfo, tps [][]byte, qoses []byte, pid uint16) error {
 	// check mutex login
 	mutexLogin(ci)
 
+	// subscribe the cid topic in nats
+	cstr := strconv.FormatInt(ci.id, 10)
+	h, err := nc.Subscribe(cstr, func(m *nats.Msg) {
+		pub2c(ci, m)
+	})
+	if err != nil {
+		return fmt.Errorf("sub to nats error: %v", err)
+	}
+	ci.natsHandler = h
+	ci.isNatsSubed = true
+
 	// 这里的AppID先设置为CLientId，具体参见connInfo结构
 	err = ci.rpc.login(&rpc.LoginMsg{
 		Acc:   ci.acc,
@@ -36,17 +47,6 @@ func loginAndSub(ci *connInfo, tps [][]byte, qoses []byte, pid uint16) error {
 	if err != nil {
 		return fmt.Errorf("login rpc error: %v", err)
 	}
-
-	// subscribe the cid topic in nats
-	cstr := strconv.FormatInt(ci.id, 10)
-	h, err := nc.Subscribe(cstr, func(m *nats.Msg) {
-		pub2c(ci, m)
-	})
-	if err != nil {
-		return fmt.Errorf("sub to nats error: %v", err)
-	}
-
-	ci.natsHandler = h
 
 	// give back the suback
 	pb := proto.NewSubackPacket()

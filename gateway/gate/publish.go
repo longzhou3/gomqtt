@@ -22,6 +22,7 @@ import (
 func publish(ci *connInfo, p *proto.PublishPacket) error {
 	switch ci.payloadProtoType {
 	case global.PayloadText:
+		ci.inCount++
 		// text格式，需要生成MsgID
 		mid := tools.String2Bytes(uuid.GenStr())
 		tps := bytes.Split(p.Topic(), topicSep)
@@ -32,7 +33,7 @@ func publish(ci *connInfo, p *proto.PublishPacket) error {
 		qos := qosTrans(p.QoS())
 
 		Logger.Debug("client publish", zap.String("topic", string(tps[0])),
-			zap.String("acc", string(tps[1])))
+			zap.String("acc", string(tps[1])), zap.Int("in_count", ci.inCount))
 		err := ci.rpc.pubText(&rpc.PubTextMsg{
 			Cid:   ci.id,
 			ToAcc: tps[1],
@@ -62,15 +63,22 @@ func publish(ci *connInfo, p *proto.PublishPacket) error {
 // 将消息ID反映射后，投递到stream删除
 func puback(ci *connInfo, p *proto.PubackPacket) error {
 	mid := p.PacketID()
-	id, ok := ci.idMap[mid]
+
+	ci.rwm.RLock()
+	ids, ok := ci.idMap[mid]
+	ci.rwm.RUnlock()
 	if ok {
 		err := ci.rpc.puback(&rpc.PubAckMsg{
-			Cid: ci.id,
-			Mid: id,
+			Acc:  ci.acc,
+			Mids: ids,
 		})
-		if err == nil {
-			delete(ci.idMap, mid)
+		if err != nil {
+			return fmt.Errorf("puback rpc error : %v", err)
 		}
+
+		ci.rwm.Lock()
+		delete(ci.idMap, mid)
+		ci.rwm.Unlock()
 	}
 
 	return nil
