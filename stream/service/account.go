@@ -75,13 +75,13 @@ func (ats *Accounts) Logout(accid, appid []byte) error {
 }
 
 func (ats *Accounts) PubText(facc *Account, appid *AppID, msg *proto.PubTextMsg) error {
-	ats.Lock()
 	var err error
+	ats.RLock()
 	acc, ok := ats.Accounts[string(msg.ToAcc)]
+	ats.RUnlock()
 	if ok {
 		err = acc.PubText(facc, appid, msg)
 	}
-	ats.Unlock()
 	return err
 }
 
@@ -236,11 +236,12 @@ func (acc *Account) PubText(facc *Account, appid *AppID, msg *proto.PubTextMsg) 
 				Qos = tycid.qos
 			}
 			Msg := &global.TextMsg{
-				FAcc:   facc.Acc,
-				FTopic: msg.Ttp,
-				Qos:    Qos,
-				MsgID:  msg.Mid,
-				Msg:    msg.Msg,
+				FAcc:       facc.Acc,
+				FTopic:     msg.Ttp,
+				RetryCount: 3,
+				Qos:        Qos,
+				MsgID:      msg.Mid,
+				Msg:        msg.Msg,
 			}
 			msg := &global.TextMsgs{
 				Msgs: []*global.TextMsg{Msg},

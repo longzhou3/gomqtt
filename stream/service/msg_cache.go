@@ -1,7 +1,12 @@
 package service
 
 import (
+	"log"
 	"sync"
+
+	"github.com/aiyun/gomqtt/proto"
+	"github.com/corego/tools"
+	"github.com/uber-go/zap"
 )
 
 // NewMsgCache   key:msgid, value:msg
@@ -17,23 +22,26 @@ func NewMsgCache() *MsgCache {
 	return msgcache
 }
 
-func (msgCache *MsgCache) Insert(msgid string, msg []byte) error {
+func (msgCache *MsgCache) Insert(msgid []byte, msg []byte) error {
 	msgCache.Lock()
-	msgCache.Msgs[msgid] = msg
+	msgCache.Msgs[string(msgid)] = msg
+	log.Println("insert msg , msgid is", string(msgid), ",msg is", string(msg))
 	msgCache.Unlock()
 	return nil
 }
 
-func (msgCache *MsgCache) Delete(msgid string) error {
+func (msgCache *MsgCache) Delete(msgid []byte) error {
 	msgCache.Lock()
-	delete(msgCache.Msgs, msgid)
+	delete(msgCache.Msgs, tools.Bytes2String(msgid))
 	msgCache.Unlock()
+
+	Logger.Info("Delete", zap.String("msgid", tools.Bytes2String(msgid)))
 	return nil
 }
 
-func (msgCache *MsgCache) Get(msgid string) ([]byte, bool) {
+func (msgCache *MsgCache) Get(msgid []byte) ([]byte, bool) {
 	msgCache.RLock()
-	if msg, ok := msgCache.Msgs[msgid]; ok {
+	if msg, ok := msgCache.Msgs[string(msgid)]; ok {
 		msgCache.RUnlock()
 		return msg, true
 	}
@@ -41,75 +49,149 @@ func (msgCache *MsgCache) Get(msgid string) ([]byte, bool) {
 	return nil, false
 }
 
-// MsgIdCache
-type MsgIdCache struct {
+// MsgIdManger 推送消息Id缓存，离线用户用来查看自己是否有消息需要拉取,网关或者消息中心推送的消息id通过acc、topic为键值来存放数据ID
+type MsgIdManger struct {
 	sync.RWMutex
-	AccMsg map[string]*AccMsg
+	AccMap map[string]*AccTopicMap
 }
 
-type AccMsg struct {
+func (mim *MsgIdManger) InsertTextMsgID(msg *proto.PubTextMsg) error {
+	mim.RLock()
+	acc, ok := mim.AccMap[string(msg.ToAcc)]
+	mim.RUnlock()
+
+	// Logger.Info("InsertTextMsgID", zap.String("ToAcc", tools.Bytes2String(msg.ToAcc)), zap.String("Ttp", tools.Bytes2String(msg.Ttp)), zap.String("msgid", tools.Bytes2String(msg.Mid)))
+
+	if ok {
+		acc.Lock()
+		tm, ok := acc.TopicMsgID[string(msg.Ttp)]
+		if ok {
+			msgid := NewMsgID(msg)
+			tm.MsgID[string(msg.Mid)] = msgid
+			log.Println("InsertTextMsgID msg , msgid is", string(msgid.MsgID))
+		} else {
+			tm := NewTopicIDMap()
+			acc.TopicMsgID[string(msg.Ttp)] = tm
+			msgid := NewMsgID(msg)
+			tm.MsgID[string(msg.Mid)] = msgid
+			log.Println("InsertTextMsgID msg , msgid is", string(msgid.MsgID))
+		}
+		acc.Unlock()
+	} else {
+		acc := NewAccTopicMap()
+
+		mim.Lock()
+		mim.AccMap[string(msg.ToAcc)] = acc
+		mim.Unlock()
+
+		tm := NewTopicIDMap()
+
+		acc.Lock()
+		acc.TopicMsgID[string(msg.Ttp)] = tm
+		msgid := NewMsgID(msg)
+		tm.MsgID[string(msg.Mid)] = msgid
+		log.Println("InsertTextMsgID msg , msgid is", string(msgid.MsgID))
+		acc.Unlock()
+	}
+	return nil
+}
+
+func (mim *MsgIdManger) Len(acc []byte, topic []byte) int {
+	mim.RLock()
+	accMap, ok := mim.AccMap[string(acc)]
+	mim.RUnlock()
+	if ok {
+		accMap.RLock()
+		msgids, ok := accMap.TopicMsgID[string(topic)]
+		accMap.RUnlock()
+		if ok {
+			return len(msgids.MsgID)
+		}
+	}
+	return 0
+}
+
+func (mim *MsgIdManger) GetMsgIDs(acc []byte, topic []byte) *TopicIDMap {
+	mim.RLock()
+	accMap, ok := mim.AccMap[string(acc)]
+	mim.RUnlock()
+	if ok {
+		accMap.RLock()
+		msgids, ok := accMap.TopicMsgID[string(topic)]
+		accMap.RUnlock()
+		if ok {
+			return msgids
+		}
+	}
+	return nil
+}
+
+func (mim *MsgIdManger) TextMsgAck(acc []byte, topic []byte, msgid []byte) error {
+	mim.RLock()
+	accMap, ok := mim.AccMap[string(acc)]
+	mim.RUnlock()
+	Logger.Info("TextMsgAck", zap.String("topic", tools.Bytes2String(topic)), zap.String("msgid", tools.Bytes2String(msgid)))
+	if ok {
+		accMap.Lock()
+		if topicMsg, ok := accMap.TopicMsgID[string(topic)]; ok {
+			delete(topicMsg.MsgID, tools.Bytes2String(msgid))
+			Logger.Info("TextMsgAck", zap.String("msgid", tools.Bytes2String(msgid)))
+		}
+		accMap.Unlock()
+	}
+	return nil
+}
+
+func NewMsgIdManger() *MsgIdManger {
+	msgidm := &MsgIdManger{
+		AccMap: make(map[string]*AccTopicMap),
+	}
+	return msgidm
+}
+
+// AccTopicMap AccTopicMap里面存放的是各个topic和该topic相关的消息id
+type AccTopicMap struct {
 	sync.RWMutex
-	AppMsg map[string]*AppMsgIDs
+	TopicMsgID map[string]*TopicIDMap
 }
 
-func NewAccMsg() *AccMsg {
-	return &AccMsg{AppMsg: make(map[string]*AppMsgIDs)}
+func NewAccTopicMap() *AccTopicMap {
+	tm := &AccTopicMap{
+		TopicMsgID: make(map[string]*TopicIDMap),
+	}
+	return tm
 }
 
-type AppMsgIDs struct {
-	// 单播
-	SIDs *SPushID
-	// 私聊
-	PIDs *PPushID
-	// 广播
-	BIDs *BPushID
-	// 群聊
-	GIDs *GPushID
+// TopicIDMap topic对应的消息idmap
+type TopicIDMap struct {
+	MsgID map[string]*MsgID
 }
 
-func NewAppMsgIDs() *AppMsgIDs {
-	apms := &AppMsgIDs{}
-	return apms
+func NewTopicIDMap() *TopicIDMap {
+	tm := &TopicIDMap{
+		MsgID: make(map[string]*MsgID),
+	}
+	return tm
 }
 
+// MsgID 每条消息的具体信息
 type MsgID struct {
-	Qos int
+	MsgTy      int32  // 消息类型
+	MsgQos     int32  // 消息Qos
+	RetryCount int32  // 消息重发次数
+	Expiration int64  // 消息过期时间
+	RecvTime   int64  // 消息接收时间
+	MsgID      []byte // 消息ID
 }
 
-type SPushID struct {
-	IDs map[string]*MsgID
-}
-
-func NewSPushID() *SPushID {
-	return &SPushID{IDs: make(map[string]*MsgID)}
-}
-
-type PPushID struct {
-	IDs map[string]*MsgID
-}
-
-func NewPPushID() *PPushID {
-	return &PPushID{IDs: make(map[string]*MsgID)}
-}
-
-type BPushID struct {
-	IDs   []*MsgID
-	Index map[string]int
-}
-
-func NewBPushID() *BPushID {
-	return &BPushID{IDs: make([]*MsgID, 0), Index: make(map[string]int)}
-}
-
-type GPushID struct {
-	IDs   []*MsgID
-	Index map[string]int
-}
-
-func NewGPushID() *GPushID {
-	return &GPushID{IDs: make([]*MsgID, 0), Index: make(map[string]int)}
-}
-
-func NewMsgIdCache() *MsgIdCache {
-	return &MsgIdCache{AccMsg: make(map[string]*AccMsg)}
+func NewMsgID(msg *proto.PubTextMsg) *MsgID {
+	msgID := &MsgID{
+		// MsgTy:
+		// Expiration: msg.Qos,
+		// RecvTime:   msg.Qos,
+		// RetryCount: msg.RetryCount,
+		MsgQos: msg.Qos,
+		MsgID:  msg.Mid,
+	}
+	return msgID
 }

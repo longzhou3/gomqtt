@@ -8,17 +8,20 @@ import (
 )
 
 type Stream struct {
-	upa   *UpdateAddr
-	rpc   *Rpc
-	cache *Cache
-	hash  *Hash
-	nats  *natsInfo
+	upa      *UpdateAddr
+	rpc      *Rpc
+	cache    *Cache
+	hash     *Hash
+	nats     *natsInfo
+	taskChan chan *taskMsg
 }
 
 var gStream *Stream
 
 func New() *Stream {
-	stream := &Stream{}
+	stream := &Stream{
+		taskChan: make(chan *taskMsg, 100),
+	}
 	return stream
 }
 
@@ -67,6 +70,9 @@ func (s *Stream) Start(isStatic bool) {
 
 	// upa start
 	s.upa.Start()
+
+	// 处理登陆发送离线消息或者订阅主题的离线消息
+	startDealTask(20)
 
 	go httpStart()
 }

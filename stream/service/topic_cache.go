@@ -6,6 +6,12 @@ import (
 	"github.com/corego/tools"
 )
 
+// 对于内存中广播消息ID的存储，需要每台Stream都要保存一份
+
+// 广播需要保存
+// stream --->>>>>> topic --- {msgids}
+// stream --->>>>>> topic --- {acc, {appids}}
+
 type btCache struct {
 	sync.RWMutex
 	bts map[string]*bpushAppIDs

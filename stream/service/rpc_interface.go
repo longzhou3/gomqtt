@@ -75,6 +75,16 @@ func (rpc *Rpc) Login(ctx context.Context, msg *proto.LoginMsg) (*proto.LoginRet
 	}
 	// insert cid
 	gStream.cache.Cids.add(msg)
+
+	task := &taskMsg{
+		cid: msg.Cid,
+		acc: msg.Acc,
+		ts:  msg.Ts,
+	}
+
+	log.Println(task)
+	addTask(task)
+
 	return &proto.LoginRet{R: true, M: []byte("ok")}, nil
 }
 
@@ -136,6 +146,12 @@ func (rpc *Rpc) PubText(ctx context.Context, msg *proto.PubTextMsg) (*proto.PubT
 	if !ok {
 		return &proto.PubTextRet{R: false, M: []byte(fmt.Sprint("unfind cid %d", msg.Cid))}, nil
 	}
+
+	// msg insert mem
+	gStream.cache.msgCache.Insert(msg.Mid, msg.Msg)
+	// msgid insert mem
+	gStream.cache.msgIDManger.InsertTextMsgID(msg)
+
 	if acc, appid, ok := gStream.cache.As.GetAccAndAppID(accMsg.acc, accMsg.appID); ok {
 		// 通过 acc topic找到cid
 		if err := gStream.cache.As.PubText(acc, appid, msg); err != nil {
@@ -148,7 +164,11 @@ func (rpc *Rpc) PubText(ctx context.Context, msg *proto.PubTextMsg) (*proto.PubT
 
 // 	(ctx context.Context, in *PubAckMsg, opts ...grpc.CallOption) (*PubAckRet, error)
 func (rpc *Rpc) PubAck(ctx context.Context, msg *proto.PubAckMsg) (*proto.PubAckRet, error) {
-
+	for _, msgidMsg := range msg.Mids {
+		// gStream.cache.msgCache.Get(msgid)
+		gStream.cache.msgCache.Delete(msgidMsg.Mid)
+		gStream.cache.msgIDManger.TextMsgAck(msg.Acc, msgidMsg.Tp, msgidMsg.Mid)
+	}
 	return &proto.PubAckRet{R: true, M: []byte("PubAck 成功调用")}, nil
 }
 
