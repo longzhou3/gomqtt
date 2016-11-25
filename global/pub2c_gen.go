@@ -242,6 +242,11 @@ func (z *TextMsg) DecodeMsg(dc *msgp.Reader) (err error) {
 			if err != nil {
 				return
 			}
+		case "rc":
+			z.RetryCount, err = dc.ReadInt32()
+			if err != nil {
+				return
+			}
 		case "q":
 			z.Qos, err = dc.ReadInt32()
 			if err != nil {
@@ -269,9 +274,9 @@ func (z *TextMsg) DecodeMsg(dc *msgp.Reader) (err error) {
 
 // EncodeMsg implements msgp.Encodable
 func (z *TextMsg) EncodeMsg(en *msgp.Writer) (err error) {
-	// map header, size 5
+	// map header, size 6
 	// write "fac"
-	err = en.Append(0x85, 0xa3, 0x66, 0x61, 0x63)
+	err = en.Append(0x86, 0xa3, 0x66, 0x61, 0x63)
 	if err != nil {
 		return err
 	}
@@ -285,6 +290,15 @@ func (z *TextMsg) EncodeMsg(en *msgp.Writer) (err error) {
 		return err
 	}
 	err = en.WriteBytes(z.FTopic)
+	if err != nil {
+		return
+	}
+	// write "rc"
+	err = en.Append(0xa2, 0x72, 0x63)
+	if err != nil {
+		return err
+	}
+	err = en.WriteInt32(z.RetryCount)
 	if err != nil {
 		return
 	}
@@ -321,13 +335,16 @@ func (z *TextMsg) EncodeMsg(en *msgp.Writer) (err error) {
 // MarshalMsg implements msgp.Marshaler
 func (z *TextMsg) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
-	// map header, size 5
+	// map header, size 6
 	// string "fac"
-	o = append(o, 0x85, 0xa3, 0x66, 0x61, 0x63)
+	o = append(o, 0x86, 0xa3, 0x66, 0x61, 0x63)
 	o = msgp.AppendBytes(o, z.FAcc)
 	// string "ft"
 	o = append(o, 0xa2, 0x66, 0x74)
 	o = msgp.AppendBytes(o, z.FTopic)
+	// string "rc"
+	o = append(o, 0xa2, 0x72, 0x63)
+	o = msgp.AppendInt32(o, z.RetryCount)
 	// string "q"
 	o = append(o, 0xa1, 0x71)
 	o = msgp.AppendInt32(o, z.Qos)
@@ -366,6 +383,11 @@ func (z *TextMsg) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			if err != nil {
 				return
 			}
+		case "rc":
+			z.RetryCount, bts, err = msgp.ReadInt32Bytes(bts)
+			if err != nil {
+				return
+			}
 		case "q":
 			z.Qos, bts, err = msgp.ReadInt32Bytes(bts)
 			if err != nil {
@@ -394,7 +416,7 @@ func (z *TextMsg) UnmarshalMsg(bts []byte) (o []byte, err error) {
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *TextMsg) Msgsize() (s int) {
-	s = 1 + 4 + msgp.BytesPrefixSize + len(z.FAcc) + 3 + msgp.BytesPrefixSize + len(z.FTopic) + 2 + msgp.Int32Size + 3 + msgp.BytesPrefixSize + len(z.MsgID) + 2 + msgp.BytesPrefixSize + len(z.Msg)
+	s = 1 + 4 + msgp.BytesPrefixSize + len(z.FAcc) + 3 + msgp.BytesPrefixSize + len(z.FTopic) + 3 + msgp.Int32Size + 2 + msgp.Int32Size + 3 + msgp.BytesPrefixSize + len(z.MsgID) + 2 + msgp.BytesPrefixSize + len(z.Msg)
 	return
 }
 

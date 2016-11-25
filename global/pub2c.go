@@ -16,11 +16,12 @@ type TextMsgs struct {
 
 // TextMsg package
 type TextMsg struct {
-	FAcc   []byte `msg:"fac"`
-	FTopic []byte `msg:"ft"`
-	Qos    int32  `msg:"q"`
-	MsgID  []byte `msg:"mi"`
-	Msg    []byte `msg:"m"`
+	FAcc       []byte `msg:"fac"`
+	FTopic     []byte `msg:"ft"`
+	RetryCount int32  `msg:"rc"`
+	Qos        int32  `msg:"q"`
+	MsgID      []byte `msg:"mi"`
+	Msg        []byte `msg:"m"`
 }
 
 // @Delete
