@@ -1,5 +1,6 @@
 package gate
 
+/* 各种业务类型转换集合 */
 import (
 	"bytes"
 	"errors"

@@ -1,5 +1,6 @@
 package gate
 
+/* Tcp协议容器管理 */
 import (
 	"io"
 	"net"
@@ -57,7 +58,12 @@ func (tp *TcpProvider) Start() {
 			}
 		}
 
-		go serve(c)
+		// init a new connInfo
+		ci := &connInfo{}
+		ci.tp = 1
+		ci.c = c
+
+		go serve(ci)
 	}
 }
 

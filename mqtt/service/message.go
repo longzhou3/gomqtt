@@ -6,6 +6,8 @@ import (
 	"net"
 
 	proto "github.com/aiyun/gomqtt/mqtt/protocol"
+
+	"github.com/gorilla/websocket"
 )
 
 // ReadPacket read one packet from conn
@@ -130,5 +132,40 @@ func WritePacket(conn net.Conn, p proto.Packet) error {
 		return err
 	}
 	_, err = conn.Write(buf)
+	return err
+}
+
+func ReadWsPacket(conn *websocket.Conn) (proto.Packet, error) {
+	_, msg, err := conn.ReadMessage()
+	if err != nil {
+		return nil, err
+	}
+
+	// 消息类型是包体的第一个字节右移4位
+	mtype := proto.PacketType(msg[0] >> 4)
+
+	// 根据消息类型创建新的消息结构
+	m, err := mtype.New()
+
+	//解码消息体
+	_, err = m.Decode(msg)
+	if err != nil {
+		return nil, err
+	}
+
+	return m, nil
+}
+
+func WriteWsPacket(conn *websocket.Conn, p proto.Packet) error {
+	_, buf, err := p.Encode()
+	if err != nil {
+		return err
+	}
+
+	w, err := conn.NextWriter(websocket.TextMessage)
+	if err != nil {
+		return err
+	}
+	_, err = w.Write(buf)
 	return err
 }

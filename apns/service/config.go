@@ -131,6 +131,7 @@ func uploadEtcd(cli *clientv3.Client) {
 			Grant, err := etcdCli.Grant(context.TODO(), 15)
 			if err != nil {
 				Logger.Warn("etcd grant error", zap.Error(err))
+				goto Sleep
 			}
 
 			_, err = etcdCli.Put(context.TODO(), key, addr, clientv3.WithLease(Grant.ID))
@@ -138,6 +139,7 @@ func uploadEtcd(cli *clientv3.Client) {
 				Logger.Warn("etcd put error", zap.Error(err))
 			}
 
+		Sleep:
 			time.Sleep(5 * time.Second)
 		}
 	}()

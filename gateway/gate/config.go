@@ -1,5 +1,6 @@
 package gate
 
+/* config配置管理,etcd管理等 */
 import (
 	"context"
 	"errors"
@@ -41,6 +42,8 @@ type Config struct {
 		EnableTls bool
 		TlsCert   string
 		TlsKey    string
+
+		WsAddr string
 	}
 
 	Etcd struct {
@@ -88,6 +91,7 @@ var mux = &sync.RWMutex{}
 // nats.conn
 var nc *nats.Conn
 
+// 解析、加载、启动各类Config
 func loadConfig(staticConf bool) error {
 	var contents []byte
 	var err error
@@ -145,6 +149,7 @@ func loadConfig(staticConf bool) error {
 	return nil
 }
 
+// 检查config合法性
 func checkConfig() error {
 	if Conf.Mqtt.MinKeepalive < 10 {
 		return errors.New("mqtt.minkeepalive mustn't below 10")
@@ -161,6 +166,7 @@ func checkConfig() error {
 	return nil
 }
 
+// 通过Etcd实时获取stream的地址列表,并初始化对应的rpc连接
 // update the stream addrs
 //  etcdctl --endpoints="http://10.7.24.191:2379"  set "/gomqtt/gateway/dispatch/addr" :8906
 // sudo confd -watch -backend etcd -node http://10.7.24.191:2379
@@ -236,6 +242,7 @@ func watchEtcd(cli *clientv3.Client) {
 	}()
 }
 
+// 将本gateway的ip或者域名上传到etcd，以供dispatch服务使用
 func uploadEtcd(cli *clientv3.Client) {
 	key := Conf.Etcd.Rooms + "/" + getHost()
 
@@ -254,6 +261,7 @@ func uploadEtcd(cli *clientv3.Client) {
 			Grant, err := cli.Grant(context.TODO(), 30)
 			if err != nil {
 				Logger.Warn("etcd grant error", zap.Error(err))
+				goto Sleep
 			}
 
 			_, err = cli.Put(context.TODO(), key, addr, clientv3.WithLease(Grant.ID))
@@ -261,6 +269,7 @@ func uploadEtcd(cli *clientv3.Client) {
 				Logger.Warn("etcd put error", zap.Error(err))
 			}
 
+		Sleep:
 			time.Sleep(10 * time.Second)
 		}
 	}()

@@ -1,10 +1,10 @@
 package gate
 
+/* Mqtt协议Subscribe报文处理模块 */
 import (
 	"errors"
 
 	proto "github.com/aiyun/gomqtt/mqtt/protocol"
-	"github.com/aiyun/gomqtt/mqtt/service"
 
 	"fmt"
 
@@ -31,7 +31,7 @@ func subscribe(ci *connInfo, p *proto.SubscribePacket) error {
 
 	// return the final qos level
 	pb.AddReturnCodes(rets)
-	service.WritePacket(ci.c, pb)
+	write(ci, pb)
 
 	return nil
 }
@@ -53,7 +53,7 @@ func unsubscribe(ci *connInfo, p *proto.UnsubscribePacket) error {
 	pb := proto.NewUnsubackPacket()
 	pb.SetPacketID(p.PacketID())
 
-	service.WritePacket(ci.c, pb)
+	write(ci, pb)
 	return nil
 }
 

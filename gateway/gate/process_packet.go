@@ -1,12 +1,12 @@
 package gate
 
+/* 处理mqtt协议包逻辑的主体模块,Mqtt包解析在serve模块 */
 import (
 	"errors"
 
 	"fmt"
 
 	proto "github.com/aiyun/gomqtt/mqtt/protocol"
-	"github.com/aiyun/gomqtt/mqtt/service"
 )
 
 func processPacket(ci *connInfo, pt proto.Packet) error {
@@ -53,5 +53,5 @@ func processPacket(ci *connInfo, pt proto.Packet) error {
 
 func pingReq(ci *connInfo) {
 	pb := proto.NewPingrespPacket()
-	service.WritePacket(ci.c, pb)
+	write(ci, pb)
 }

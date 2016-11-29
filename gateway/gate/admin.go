@@ -1,5 +1,6 @@
 package gate
 
+/* 管理和监控服务 */
 import (
 	"fmt"
 	"os"
@@ -27,6 +28,7 @@ func adminStart() {
 func reload(c echo.Context) error {
 	loadConfig(false)
 
+	c.Response().Writer()
 	return nil
 }
 

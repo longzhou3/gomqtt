@@ -1,5 +1,6 @@
 package gate
 
+/* 多协议容器管理模块 */
 type Provider interface {
 	Start()
 	Close() error

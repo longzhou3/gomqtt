@@ -1,11 +1,11 @@
 package gate
 
+/* Mqtt协议Publish报文处理模块 */
 import (
 	"errors"
 
 	"github.com/aiyun/gomqtt/global"
 	proto "github.com/aiyun/gomqtt/mqtt/protocol"
-	"github.com/aiyun/gomqtt/mqtt/service"
 	"github.com/aiyun/gomqtt/uuid"
 	"github.com/corego/tools"
 	"github.com/uber-go/zap"
@@ -54,7 +54,7 @@ func publish(ci *connInfo, p *proto.PublishPacket) error {
 	if p.QoS() >= 1 {
 		pb := proto.NewPubackPacket()
 		pb.SetPacketID(p.PacketID())
-		service.WritePacket(ci.c, pb)
+		write(ci, pb)
 	}
 
 	return nil

@@ -1,5 +1,6 @@
 package gate
 
+/* gateway启动主模块 */
 import (
 	"log"
 	"time"

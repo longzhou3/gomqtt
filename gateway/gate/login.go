@@ -1,5 +1,6 @@
 package gate
 
+/* 登录一体化模块 */
 import (
 	"strconv"
 
@@ -9,7 +10,6 @@ import (
 	"fmt"
 
 	proto "github.com/aiyun/gomqtt/mqtt/protocol"
-	"github.com/aiyun/gomqtt/mqtt/service"
 	rpc "github.com/aiyun/gomqtt/proto"
 )
 
@@ -41,7 +41,7 @@ func loginAndSub(ci *connInfo, tps [][]byte, qoses []byte, pid uint16) error {
 		AppID: ci.appID,
 		PT:    ci.payloadProtoType,
 		Cid:   ci.id,
-		Gip:   tools.String2Bytes(ci.c.LocalAddr().String()),
+		Gip:   tools.String2Bytes(ci.rip),
 		Ts:    topics,
 	})
 	if err != nil {
@@ -54,7 +54,7 @@ func loginAndSub(ci *connInfo, tps [][]byte, qoses []byte, pid uint16) error {
 
 	// return the final qos level
 	pb.AddReturnCodes(rets)
-	service.WritePacket(ci.c, pb)
+	write(ci, pb)
 
 	ci.isSubed = true
 	return nil

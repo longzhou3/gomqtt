@@ -1,5 +1,6 @@
 package gate
 
+/* mqtt connect包处理模块 */
 import (
 	"errors"
 	"fmt"
@@ -7,7 +8,6 @@ import (
 
 	"github.com/aiyun/gomqtt/global"
 	proto "github.com/aiyun/gomqtt/mqtt/protocol"
-	"github.com/aiyun/gomqtt/mqtt/service"
 	"github.com/corego/tools"
 	"github.com/uber-go/zap"
 )
@@ -18,12 +18,12 @@ func connect(ci *connInfo) error {
 	reply.SetReturnCode(code)
 	if err != nil {
 		Logger.Info("user connect failed", zap.Int64("cid", ci.id), zap.Error(err), zap.String("acc", tools.Bytes2String(ci.acc)),
-			zap.String("user", tools.Bytes2String(ci.appID)), zap.String("password", tools.Bytes2String(ci.cp.Password())))
-		service.WritePacket(ci.c, reply)
+			zap.String("user", tools.Bytes2String(ci.appID)))
+		write(ci, reply)
 		return err
 	}
 
-	if err := service.WritePacket(ci.c, reply); err != nil {
+	if err := write(ci, reply); err != nil {
 		Logger.Info("write connecaccept failed", zap.Int64("cid", ci.id), zap.Error(err),
 			zap.String("acc", tools.Bytes2String(ci.acc)), zap.String("user", tools.Bytes2String(ci.appID)), zap.String("password", tools.Bytes2String(ci.cp.Password())))
 		return err
@@ -35,9 +35,9 @@ func connect(ci *connInfo) error {
 func initConnection(ci *connInfo) (error, proto.ConnackCode) {
 	// wait for connect and init connection
 	// the first packet is connect type,we need to restrain the read deadline
-	ci.c.SetReadDeadline(time.Now().Add(10 * time.Second))
+	setReadDeadline(ci, time.Now().Add(10*time.Second))
 
-	pt, _, _, err := service.ReadPacket(ci.c)
+	pt, err := read(ci)
 	if err != nil {
 		code, ok := err.(proto.ConnackCode)
 		if ok {
@@ -57,7 +57,7 @@ func initConnection(ci *connInfo) (error, proto.ConnackCode) {
 	accTrans(ci)
 
 	// validate the user
-	ok = userValidate(ci.acc, ci.cp.Password())
+	ok = validate(ci.acc, ci.cp.Password())
 	if !ok {
 		return errors.New("validate failed"), proto.ErrIdentifierRejected
 	}

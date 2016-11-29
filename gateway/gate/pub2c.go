@@ -1,5 +1,6 @@
 package gate
 
+/* 接收从Stream发送到客户端的消息，Pub2Client */
 import (
 	"bytes"
 	"fmt"
@@ -10,11 +11,11 @@ import (
 	"github.com/uber-go/zap"
 
 	proto "github.com/aiyun/gomqtt/mqtt/protocol"
-	"github.com/aiyun/gomqtt/mqtt/service"
 
 	rpc "github.com/aiyun/gomqtt/proto"
 )
 
+// 从nats接收订阅消息，然后推送给客户端
 func pub2c(ci *connInfo, msg *nats.Msg) {
 	//如果还未登录成功，等待500毫秒
 	//这里解决stream登录和订阅消息的异步问题: login rpc还没返回，但是订阅的消息已经发送古来
@@ -43,6 +44,7 @@ func pub2c(ci *connInfo, msg *nats.Msg) {
 
 }
 
+// publish Text格式的消息
 func pubText(ci *connInfo, m *global.TextMsgs) error {
 	for _, msg := range m.Msgs {
 		p := proto.NewPublishPacket()
@@ -60,7 +62,7 @@ func pubText(ci *connInfo, m *global.TextMsgs) error {
 		p.SetPacketID(id)
 
 		Logger.Debug("recv nats msg", zap.String("msg", string(msg.Msg)), zap.Int("id", int(id)))
-		err = service.WritePacket(ci.c, p)
+		err = write(ci, p)
 		if err != nil {
 			return err
 		}

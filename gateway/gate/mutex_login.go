@@ -1,5 +1,7 @@
 package gate
 
+/* 互斥登录模块
+4种互斥登录模式，通过mutex.type进行配置*/
 import (
 	"sync"
 
@@ -25,7 +27,7 @@ func mutexLogin(ci *connInfo) {
 
 		if ok {
 			// kick off the former connections
-			acc.ci.c.Close()
+			closeConn(acc.ci)
 
 			// wait for kick off done
 			<-acc.ci.relogin
@@ -46,7 +48,7 @@ func mutexLogin(ci *connInfo) {
 		if ok {
 			c, ok := acc.users[string(ci.appID)]
 			if ok {
-				c.c.Close()
+				closeConn(c)
 
 				<-c.relogin
 			}
@@ -67,7 +69,7 @@ func mutexLogin(ci *connInfo) {
 
 		if ok {
 			// kick off the former connections
-			acc.ci.c.Close()
+			closeConn(acc.ci)
 
 			// wait for kick off done
 			<-acc.ci.relogin
