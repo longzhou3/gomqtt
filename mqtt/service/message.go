@@ -162,10 +162,6 @@ func WriteWsPacket(conn *websocket.Conn, p proto.Packet) error {
 		return err
 	}
 
-	w, err := conn.NextWriter(websocket.TextMessage)
-	if err != nil {
-		return err
-	}
-	_, err = w.Write(buf)
+	err = conn.WriteMessage(websocket.TextMessage, buf)
 	return err
 }

@@ -3,7 +3,8 @@ package main
 import (
 	"log"
 	"net/url"
-	"time"
+
+	"fmt"
 
 	proto "github.com/aiyun/gomqtt/mqtt/protocol"
 	"github.com/gorilla/websocket"
@@ -35,7 +36,21 @@ func main() {
 	}
 
 	c.WriteMessage(websocket.TextMessage, b)
-	//	conn.Write(b)
+
+	_, bb1, err := c.ReadMessage()
+
+	mtype1 := proto.PacketType(bb1[0] >> 4)
+
+	// 根据消息类型创建新的消息结构
+	m1, err := mtype1.New()
+
+	//解码消息体
+	_, err = m1.Decode(bb1)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("%T\n", m1)
 
 	// 订阅
 	pt1 := proto.NewSubscribePacket()
@@ -50,10 +65,22 @@ func main() {
 	}
 
 	c.WriteMessage(websocket.TextMessage, b)
-	//	conn.Write(b)
 
-	time.Sleep(2 * time.Second)
+	_, bb2, err := c.ReadMessage()
 
+	mtype2 := proto.PacketType(bb2[0] >> 4)
+
+	// 根据消息类型创建新的消息结构
+	m2, err := mtype2.New()
+
+	//解码消息体
+	_, err = m2.Decode(bb2)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("%T\n", m2)
+	// 发布消息
 	pt2 := proto.NewPublishPacket()
 	pt2.SetPacketID(3)
 	pt2.SetQoS(byte(1))
