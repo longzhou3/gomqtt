@@ -3,7 +3,6 @@ package service
 import (
 	"bytes"
 	"fmt"
-	"log"
 	"runtime"
 	"strconv"
 	"sync"
@@ -129,7 +128,6 @@ func (c *Controller) Publish(data CacheTask) {
 	for lower := sequence - c.reservations + 1; lower <= sequence; lower++ {
 		c.ring[lower&c.bufferMask] = data
 	}
-	log.Println("Commit", getGID(), sequence-c.reservations+1, sequence)
 	// 提交
 	writer.Commit(sequence-c.reservations+1, sequence)
 }
@@ -175,7 +173,6 @@ func (this Writer) Consume(lower, upper int64) {
 			ret := &CacheRet{
 				MsgIDs: tm,
 			}
-			log.Println("CACHE_SELECT  ", &bufPool.Data.RetChan, tm)
 			bufPool.Data.RetChan <- ret
 			// gRetChan <- ret
 			break

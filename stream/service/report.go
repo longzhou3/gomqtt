@@ -23,11 +23,11 @@ func (upa *UpdateAddr) Init() {
 	if err != nil {
 		Logger.Panic("Init", zap.Error(err))
 	}
-	keylen := len(Conf.EtcdC.Reportdir)
-	if keylen > 0 && Conf.EtcdC.Reportdir[keylen-1] != '/' {
-		upa.ReportKey = Conf.EtcdC.Reportdir + "/" + reportKey
+	keylen := len(Conf.EtcdC.ReportDir)
+	if keylen > 0 && Conf.EtcdC.ReportDir[keylen-1] != '/' {
+		upa.ReportKey = Conf.EtcdC.ReportDir + "/" + reportKey
 	} else {
-		upa.ReportKey = Conf.EtcdC.Reportdir + reportKey
+		upa.ReportKey = Conf.EtcdC.ReportDir + reportKey
 	}
 
 	Logger.Info("Init", zap.String("@Key", upa.ReportKey), zap.String("addr", Conf.GrpcC.Addr))
@@ -58,7 +58,7 @@ func (upa *UpdateAddr) Close() error {
 
 func (upa *UpdateAddr) WathchWork() {
 	for {
-		rch := upa.Client.Watch(context.Background(), Conf.EtcdC.Reportdir, clientv3.WithPrefix())
+		rch := upa.Client.Watch(context.Background(), Conf.EtcdC.ReportDir, clientv3.WithPrefix())
 		for wresp := range rch {
 			for _, ev := range wresp.Events {
 				comput := false

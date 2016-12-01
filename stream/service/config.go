@@ -34,7 +34,7 @@ type EtcdConfig struct {
 	Dltimeout  int
 	Rqtimeout  int
 	ReportTime int64
-	Reportdir  string
+	ReportDir  string
 	TTL        int64
 }
 
