@@ -102,7 +102,8 @@ func (upa *UpdateAddr) RegisterWork() {
 func (upa *UpdateAddr) Put(key, value string, ttl int64) error {
 	Grant, err := upa.Client.Grant(context.TODO(), ttl)
 	if err != nil {
-		Logger.Panic("Etcd", zap.Error(err), zap.Int64("@ReportTime", ttl))
+		Logger.Error("Etcd", zap.Error(err), zap.Int64("@ReportTime", ttl))
+		return err
 	}
 	_, err = upa.Client.Put(context.TODO(), key, value, clientv3.WithLease(Grant.ID))
 	if err != nil {

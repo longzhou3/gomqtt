@@ -2,7 +2,6 @@ package service
 
 import (
 	"fmt"
-	"log"
 	"strconv"
 	"sync"
 	"time"
@@ -150,9 +149,9 @@ func (acc *Account) Login(msg *proto.LoginMsg) error {
 		}
 	}
 
-	for k, v := range acc.STopics {
-		log.Println("查看订阅", k, v)
-	}
+	// for k, v := range acc.STopics {
+	// 	log.Println("topic", k, v)
+	// }
 	// 订阅
 	for _, topic := range msg.Ts {
 		appID.Topics[string(topic.Tp)] = topic
@@ -228,6 +227,7 @@ func (acc *Account) UnSubscribe(un []byte, msg *proto.UnSubMsg) error {
 
 func (acc *Account) PubText(facc *Account, appid *AppID, msg *proto.PubTextMsg) error {
 	if tycid, ok := acc.STopics[string(msg.Ttp)]; ok {
+		// 保存消息
 		if tycid.nastTopic != "0" {
 			var Qos int32
 			if msg.Qos <= tycid.qos {
@@ -263,7 +263,6 @@ type AppID struct {
 	LastLogout int64  // 最后登出时间
 	ApnsToken  []byte // apns token
 	Topics     map[string]*proto.Topic
-	// Topics     [][]byte // topic列表
 }
 
 func NewAppID() *AppID {

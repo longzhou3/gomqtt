@@ -8,6 +8,7 @@ import (
 
 	"github.com/aiyun/gomqtt/global"
 	"github.com/aiyun/gomqtt/proto"
+	"github.com/corego/tools"
 	"github.com/nats-io/nats"
 	"github.com/uber-go/zap"
 )
@@ -74,14 +75,17 @@ func initNatsConn(addrs []string) *nats.Conn {
 
 // taskMsg msg
 type taskMsg struct {
-	cid int64
-	acc []byte
-	ts  []*proto.Topic
+	cid     int64
+	acc     []byte
+	queue   *Controller
+	retChan chan *CacheRet
+	ts      []*proto.Topic
 }
 
-func addTask(t *taskMsg) {
+var gRetChan chan *CacheRet
 
-	log.Println("addTask", t)
+func addTask(t *taskMsg) {
+	// log.Println("addTask", t)
 	gStream.taskChan <- t
 }
 
@@ -115,7 +119,7 @@ func dealTask(ch chan *taskMsg, sc chan bool) {
 				break
 			}
 			// Logger.Info("dealTask", zap.Object("taskMsg", t))
-			log.Println("dealTask", t)
+			// log.Println("dealTask", t)
 			PushOffLineMsg(t)
 			break
 		case <-sc:
@@ -128,19 +132,42 @@ func dealTask(ch chan *taskMsg, sc chan bool) {
 
 func PushOffLineMsg(t *taskMsg) {
 	for _, topicMsg := range t.ts {
-		// topicMsg.
+		cacheTask := CacheTask{
+			MsgTy:   CACHE_SELECT,
+			Acc:     t.acc,
+			Topic:   topicMsg.Tp,
+			RetChan: t.retChan,
+		}
+		t.queue.Publish(cacheTask)
 
-		msgids := gStream.cache.msgIDManger.GetMsgIDs(t.acc, topicMsg.Tp)
-
-		if msgids != nil {
-			for mmm, msgidMsg := range msgids.MsgID {
+		retCache, ok := <-t.retChan
+		if !ok {
+			Logger.Error("PushOffLineMsg", zap.String("Acc", tools.Bytes2String(t.acc)))
+			return
+		}
+		if retCache.MsgIDs != nil {
+			for mmm, msgidMsg := range retCache.MsgIDs.MsgID {
 				log.Println(mmm, "----------msgidMsg : ", msgidMsg)
 			}
 			// push
-			MsgsCacha := make([]*global.TextMsg, 0, len(msgids.MsgID))
+			MsgsCacha := make([]*global.TextMsg, 0, len(retCache.MsgIDs.MsgID))
 			// get Msg
-			for _, msgidMsg := range msgids.MsgID {
-				if data, ok := gStream.cache.msgCache.Get(msgidMsg.MsgID); ok {
+			for _, msgidMsg := range retCache.MsgIDs.MsgID {
+				Logger.Info("PushOffLineMsg", zap.String("msgid", tools.Bytes2String(msgidMsg.MsgID)))
+
+				getTask := CacheTask{
+					MsgTy:   CACHE_GET,
+					MsgIDs:  [][]byte{msgidMsg.MsgID},
+					RetChan: t.retChan,
+				}
+				t.queue.Publish(getTask)
+				retCache, ok := <-t.retChan
+				if !ok {
+					Logger.Error("PushOffLineMsg", zap.String("Acc", tools.Bytes2String(t.acc)))
+					return
+				}
+				// if data, ok := gStream.cache.msgCache.Get(msgidMsg.MsgID); ok {
+				if retCache.Data != nil {
 					var Qos int32
 					if msgidMsg.MsgQos <= topicMsg.Qos {
 						Qos = msgidMsg.MsgQos
@@ -153,16 +180,18 @@ func PushOffLineMsg(t *taskMsg) {
 						RetryCount: 3,
 						Qos:        Qos,
 						MsgID:      msgidMsg.MsgID,
-						Msg:        data,
+						Msg:        retCache.Data,
 					}
-					log.Println("data is  ", string(data))
+					log.Println("data is  ", string(retCache.Data))
 					MsgsCacha = append(MsgsCacha, Msg)
 				}
 			}
-			pushMsg := &global.TextMsgs{
-				Msgs: MsgsCacha,
+			if len(MsgsCacha) > 0 {
+				pushMsg := &global.TextMsgs{
+					Msgs: MsgsCacha,
+				}
+				gStream.nats.pushText(strconv.FormatInt(t.cid, 10), pushMsg)
 			}
-			gStream.nats.pushText(strconv.FormatInt(t.cid, 10), pushMsg)
 		}
 	}
 }

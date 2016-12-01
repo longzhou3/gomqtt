@@ -2,7 +2,6 @@ package service
 
 import (
 	"fmt"
-	"log"
 	"net"
 
 	context "golang.org/x/net/context"
@@ -50,41 +49,30 @@ func (r *Rpc) Close() error {
 	return nil
 }
 
-// 推送流程
-
-// 接收到消息查看在线
-// 在线推送
-// 是否要推送apns
-// 存放消息
-
-// Ack流程
-// 消息Ack
-
-// 用户相关设置流程
-
-// 群流程
-
 // ---------------- 用户相关接口  ----------------
 
 // Login 登陆
 func (rpc *Rpc) Login(ctx context.Context, msg *proto.LoginMsg) (*proto.LoginRet, error) {
 	err := gStream.cache.As.Login(msg)
 	if err != nil {
-		log.Println("login err ", err)
+		Logger.Error("Login", zap.Error(err), zap.String("Acc", tools.Bytes2String(msg.Acc)), zap.Int64("Cid", msg.Cid))
 		return &proto.LoginRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, err
 	}
 	// insert cid
-	gStream.cache.Cids.add(msg)
-
-	task := &taskMsg{
-		cid: msg.Cid,
-		acc: msg.Acc,
-		ts:  msg.Ts,
+	queue, retChan, err := gStream.cache.Cids.addAndRetQueueChan(msg)
+	if err != nil {
+		return &proto.LoginRet{R: false, M: []byte(fmt.Sprintf("%s", err.Error()))}, err
 	}
-
-	log.Println(task)
+	// (msg * proto.LoginMsg)(
+	task := &taskMsg{
+		cid:     msg.Cid,
+		acc:     msg.Acc,
+		queue:   queue,
+		retChan: retChan,
+		ts:      msg.Ts,
+	}
+	// log.Println(task)
 	addTask(task)
-
 	return &proto.LoginRet{R: true, M: []byte("ok")}, nil
 }
 
@@ -93,7 +81,6 @@ func (rpc *Rpc) Logout(ctx context.Context, msg *proto.LogoutMsg) (*proto.Logout
 	var err error
 	if acc, ok := gStream.cache.Cids.get(msg.Cid); ok {
 		gStream.cache.Cids.delete(msg.Cid)
-		// acc.acc.Logout(acc.appID)
 		err = gStream.cache.As.Logout(acc.acc, acc.appID)
 		if err != nil {
 			return &proto.LogoutRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, nil
@@ -146,11 +133,24 @@ func (rpc *Rpc) PubText(ctx context.Context, msg *proto.PubTextMsg) (*proto.PubT
 	if !ok {
 		return &proto.PubTextRet{R: false, M: []byte(fmt.Sprint("unfind cid %d", msg.Cid))}, nil
 	}
+	Logger.Info("Push", zap.String("ToAcc", tools.Bytes2String(msg.ToAcc)),
+		zap.String("Topic", tools.Bytes2String(msg.Ttp)), zap.String("Msg", tools.Bytes2String(msg.Msg)))
 
-	// msg insert mem
-	gStream.cache.msgCache.Insert(msg.Mid, msg.Msg)
-	// msgid insert mem
-	gStream.cache.msgIDManger.InsertTextMsgID(msg)
+	// 通过acc计算出队列
+	queue, err := GetQueue(msg.ToAcc)
+	if err != nil {
+		Logger.Error("GetQueue", zap.Error(err), zap.String("acc", tools.Bytes2String(msg.ToAcc)))
+		return nil, err
+	}
+	cacheTask := CacheTask{
+		MsgTy:  CACHE_INSERT,
+		Acc:    msg.ToAcc,
+		Topic:  msg.Ttp,
+		Msg:    msg,
+		MsgIDs: [][]byte{msg.Mid},
+	}
+
+	queue.Publish(cacheTask)
 
 	if acc, appid, ok := gStream.cache.As.GetAccAndAppID(accMsg.acc, accMsg.appID); ok {
 		// 通过 acc topic找到cid
@@ -166,8 +166,9 @@ func (rpc *Rpc) PubText(ctx context.Context, msg *proto.PubTextMsg) (*proto.PubT
 func (rpc *Rpc) PubAck(ctx context.Context, msg *proto.PubAckMsg) (*proto.PubAckRet, error) {
 	for _, msgidMsg := range msg.Mids {
 		// gStream.cache.msgCache.Get(msgid)
-		gStream.cache.msgCache.Delete(msgidMsg.Mid)
-		gStream.cache.msgIDManger.TextMsgAck(msg.Acc, msgidMsg.Tp, msgidMsg.Mid)
+		// gStream.cache.msgCache.Delete(msgidMsg.Mid)
+		// gStream.cache.msgIDManger.TextMsgAck(msg.Acc, msgidMsg.Tp, msgidMsg.Mid)
+		Logger.Info("PubAck", zap.String("msgid", tools.Bytes2String(msgidMsg.Mid)))
 	}
 	return &proto.PubAckRet{R: true, M: []byte("PubAck 成功调用")}, nil
 }
