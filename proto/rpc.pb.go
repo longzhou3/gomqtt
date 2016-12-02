@@ -9,11 +9,13 @@ It is generated from these files:
 	rpc.proto
 
 It has these top-level messages:
+	PubJsonMsg
+	PubJsonRet
 	PubTextMsg
+	PubTextRet
 	PubAckMsg
 	AckTopicMsgID
 	PubAckRet
-	PubTextRet
 	PubMsg
 	PubRet
 	BPushMsg
@@ -66,6 +68,32 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto1.ProtoPackageIsVersion2 // please upgrade the proto package
 
+// 推送Json消息结构
+type PubJsonMsg struct {
+	Cid   int64  `protobuf:"varint,1,opt,name=cid" json:"cid,omitempty"`
+	ToAcc []byte `protobuf:"bytes,2,opt,name=toAcc,proto3" json:"toAcc,omitempty"`
+	Ttp   []byte `protobuf:"bytes,3,opt,name=ttp,proto3" json:"ttp,omitempty"`
+	Qos   int32  `protobuf:"varint,4,opt,name=qos" json:"qos,omitempty"`
+	Mid   []byte `protobuf:"bytes,5,opt,name=mid,proto3" json:"mid,omitempty"`
+	Msg   []byte `protobuf:"bytes,6,opt,name=msg,proto3" json:"msg,omitempty"`
+}
+
+func (m *PubJsonMsg) Reset()                    { *m = PubJsonMsg{} }
+func (m *PubJsonMsg) String() string            { return proto1.CompactTextString(m) }
+func (*PubJsonMsg) ProtoMessage()               {}
+func (*PubJsonMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
+
+// 推送Json消息结构返回结果
+type PubJsonRet struct {
+	R bool   `protobuf:"varint,1,opt,name=r" json:"r,omitempty"`
+	M []byte `protobuf:"bytes,2,opt,name=m,proto3" json:"m,omitempty"`
+}
+
+func (m *PubJsonRet) Reset()                    { *m = PubJsonRet{} }
+func (m *PubJsonRet) String() string            { return proto1.CompactTextString(m) }
+func (*PubJsonRet) ProtoMessage()               {}
+func (*PubJsonRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
+
 // 推送text消息结构
 type PubTextMsg struct {
 	Cid   int64  `protobuf:"varint,1,opt,name=cid" json:"cid,omitempty"`
@@ -79,7 +107,18 @@ type PubTextMsg struct {
 func (m *PubTextMsg) Reset()                    { *m = PubTextMsg{} }
 func (m *PubTextMsg) String() string            { return proto1.CompactTextString(m) }
 func (*PubTextMsg) ProtoMessage()               {}
-func (*PubTextMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
+func (*PubTextMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2} }
+
+// 推送text消息结构返回结果
+type PubTextRet struct {
+	R bool   `protobuf:"varint,1,opt,name=r" json:"r,omitempty"`
+	M []byte `protobuf:"bytes,2,opt,name=m,proto3" json:"m,omitempty"`
+}
+
+func (m *PubTextRet) Reset()                    { *m = PubTextRet{} }
+func (m *PubTextRet) String() string            { return proto1.CompactTextString(m) }
+func (*PubTextRet) ProtoMessage()               {}
+func (*PubTextRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{3} }
 
 // 消息Ack
 type PubAckMsg struct {
@@ -90,7 +129,7 @@ type PubAckMsg struct {
 func (m *PubAckMsg) Reset()                    { *m = PubAckMsg{} }
 func (m *PubAckMsg) String() string            { return proto1.CompactTextString(m) }
 func (*PubAckMsg) ProtoMessage()               {}
-func (*PubAckMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
+func (*PubAckMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{4} }
 
 func (m *PubAckMsg) GetMids() []*AckTopicMsgID {
 	if m != nil {
@@ -107,7 +146,7 @@ type AckTopicMsgID struct {
 func (m *AckTopicMsgID) Reset()                    { *m = AckTopicMsgID{} }
 func (m *AckTopicMsgID) String() string            { return proto1.CompactTextString(m) }
 func (*AckTopicMsgID) ProtoMessage()               {}
-func (*AckTopicMsgID) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2} }
+func (*AckTopicMsgID) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{5} }
 
 // 消息Ack消息结构返回结果
 type PubAckRet struct {
@@ -118,18 +157,7 @@ type PubAckRet struct {
 func (m *PubAckRet) Reset()                    { *m = PubAckRet{} }
 func (m *PubAckRet) String() string            { return proto1.CompactTextString(m) }
 func (*PubAckRet) ProtoMessage()               {}
-func (*PubAckRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{3} }
-
-// 推送text消息结构返回结果
-type PubTextRet struct {
-	R bool   `protobuf:"varint,1,opt,name=r" json:"r,omitempty"`
-	M []byte `protobuf:"bytes,2,opt,name=m,proto3" json:"m,omitempty"`
-}
-
-func (m *PubTextRet) Reset()                    { *m = PubTextRet{} }
-func (m *PubTextRet) String() string            { return proto1.CompactTextString(m) }
-func (*PubTextRet) ProtoMessage()               {}
-func (*PubTextRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{4} }
+func (*PubAckRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{6} }
 
 type PubMsg struct {
 	Cid int64  `protobuf:"varint,1,opt,name=cid" json:"cid,omitempty"`
@@ -139,7 +167,7 @@ type PubMsg struct {
 func (m *PubMsg) Reset()                    { *m = PubMsg{} }
 func (m *PubMsg) String() string            { return proto1.CompactTextString(m) }
 func (*PubMsg) ProtoMessage()               {}
-func (*PubMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{5} }
+func (*PubMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{7} }
 
 //
 type PubRet struct {
@@ -150,7 +178,7 @@ type PubRet struct {
 func (m *PubRet) Reset()                    { *m = PubRet{} }
 func (m *PubRet) String() string            { return proto1.CompactTextString(m) }
 func (*PubRet) ProtoMessage()               {}
-func (*PubRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{6} }
+func (*PubRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{8} }
 
 // 广播
 type BPushMsg struct {
@@ -166,7 +194,7 @@ type BPushMsg struct {
 func (m *BPushMsg) Reset()                    { *m = BPushMsg{} }
 func (m *BPushMsg) String() string            { return proto1.CompactTextString(m) }
 func (*BPushMsg) ProtoMessage()               {}
-func (*BPushMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{7} }
+func (*BPushMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{9} }
 
 // 广播打包结构
 type BPushMsgs struct {
@@ -176,7 +204,7 @@ type BPushMsgs struct {
 func (m *BPushMsgs) Reset()                    { *m = BPushMsgs{} }
 func (m *BPushMsgs) String() string            { return proto1.CompactTextString(m) }
 func (*BPushMsgs) ProtoMessage()               {}
-func (*BPushMsgs) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{8} }
+func (*BPushMsgs) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{10} }
 
 func (m *BPushMsgs) GetMsgs() []*BPushMsg {
 	if m != nil {
@@ -202,7 +230,7 @@ type SPushMsg struct {
 func (m *SPushMsg) Reset()                    { *m = SPushMsg{} }
 func (m *SPushMsg) String() string            { return proto1.CompactTextString(m) }
 func (*SPushMsg) ProtoMessage()               {}
-func (*SPushMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{9} }
+func (*SPushMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{11} }
 
 // 单播打包结构
 type SPushMsgs struct {
@@ -212,7 +240,7 @@ type SPushMsgs struct {
 func (m *SPushMsgs) Reset()                    { *m = SPushMsgs{} }
 func (m *SPushMsgs) String() string            { return proto1.CompactTextString(m) }
 func (*SPushMsgs) ProtoMessage()               {}
-func (*SPushMsgs) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{10} }
+func (*SPushMsgs) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{12} }
 
 func (m *SPushMsgs) GetMsgs() []*SPushMsg {
 	if m != nil {
@@ -238,7 +266,7 @@ type PChatMsg struct {
 func (m *PChatMsg) Reset()                    { *m = PChatMsg{} }
 func (m *PChatMsg) String() string            { return proto1.CompactTextString(m) }
 func (*PChatMsg) ProtoMessage()               {}
-func (*PChatMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{11} }
+func (*PChatMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{13} }
 
 // 私聊打包结构
 type PChatMsgs struct {
@@ -248,7 +276,7 @@ type PChatMsgs struct {
 func (m *PChatMsgs) Reset()                    { *m = PChatMsgs{} }
 func (m *PChatMsgs) String() string            { return proto1.CompactTextString(m) }
 func (*PChatMsgs) ProtoMessage()               {}
-func (*PChatMsgs) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{12} }
+func (*PChatMsgs) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{14} }
 
 func (m *PChatMsgs) GetMsgs() []*PChatMsg {
 	if m != nil {
@@ -265,7 +293,7 @@ type GChatMsg struct {
 func (m *GChatMsg) Reset()                    { *m = GChatMsg{} }
 func (m *GChatMsg) String() string            { return proto1.CompactTextString(m) }
 func (*GChatMsg) ProtoMessage()               {}
-func (*GChatMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{13} }
+func (*GChatMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{15} }
 
 // 群聊打包结构
 type GChatMsgs struct {
@@ -275,7 +303,7 @@ type GChatMsgs struct {
 func (m *GChatMsgs) Reset()                    { *m = GChatMsgs{} }
 func (m *GChatMsgs) String() string            { return proto1.CompactTextString(m) }
 func (*GChatMsgs) ProtoMessage()               {}
-func (*GChatMsgs) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{14} }
+func (*GChatMsgs) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{16} }
 
 func (m *GChatMsgs) GetMsgs() []*GChatMsg {
 	if m != nil {
@@ -297,7 +325,7 @@ type LoginMsg struct {
 func (m *LoginMsg) Reset()                    { *m = LoginMsg{} }
 func (m *LoginMsg) String() string            { return proto1.CompactTextString(m) }
 func (*LoginMsg) ProtoMessage()               {}
-func (*LoginMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{15} }
+func (*LoginMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{17} }
 
 func (m *LoginMsg) GetTs() []*Topic {
 	if m != nil {
@@ -315,7 +343,7 @@ type LoginRet struct {
 func (m *LoginRet) Reset()                    { *m = LoginRet{} }
 func (m *LoginRet) String() string            { return proto1.CompactTextString(m) }
 func (*LoginRet) ProtoMessage()               {}
-func (*LoginRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{16} }
+func (*LoginRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{18} }
 
 // 登出消息
 type LogoutMsg struct {
@@ -325,7 +353,7 @@ type LogoutMsg struct {
 func (m *LogoutMsg) Reset()                    { *m = LogoutMsg{} }
 func (m *LogoutMsg) String() string            { return proto1.CompactTextString(m) }
 func (*LogoutMsg) ProtoMessage()               {}
-func (*LogoutMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{17} }
+func (*LogoutMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{19} }
 
 // 登出消息返回消息
 type LogoutRet struct {
@@ -336,7 +364,7 @@ type LogoutRet struct {
 func (m *LogoutRet) Reset()                    { *m = LogoutRet{} }
 func (m *LogoutRet) String() string            { return proto1.CompactTextString(m) }
 func (*LogoutRet) ProtoMessage()               {}
-func (*LogoutRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{18} }
+func (*LogoutRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{20} }
 
 type Topic struct {
 	Qos int32  `protobuf:"varint,1,opt,name=qos" json:"qos,omitempty"`
@@ -347,7 +375,7 @@ type Topic struct {
 func (m *Topic) Reset()                    { *m = Topic{} }
 func (m *Topic) String() string            { return proto1.CompactTextString(m) }
 func (*Topic) ProtoMessage()               {}
-func (*Topic) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{19} }
+func (*Topic) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{21} }
 
 // 订阅主题消息
 type SubMsg struct {
@@ -358,7 +386,7 @@ type SubMsg struct {
 func (m *SubMsg) Reset()                    { *m = SubMsg{} }
 func (m *SubMsg) String() string            { return proto1.CompactTextString(m) }
 func (*SubMsg) ProtoMessage()               {}
-func (*SubMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{20} }
+func (*SubMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{22} }
 
 func (m *SubMsg) GetTs() []*Topic {
 	if m != nil {
@@ -376,7 +404,7 @@ type SubRet struct {
 func (m *SubRet) Reset()                    { *m = SubRet{} }
 func (m *SubRet) String() string            { return proto1.CompactTextString(m) }
 func (*SubRet) ProtoMessage()               {}
-func (*SubRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{21} }
+func (*SubRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{23} }
 
 // 取消订阅主题消息
 type UnSubMsg struct {
@@ -387,7 +415,7 @@ type UnSubMsg struct {
 func (m *UnSubMsg) Reset()                    { *m = UnSubMsg{} }
 func (m *UnSubMsg) String() string            { return proto1.CompactTextString(m) }
 func (*UnSubMsg) ProtoMessage()               {}
-func (*UnSubMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{22} }
+func (*UnSubMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{24} }
 
 func (m *UnSubMsg) GetTs() []*Topic {
 	if m != nil {
@@ -405,7 +433,7 @@ type UnSubRet struct {
 func (m *UnSubRet) Reset()                    { *m = UnSubRet{} }
 func (m *UnSubRet) String() string            { return proto1.CompactTextString(m) }
 func (*UnSubRet) ProtoMessage()               {}
-func (*UnSubRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{23} }
+func (*UnSubRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{25} }
 
 // 广播返回消息
 type BPushRet struct {
@@ -415,7 +443,7 @@ type BPushRet struct {
 func (m *BPushRet) Reset()                    { *m = BPushRet{} }
 func (m *BPushRet) String() string            { return proto1.CompactTextString(m) }
 func (*BPushRet) ProtoMessage()               {}
-func (*BPushRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{24} }
+func (*BPushRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{26} }
 
 // 单播返回消息
 type SPushRet struct {
@@ -425,7 +453,7 @@ type SPushRet struct {
 func (m *SPushRet) Reset()                    { *m = SPushRet{} }
 func (m *SPushRet) String() string            { return proto1.CompactTextString(m) }
 func (*SPushRet) ProtoMessage()               {}
-func (*SPushRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{25} }
+func (*SPushRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{27} }
 
 // 私聊返回消息
 type PChatRet struct {
@@ -435,7 +463,7 @@ type PChatRet struct {
 func (m *PChatRet) Reset()                    { *m = PChatRet{} }
 func (m *PChatRet) String() string            { return proto1.CompactTextString(m) }
 func (*PChatRet) ProtoMessage()               {}
-func (*PChatRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{26} }
+func (*PChatRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{28} }
 
 // 群播返回消息
 type GChatRet struct {
@@ -445,7 +473,7 @@ type GChatRet struct {
 func (m *GChatRet) Reset()                    { *m = GChatRet{} }
 func (m *GChatRet) String() string            { return proto1.CompactTextString(m) }
 func (*GChatRet) ProtoMessage()               {}
-func (*GChatRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{27} }
+func (*GChatRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{29} }
 
 // 设置Nick
 type NickMsg struct {
@@ -455,7 +483,7 @@ type NickMsg struct {
 func (m *NickMsg) Reset()                    { *m = NickMsg{} }
 func (m *NickMsg) String() string            { return proto1.CompactTextString(m) }
 func (*NickMsg) ProtoMessage()               {}
-func (*NickMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{28} }
+func (*NickMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{30} }
 
 // 设置Nick返回消息
 type NickRet struct {
@@ -465,7 +493,7 @@ type NickRet struct {
 func (m *NickRet) Reset()                    { *m = NickRet{} }
 func (m *NickRet) String() string            { return proto1.CompactTextString(m) }
 func (*NickRet) ProtoMessage()               {}
-func (*NickRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{29} }
+func (*NickRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{31} }
 
 // 设置Apns
 type ApnsMsg struct {
@@ -475,7 +503,7 @@ type ApnsMsg struct {
 func (m *ApnsMsg) Reset()                    { *m = ApnsMsg{} }
 func (m *ApnsMsg) String() string            { return proto1.CompactTextString(m) }
 func (*ApnsMsg) ProtoMessage()               {}
-func (*ApnsMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{30} }
+func (*ApnsMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{32} }
 
 // 设置Apns返回消息
 type ApnsRet struct {
@@ -485,7 +513,7 @@ type ApnsRet struct {
 func (m *ApnsRet) Reset()                    { *m = ApnsRet{} }
 func (m *ApnsRet) String() string            { return proto1.CompactTextString(m) }
 func (*ApnsRet) ProtoMessage()               {}
-func (*ApnsRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{31} }
+func (*ApnsRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{33} }
 
 // Label
 type LabelMsg struct {
@@ -495,7 +523,7 @@ type LabelMsg struct {
 func (m *LabelMsg) Reset()                    { *m = LabelMsg{} }
 func (m *LabelMsg) String() string            { return proto1.CompactTextString(m) }
 func (*LabelMsg) ProtoMessage()               {}
-func (*LabelMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{32} }
+func (*LabelMsg) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{34} }
 
 // 设置Label返回消息
 type LabelRet struct {
@@ -505,14 +533,16 @@ type LabelRet struct {
 func (m *LabelRet) Reset()                    { *m = LabelRet{} }
 func (m *LabelRet) String() string            { return proto1.CompactTextString(m) }
 func (*LabelRet) ProtoMessage()               {}
-func (*LabelRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{33} }
+func (*LabelRet) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{35} }
 
 func init() {
+	proto1.RegisterType((*PubJsonMsg)(nil), "proto.PubJsonMsg")
+	proto1.RegisterType((*PubJsonRet)(nil), "proto.PubJsonRet")
 	proto1.RegisterType((*PubTextMsg)(nil), "proto.PubTextMsg")
+	proto1.RegisterType((*PubTextRet)(nil), "proto.PubTextRet")
 	proto1.RegisterType((*PubAckMsg)(nil), "proto.PubAckMsg")
 	proto1.RegisterType((*AckTopicMsgID)(nil), "proto.AckTopicMsgID")
 	proto1.RegisterType((*PubAckRet)(nil), "proto.PubAckRet")
-	proto1.RegisterType((*PubTextRet)(nil), "proto.PubTextRet")
 	proto1.RegisterType((*PubMsg)(nil), "proto.PubMsg")
 	proto1.RegisterType((*PubRet)(nil), "proto.PubRet")
 	proto1.RegisterType((*BPushMsg)(nil), "proto.BPushMsg")
@@ -564,6 +594,7 @@ type RpcClient interface {
 	// 用户发布
 	Publish(ctx context.Context, in *PubMsg, opts ...grpc.CallOption) (*PubRet, error)
 	PubText(ctx context.Context, in *PubTextMsg, opts ...grpc.CallOption) (*PubTextRet, error)
+	PubJson(ctx context.Context, in *PubTextMsg, opts ...grpc.CallOption) (*PubJsonRet, error)
 	PubAck(ctx context.Context, in *PubAckMsg, opts ...grpc.CallOption) (*PubAckRet, error)
 }
 
@@ -629,6 +660,15 @@ func (c *rpcClient) PubText(ctx context.Context, in *PubTextMsg, opts ...grpc.Ca
 	return out, nil
 }
 
+func (c *rpcClient) PubJson(ctx context.Context, in *PubTextMsg, opts ...grpc.CallOption) (*PubJsonRet, error) {
+	out := new(PubJsonRet)
+	err := grpc.Invoke(ctx, "/proto.Rpc/PubJson", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *rpcClient) PubAck(ctx context.Context, in *PubAckMsg, opts ...grpc.CallOption) (*PubAckRet, error) {
 	out := new(PubAckRet)
 	err := grpc.Invoke(ctx, "/proto.Rpc/PubAck", in, out, c.cc, opts...)
@@ -650,6 +690,7 @@ type RpcServer interface {
 	// 用户发布
 	Publish(context.Context, *PubMsg) (*PubRet, error)
 	PubText(context.Context, *PubTextMsg) (*PubTextRet, error)
+	PubJson(context.Context, *PubTextMsg) (*PubJsonRet, error)
 	PubAck(context.Context, *PubAckMsg) (*PubAckRet, error)
 }
 
@@ -765,6 +806,24 @@ func _Rpc_PubText_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Rpc_PubJson_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PubTextMsg)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RpcServer).PubJson(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Rpc/PubJson",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RpcServer).PubJson(ctx, req.(*PubTextMsg))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Rpc_PubAck_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(PubAckMsg)
 	if err := dec(in); err != nil {
@@ -812,6 +871,10 @@ var _Rpc_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Rpc_PubText_Handler,
 		},
 		{
+			MethodName: "PubJson",
+			Handler:    _Rpc_PubJson_Handler,
+		},
+		{
 			MethodName: "PubAck",
 			Handler:    _Rpc_PubAck_Handler,
 		},
@@ -820,51 +883,52 @@ var _Rpc_serviceDesc = grpc.ServiceDesc{
 }
 
 var fileDescriptor0 = []byte{
-	// 731 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0xcc, 0x56, 0xcd, 0x6e, 0xd3, 0x4e,
-	0x10, 0xff, 0xdb, 0x8e, 0xf3, 0x31, 0x6d, 0xff, 0x94, 0x55, 0x0f, 0x56, 0x08, 0x12, 0x32, 0x55,
-	0x09, 0x2a, 0xaa, 0x68, 0xb9, 0x00, 0xb7, 0x42, 0xa5, 0xa8, 0x52, 0x41, 0x91, 0x53, 0x1e, 0x20,
-	0x36, 0x21, 0x75, 0x49, 0x6b, 0x93, 0x5d, 0x4b, 0x54, 0xe2, 0xc0, 0x81, 0x07, 0xe2, 0xc0, 0x83,
-	0xf0, 0x48, 0xcc, 0xce, 0xee, 0xda, 0x6c, 0x1a, 0xcb, 0x82, 0x13, 0xa7, 0xcc, 0xce, 0xe7, 0xef,
-	0xb7, 0x33, 0x3b, 0x0e, 0xf4, 0x96, 0x79, 0x72, 0x90, 0x2f, 0x33, 0x91, 0x31, 0x9f, 0x7e, 0xc2,
-	0x2f, 0x00, 0xe3, 0x22, 0x3e, 0x9f, 0x7d, 0x16, 0x6f, 0xf8, 0x9c, 0x6d, 0x83, 0x97, 0xa4, 0xef,
-	0x03, 0xe7, 0x81, 0x33, 0xf4, 0x22, 0x29, 0xb2, 0x1d, 0xf0, 0x45, 0x76, 0x9c, 0x24, 0x81, 0x8b,
-	0xba, 0xcd, 0x48, 0x1d, 0xa4, 0x9f, 0x10, 0x79, 0xe0, 0x91, 0x4e, 0x8a, 0x52, 0xf3, 0x29, 0xe3,
-	0x41, 0x0b, 0x35, 0x7e, 0x24, 0x45, 0xa9, 0xb9, 0xc2, 0x5c, 0xbe, 0xf2, 0x41, 0x91, 0x34, 0x7c,
-	0x1e, 0xb4, 0xb5, 0x86, 0xcf, 0xc3, 0x11, 0xf4, 0xb0, 0xfa, 0x71, 0xf2, 0x51, 0x17, 0x9f, 0x62,
-	0x21, 0x47, 0x99, 0x51, 0x64, 0x43, 0x68, 0x61, 0x1c, 0xc7, 0xda, 0xde, 0x70, 0xe3, 0x68, 0x47,
-	0x21, 0x3f, 0x40, 0xf7, 0xf3, 0x2c, 0x4f, 0x13, 0x8c, 0x39, 0x3d, 0x89, 0xc8, 0x23, 0x3c, 0x84,
-	0x2d, 0x4b, 0xcd, 0xfe, 0x07, 0x17, 0x01, 0xaa, 0x5c, 0xae, 0xc2, 0x27, 0xd1, 0xb8, 0x25, 0x9a,
-	0xf0, 0x91, 0xa9, 0x1d, 0xcd, 0x04, 0xdb, 0x04, 0x67, 0x49, 0xde, 0xdd, 0xc8, 0x59, 0xca, 0xd3,
-	0x95, 0x76, 0x75, 0xae, 0xc2, 0x61, 0x79, 0x45, 0x4d, 0x9e, 0x4f, 0xa0, 0x8d, 0x9e, 0xeb, 0x2f,
-	0x52, 0x93, 0x77, 0x2b, 0xf2, 0xbb, 0xe4, 0xdd, 0x94, 0xf3, 0xab, 0x03, 0xdd, 0x57, 0xe3, 0x82,
-	0x5f, 0xc8, 0xb4, 0xab, 0xac, 0xf0, 0xbc, 0x14, 0xe4, 0xeb, 0x45, 0x28, 0xa9, 0xbe, 0x2c, 0xa8,
-	0x2f, 0x9e, 0xec, 0xcb, 0xc2, 0xf0, 0x6e, 0x55, 0x5d, 0xc0, 0x98, 0x45, 0x1c, 0x74, 0x55, 0x8e,
-	0x45, 0x2c, 0xcf, 0xe9, 0x65, 0xd0, 0x53, 0xe7, 0xf4, 0xd2, 0x00, 0xed, 0x54, 0x40, 0x9f, 0x42,
-	0xcf, 0x20, 0xe0, 0xec, 0x21, 0xf6, 0x04, 0x7f, 0x11, 0x84, 0xec, 0xc9, 0x1d, 0xdd, 0x13, 0x63,
-	0x8f, 0xc8, 0x18, 0xfe, 0x40, 0xd0, 0x13, 0x03, 0x9a, 0x40, 0xa9, 0x00, 0x1a, 0x16, 0x1a, 0x0d,
-	0x51, 0xa8, 0xb6, 0x4a, 0x4d, 0xc1, 0x25, 0x88, 0x0f, 0x42, 0xcf, 0x13, 0x4a, 0x74, 0x2e, 0x34,
-	0x6a, 0x94, 0x34, 0x51, 0x7f, 0x95, 0x68, 0xfb, 0x16, 0xd1, 0xce, 0x1f, 0x13, 0x05, 0x8b, 0xe8,
-	0xa4, 0x81, 0xe8, 0xc4, 0x26, 0xfa, 0x1d, 0x89, 0x8e, 0x5f, 0x5f, 0x4c, 0x45, 0x4d, 0x77, 0x44,
-	0xa1, 0x3b, 0x89, 0xd2, 0xbf, 0x43, 0xd2, 0x20, 0xae, 0x23, 0x69, 0xec, 0x9a, 0xe4, 0x00, 0xba,
-	0x23, 0xc3, 0x51, 0xe7, 0x73, 0xac, 0x7c, 0xa3, 0x86, 0x7c, 0x23, 0x3b, 0xdf, 0x37, 0xbc, 0xb4,
-	0xb3, 0x6c, 0x9e, 0x5e, 0xaf, 0x7f, 0xf5, 0xb8, 0x72, 0xa6, 0x79, 0x7e, 0x7a, 0x62, 0x56, 0x0e,
-	0x1d, 0x24, 0xb1, 0xfc, 0x9c, 0x2e, 0xcf, 0x8f, 0x50, 0x32, 0x2f, 0xac, 0x65, 0xbd, 0xb0, 0x79,
-	0x9a, 0x9b, 0x85, 0x83, 0x22, 0x1b, 0x60, 0x03, 0x38, 0xde, 0x9f, 0xc4, 0xb2, 0xa9, 0xb1, 0xd0,
-	0x8e, 0xc0, 0x76, 0xf0, 0x70, 0x4f, 0xa3, 0x68, 0x7a, 0x81, 0xf7, 0xa1, 0x87, 0x7e, 0x59, 0xb1,
-	0x7e, 0x43, 0xca, 0x3d, 0xa2, 0xcc, 0x4d, 0x79, 0x5e, 0x80, 0x4f, 0xc5, 0xcd, 0xae, 0x74, 0xaa,
-	0x5d, 0xa9, 0x26, 0xc7, 0xb5, 0x26, 0xe7, 0xc6, 0x90, 0x15, 0x37, 0xe1, 0x73, 0x68, 0x4f, 0xea,
-	0x16, 0x8b, 0x22, 0xe9, 0xd6, 0x90, 0xdc, 0xa5, 0xc8, 0x26, 0x68, 0x2f, 0xa1, 0xfb, 0xee, 0xfa,
-	0x2f, 0x2b, 0xec, 0xe9, 0xd8, 0xa6, 0x1a, 0x03, 0xbd, 0xc7, 0xa4, 0xdf, 0xed, 0x29, 0x1a, 0xe8,
-	0x85, 0x51, 0x6b, 0xa5, 0x99, 0xac, 0xb5, 0x8e, 0xea, 0xad, 0xf7, 0xa0, 0xf3, 0x36, 0x2d, 0xbf,
-	0x30, 0xeb, 0x8d, 0xb5, 0x91, 0xc7, 0xf9, 0x35, 0xaf, 0x8d, 0x94, 0xc6, 0x5a, 0x44, 0x67, 0xd3,
-	0x78, 0xb6, 0xb0, 0x42, 0xbd, 0x55, 0xeb, 0xda, 0xd8, 0xa3, 0x9f, 0x2e, 0x78, 0x51, 0x9e, 0xb0,
-	0x7d, 0xf0, 0x69, 0x3c, 0x99, 0x79, 0x45, 0xe6, 0xc9, 0xf4, 0x2d, 0x05, 0x26, 0x09, 0xff, 0x63,
-	0x07, 0xd0, 0x56, 0x43, 0xc8, 0xb6, 0x2b, 0xa3, 0x1a, 0xd9, 0xbe, 0xad, 0x51, 0xfe, 0xfb, 0xb8,
-	0xe9, 0x8a, 0x98, 0x27, 0xcb, 0x34, 0x9e, 0xb1, 0x2d, 0xb3, 0xdb, 0x68, 0x00, 0xfa, 0xbf, 0x1d,
-	0x95, 0xf3, 0x21, 0x6c, 0x50, 0x87, 0xb5, 0xbb, 0x29, 0x6f, 0x26, 0xa6, 0x6f, 0x29, 0x54, 0xc8,
-	0x63, 0xe8, 0xe0, 0xb7, 0x6d, 0x91, 0xf2, 0x8b, 0x32, 0xfb, 0xd8, 0xce, 0x3e, 0xae, 0xb2, 0x77,
-	0xf4, 0xe7, 0x95, 0xdd, 0xad, 0x6c, 0xfa, 0x1f, 0x49, 0x7f, 0x45, 0x55, 0xb2, 0x55, 0x9f, 0xee,
-	0x92, 0x6d, 0xf9, 0x2f, 0xa2, 0x6f, 0x6b, 0xc8, 0x3f, 0x6e, 0x93, 0xea, 0xd9, 0xaf, 0x00, 0x00,
-	0x00, 0xff, 0xff, 0xbc, 0x09, 0x71, 0xeb, 0xff, 0x08, 0x00, 0x00,
+	// 750 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0xcc, 0x56, 0xcd, 0x6e, 0xd3, 0x40,
+	0x10, 0xc6, 0x76, 0x9c, 0x9f, 0x69, 0x0b, 0x65, 0xd5, 0x83, 0x15, 0x82, 0x84, 0x4c, 0x55, 0x82,
+	0x8a, 0x2a, 0x5a, 0x2e, 0xc0, 0xad, 0x50, 0x29, 0x2a, 0x2a, 0x28, 0x72, 0xca, 0x03, 0xc4, 0x26,
+	0xa4, 0x2e, 0x49, 0x6c, 0xb2, 0xb6, 0x44, 0x25, 0x0e, 0x48, 0xf0, 0x40, 0x1c, 0x78, 0x40, 0x66,
+	0x67, 0x77, 0xed, 0x6e, 0x1a, 0xcb, 0x82, 0x0b, 0x9c, 0x32, 0x3b, 0xbf, 0xdf, 0xb7, 0x33, 0x3b,
+	0x31, 0x74, 0x96, 0x69, 0x74, 0x90, 0x2e, 0x93, 0x2c, 0x61, 0x2e, 0xfd, 0xf8, 0x5f, 0x01, 0x86,
+	0x79, 0xf8, 0x86, 0x27, 0x8b, 0xb7, 0x7c, 0xca, 0xb6, 0xc1, 0x89, 0xe2, 0x0f, 0x9e, 0xf5, 0xc0,
+	0xea, 0x3b, 0x81, 0x10, 0xd9, 0x0e, 0xb8, 0x59, 0x72, 0x1c, 0x45, 0x9e, 0x8d, 0xba, 0xcd, 0x40,
+	0x1e, 0x84, 0x5f, 0x96, 0xa5, 0x9e, 0x43, 0x3a, 0x21, 0x0a, 0xcd, 0xe7, 0x84, 0x7b, 0x0d, 0xd4,
+	0xb8, 0x81, 0x10, 0x85, 0x66, 0x8e, 0xb9, 0x5c, 0xe9, 0x83, 0x22, 0x69, 0xf8, 0xd4, 0x6b, 0x2a,
+	0x0d, 0x9f, 0xfa, 0xfd, 0xa2, 0x7a, 0x30, 0xc9, 0xd8, 0x26, 0x58, 0x4b, 0xaa, 0xdd, 0x0e, 0xac,
+	0xa5, 0x38, 0xcd, 0x55, 0x55, 0x6b, 0xae, 0x70, 0x9e, 0x4f, 0xbe, 0x64, 0xff, 0x0e, 0xa7, 0xa8,
+	0x5e, 0x87, 0x73, 0x00, 0x1d, 0xf4, 0x3c, 0x8e, 0x3e, 0x29, 0x98, 0x63, 0x84, 0x64, 0xc9, 0x44,
+	0x28, 0xb2, 0x3e, 0x34, 0xb0, 0x02, 0x47, 0x7f, 0xa7, 0xbf, 0x71, 0xb4, 0x23, 0x7b, 0x71, 0x80,
+	0xee, 0xe7, 0x49, 0x1a, 0x47, 0x18, 0x73, 0x7a, 0x12, 0x90, 0x87, 0x7f, 0x08, 0x5b, 0x86, 0x9a,
+	0xdd, 0x06, 0x1b, 0xa9, 0xc8, 0x5c, 0xb6, 0x64, 0x22, 0x70, 0xdb, 0x05, 0x6e, 0xff, 0x91, 0xae,
+	0x5d, 0x07, 0xf2, 0x09, 0x34, 0xd1, 0x71, 0xfd, 0x45, 0x2a, 0xf2, 0x76, 0x49, 0x7e, 0x97, 0xbc,
+	0xeb, 0x72, 0x7e, 0xb3, 0xa0, 0xfd, 0x6a, 0x98, 0xf3, 0x0b, 0x91, 0x76, 0x15, 0x2b, 0x9e, 0x97,
+	0x19, 0xf9, 0x3a, 0x01, 0x4a, 0xb2, 0x2f, 0x33, 0xea, 0x8b, 0x23, 0xfa, 0x32, 0xd3, 0x6c, 0x1a,
+	0x65, 0x17, 0x30, 0x66, 0x16, 0x7a, 0x6d, 0x99, 0x63, 0x16, 0x8a, 0x73, 0x7c, 0xe9, 0x75, 0xe4,
+	0x39, 0xbe, 0xd4, 0x40, 0x5b, 0x25, 0xd0, 0xa7, 0xd0, 0xd1, 0x08, 0x38, 0x7b, 0x88, 0x37, 0x8d,
+	0xbf, 0x08, 0x42, 0xdc, 0xf4, 0x1d, 0x75, 0xd3, 0xda, 0x1e, 0x90, 0xd1, 0xff, 0x85, 0xa0, 0x47,
+	0x1a, 0x34, 0x81, 0x92, 0x01, 0x34, 0x2c, 0x34, 0x1a, 0x59, 0x2e, 0x9b, 0x25, 0x34, 0x39, 0x17,
+	0x20, 0x3e, 0x66, 0x6a, 0x9e, 0x50, 0xa2, 0x73, 0xae, 0x50, 0xa3, 0xa4, 0x88, 0xba, 0xab, 0x44,
+	0x9b, 0x37, 0x88, 0xb6, 0xfe, 0x98, 0x28, 0x18, 0x44, 0x47, 0x35, 0x44, 0x47, 0x26, 0xd1, 0x9f,
+	0x48, 0x74, 0xf8, 0xfa, 0x62, 0x9c, 0x55, 0x74, 0x27, 0xcb, 0x55, 0x27, 0x51, 0xfa, 0x7f, 0x48,
+	0x6a, 0xc4, 0x55, 0x24, 0xb5, 0x5d, 0x91, 0xec, 0x41, 0x7b, 0xa0, 0x39, 0xaa, 0x7c, 0x96, 0x91,
+	0x6f, 0x50, 0x93, 0x6f, 0x60, 0xe6, 0xfb, 0x81, 0x97, 0x76, 0x96, 0x4c, 0xe3, 0xc5, 0xfa, 0xb7,
+	0x8c, 0x2b, 0x67, 0x9c, 0xa6, 0xa7, 0x27, 0x7a, 0xe5, 0xd0, 0x41, 0x10, 0x4b, 0xcf, 0xe9, 0xf2,
+	0xdc, 0x00, 0x25, 0xfd, 0xc2, 0x1a, 0xc6, 0x0b, 0x9b, 0xc6, 0xa9, 0x5e, 0x38, 0x28, 0xb2, 0x1e,
+	0x36, 0x80, 0xe3, 0xfd, 0x09, 0x2c, 0x9b, 0x0a, 0x0b, 0xbd, 0x7c, 0x6c, 0x07, 0xf7, 0xf7, 0x14,
+	0x8a, 0xba, 0x17, 0x78, 0x1f, 0x3a, 0xe8, 0x97, 0xe4, 0xeb, 0x37, 0xa4, 0xd8, 0x0e, 0xd2, 0x5c,
+	0x97, 0xe7, 0x05, 0xb8, 0x54, 0x5c, 0xef, 0x4a, 0xab, 0xdc, 0x95, 0x72, 0x72, 0x6c, 0x63, 0x72,
+	0xae, 0x34, 0xd9, 0xec, 0xca, 0x7f, 0x0e, 0xcd, 0x51, 0xd5, 0x62, 0x91, 0x24, 0xed, 0x0a, 0x92,
+	0xbb, 0x14, 0x59, 0x07, 0xed, 0x25, 0xb4, 0xdf, 0x2f, 0xfe, 0xb2, 0xc2, 0x9e, 0x8a, 0xad, 0xab,
+	0xd1, 0x53, 0x7b, 0x4c, 0xf8, 0xdd, 0x9c, 0xa2, 0x9e, 0x5a, 0x18, 0x95, 0x56, 0x9a, 0xc9, 0x4a,
+	0xeb, 0xa0, 0xda, 0x7a, 0x0f, 0x5a, 0xef, 0xe2, 0xe2, 0x7f, 0x63, 0xbd, 0xb1, 0x32, 0xf2, 0x38,
+	0x5d, 0xf0, 0xca, 0x48, 0x61, 0xac, 0x44, 0x74, 0x36, 0x0e, 0x27, 0x33, 0x23, 0xd4, 0x59, 0xb5,
+	0xae, 0x8d, 0x3d, 0xfa, 0xee, 0x80, 0x13, 0xa4, 0x11, 0xdb, 0x07, 0x97, 0xc6, 0x93, 0xe9, 0x57,
+	0xa4, 0x9f, 0x4c, 0xd7, 0x50, 0x60, 0x12, 0xff, 0x16, 0x3b, 0x80, 0xa6, 0x1c, 0x42, 0xb6, 0x5d,
+	0x1a, 0xe5, 0xc8, 0x76, 0x4d, 0x8d, 0xf4, 0xdf, 0xc7, 0x4d, 0x97, 0x87, 0x3c, 0x5a, 0xc6, 0xe1,
+	0x84, 0x6d, 0xe9, 0xdd, 0x46, 0x03, 0xd0, 0xbd, 0x76, 0x94, 0xce, 0x87, 0xb0, 0x41, 0x1d, 0x56,
+	0xee, 0xba, 0xbc, 0x9e, 0x98, 0xae, 0xa1, 0x90, 0x21, 0x8f, 0xa1, 0x85, 0xff, 0x6d, 0xb3, 0x98,
+	0x5f, 0x14, 0xd9, 0x87, 0x66, 0xf6, 0x61, 0x99, 0xbd, 0xa5, 0xbe, 0x01, 0xd8, 0xdd, 0xd2, 0xa6,
+	0xbe, 0x48, 0xba, 0x2b, 0xaa, 0xeb, 0x21, 0xe2, 0xf3, 0xa6, 0x26, 0x44, 0x7d, 0x01, 0xc9, 0x0b,
+	0x92, 0xff, 0xe1, 0xc5, 0x05, 0x15, 0x9f, 0x13, 0x5d, 0x53, 0x43, 0xfe, 0x61, 0x93, 0x54, 0xcf,
+	0x7e, 0x07, 0x00, 0x00, 0xff, 0xff, 0xa1, 0x1f, 0x9d, 0x66, 0xda, 0x09, 0x00, 0x00,
 }

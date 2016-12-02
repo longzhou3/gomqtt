@@ -22,11 +22,30 @@ service Rpc {
     // 用户发布
     rpc Publish(PubMsg)         returns (PubRet)     {}
     rpc PubText(PubTextMsg)     returns (PubTextRet) {}
+    rpc PubJson(PubTextMsg)     returns (PubJsonRet) {}
     rpc PubAck(PubAckMsg)       returns (PubAckRet)  {}
 
     // rpc Publish(PubMsg)      returns (PubRet) {}
     // rpc Publish(PubMsg)      returns (PubRet) {}
 }
+
+// 推送Json消息结构
+message PubJsonMsg {
+    int64  cid     = 1;      // 链接id
+    bytes  toAcc   = 2;      // to accound
+    bytes  ttp     = 3;      // to topic 
+    int32  qos     = 4;      // Qos
+    bytes  mid     = 5;      // msgid
+    bytes  msg     = 6;      // 用户push信息 
+}
+
+
+// 推送Json消息结构返回结果
+message PubJsonRet {
+    bool  r = 1;    //  true 成功， false 失败
+    bytes m = 2;    //  失败原因
+}
+
 
 // 推送text消息结构
 message PubTextMsg {
@@ -36,6 +55,13 @@ message PubTextMsg {
     int32  qos     = 4;      // Qos
     bytes  mid     = 5;      // msgid
     bytes  msg     = 6;      // 用户push信息 
+}
+
+
+// 推送text消息结构返回结果
+message PubTextRet {
+    bool  r = 1;    //  true 成功， false 失败
+    bytes m = 2;    //  失败原因
 }
 
 
@@ -53,12 +79,6 @@ message AckTopicMsgID {
 
 // 消息Ack消息结构返回结果
 message PubAckRet {
-    bool  r = 1;    //  true 成功， false 失败
-    bytes m = 2;    //  失败原因
-}
-
-// 推送text消息结构返回结果
-message PubTextRet {
     bool  r = 1;    //  true 成功， false 失败
     bytes m = 2;    //  失败原因
 }
