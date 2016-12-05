@@ -167,6 +167,11 @@ func (z *JsonMsgs) DecodeMsg(dc *msgp.Reader) (err error) {
 			if err != nil {
 				return
 			}
+		case "q":
+			z.Qos, err = dc.ReadInt()
+			if err != nil {
+				return
+			}
 		case "ts":
 			var zwht uint32
 			zwht, err = dc.ReadArrayHeader()
@@ -218,13 +223,22 @@ func (z *JsonMsgs) DecodeMsg(dc *msgp.Reader) (err error) {
 
 // EncodeMsg implements msgp.Encodable
 func (z *JsonMsgs) EncodeMsg(en *msgp.Writer) (err error) {
-	// map header, size 4
+	// map header, size 5
 	// write "rc"
-	err = en.Append(0x84, 0xa2, 0x72, 0x63)
+	err = en.Append(0x85, 0xa2, 0x72, 0x63)
 	if err != nil {
 		return err
 	}
 	err = en.WriteInt32(z.RetryCount)
+	if err != nil {
+		return
+	}
+	// write "q"
+	err = en.Append(0xa1, 0x71)
+	if err != nil {
+		return err
+	}
+	err = en.WriteInt(z.Qos)
 	if err != nil {
 		return
 	}
@@ -273,10 +287,13 @@ func (z *JsonMsgs) EncodeMsg(en *msgp.Writer) (err error) {
 // MarshalMsg implements msgp.Marshaler
 func (z *JsonMsgs) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
-	// map header, size 4
+	// map header, size 5
 	// string "rc"
-	o = append(o, 0x84, 0xa2, 0x72, 0x63)
+	o = append(o, 0x85, 0xa2, 0x72, 0x63)
 	o = msgp.AppendInt32(o, z.RetryCount)
+	// string "q"
+	o = append(o, 0xa1, 0x71)
+	o = msgp.AppendInt(o, z.Qos)
 	// string "ts"
 	o = append(o, 0xa2, 0x74, 0x73)
 	o = msgp.AppendArrayHeader(o, uint32(len(z.Topics)))
@@ -313,6 +330,11 @@ func (z *JsonMsgs) UnmarshalMsg(bts []byte) (o []byte, err error) {
 		switch msgp.UnsafeString(field) {
 		case "rc":
 			z.RetryCount, bts, err = msgp.ReadInt32Bytes(bts)
+			if err != nil {
+				return
+			}
+		case "q":
+			z.Qos, bts, err = msgp.ReadIntBytes(bts)
 			if err != nil {
 				return
 			}
@@ -368,7 +390,7 @@ func (z *JsonMsgs) UnmarshalMsg(bts []byte) (o []byte, err error) {
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *JsonMsgs) Msgsize() (s int) {
-	s = 1 + 3 + msgp.Int32Size + 3 + msgp.ArrayHeaderSize
+	s = 1 + 3 + msgp.Int32Size + 2 + msgp.IntSize + 3 + msgp.ArrayHeaderSize
 	for zbai := range z.Topics {
 		s += msgp.BytesPrefixSize + len(z.Topics[zbai])
 	}

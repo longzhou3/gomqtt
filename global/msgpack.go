@@ -28,6 +28,7 @@ type TextMsg struct {
 // JsonMsgs package
 type JsonMsgs struct {
 	RetryCount int32    `msg:"rc"`
+	Qos        int      `msg:"q"` //该批消息的最大qos
 	Topics     [][]byte `msg:"ts"`
 	MsgID      [][]byte `msg:"mis"`
 	Msg        []byte   `msg:"m"`
