@@ -25,6 +25,16 @@ type TextMsg struct {
 	Msg        []byte `msg:"m"`
 }
 
+// JsonMsg package
+type JsonMsg struct {
+	FAcc       []byte `msg:"fac"`
+	FTopic     []byte `msg:"ft"`
+	RetryCount int32  `msg:"rc"`
+	Qos        int32  `msg:"q"`
+	MsgID      []byte `msg:"mi"`
+	Msg        []byte `msg:"m"`
+}
+
 //-------------------------APNS-----------------------------------------
 type PubApns struct {
 	Acc   []byte `msg:"acc"`
