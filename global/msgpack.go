@@ -26,9 +26,10 @@ type TextMsg struct {
 }
 
 type JsonMsgs struct {
-	RetryCount int32  `msg:"rc"`
-	Qos        int32  `msg:"q"`
-	Msg        []byte `msg:"m"`
+	RetryCount int32    `msg:"rc"`
+	Qos        int32    `msg:"q"`
+	MsgID      [][]byte `msg:"mis"`
+	Msg        []byte   `msg:"m"`
 }
 
 //-------------------------APNS-----------------------------------------
