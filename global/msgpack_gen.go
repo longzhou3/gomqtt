@@ -168,7 +168,7 @@ func (z *JsonMsgs) DecodeMsg(dc *msgp.Reader) (err error) {
 				return
 			}
 		case "q":
-			z.Qos, err = dc.ReadInt()
+			z.Qos, err = dc.ReadInt32()
 			if err != nil {
 				return
 			}
@@ -238,7 +238,7 @@ func (z *JsonMsgs) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return err
 	}
-	err = en.WriteInt(z.Qos)
+	err = en.WriteInt32(z.Qos)
 	if err != nil {
 		return
 	}
@@ -293,7 +293,7 @@ func (z *JsonMsgs) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.AppendInt32(o, z.RetryCount)
 	// string "q"
 	o = append(o, 0xa1, 0x71)
-	o = msgp.AppendInt(o, z.Qos)
+	o = msgp.AppendInt32(o, z.Qos)
 	// string "ts"
 	o = append(o, 0xa2, 0x74, 0x73)
 	o = msgp.AppendArrayHeader(o, uint32(len(z.Topics)))
@@ -334,7 +334,7 @@ func (z *JsonMsgs) UnmarshalMsg(bts []byte) (o []byte, err error) {
 				return
 			}
 		case "q":
-			z.Qos, bts, err = msgp.ReadIntBytes(bts)
+			z.Qos, bts, err = msgp.ReadInt32Bytes(bts)
 			if err != nil {
 				return
 			}
@@ -390,7 +390,7 @@ func (z *JsonMsgs) UnmarshalMsg(bts []byte) (o []byte, err error) {
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *JsonMsgs) Msgsize() (s int) {
-	s = 1 + 3 + msgp.Int32Size + 2 + msgp.IntSize + 3 + msgp.ArrayHeaderSize
+	s = 1 + 3 + msgp.Int32Size + 2 + msgp.Int32Size + 3 + msgp.ArrayHeaderSize
 	for zbai := range z.Topics {
 		s += msgp.BytesPrefixSize + len(z.Topics[zbai])
 	}
