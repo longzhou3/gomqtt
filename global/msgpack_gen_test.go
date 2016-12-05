@@ -124,8 +124,8 @@ func BenchmarkDecodeDelToken(b *testing.B) {
 	}
 }
 
-func TestMarshalUnmarshalJsonMsg(t *testing.T) {
-	v := JsonMsg{}
+func TestMarshalUnmarshalJsonMsgs(t *testing.T) {
+	v := JsonMsgs{}
 	bts, err := v.MarshalMsg(nil)
 	if err != nil {
 		t.Fatal(err)
@@ -147,8 +147,8 @@ func TestMarshalUnmarshalJsonMsg(t *testing.T) {
 	}
 }
 
-func BenchmarkMarshalMsgJsonMsg(b *testing.B) {
-	v := JsonMsg{}
+func BenchmarkMarshalMsgJsonMsgs(b *testing.B) {
+	v := JsonMsgs{}
 	b.ReportAllocs()
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -156,8 +156,8 @@ func BenchmarkMarshalMsgJsonMsg(b *testing.B) {
 	}
 }
 
-func BenchmarkAppendMsgJsonMsg(b *testing.B) {
-	v := JsonMsg{}
+func BenchmarkAppendMsgJsonMsgs(b *testing.B) {
+	v := JsonMsgs{}
 	bts := make([]byte, 0, v.Msgsize())
 	bts, _ = v.MarshalMsg(bts[0:0])
 	b.SetBytes(int64(len(bts)))
@@ -168,8 +168,8 @@ func BenchmarkAppendMsgJsonMsg(b *testing.B) {
 	}
 }
 
-func BenchmarkUnmarshalJsonMsg(b *testing.B) {
-	v := JsonMsg{}
+func BenchmarkUnmarshalJsonMsgs(b *testing.B) {
+	v := JsonMsgs{}
 	bts, _ := v.MarshalMsg(nil)
 	b.ReportAllocs()
 	b.SetBytes(int64(len(bts)))
@@ -182,8 +182,8 @@ func BenchmarkUnmarshalJsonMsg(b *testing.B) {
 	}
 }
 
-func TestEncodeDecodeJsonMsg(t *testing.T) {
-	v := JsonMsg{}
+func TestEncodeDecodeJsonMsgs(t *testing.T) {
+	v := JsonMsgs{}
 	var buf bytes.Buffer
 	msgp.Encode(&buf, &v)
 
@@ -192,7 +192,7 @@ func TestEncodeDecodeJsonMsg(t *testing.T) {
 		t.Logf("WARNING: Msgsize() for %v is inaccurate", v)
 	}
 
-	vn := JsonMsg{}
+	vn := JsonMsgs{}
 	err := msgp.Decode(&buf, &vn)
 	if err != nil {
 		t.Error(err)
@@ -206,8 +206,8 @@ func TestEncodeDecodeJsonMsg(t *testing.T) {
 	}
 }
 
-func BenchmarkEncodeJsonMsg(b *testing.B) {
-	v := JsonMsg{}
+func BenchmarkEncodeJsonMsgs(b *testing.B) {
+	v := JsonMsgs{}
 	var buf bytes.Buffer
 	msgp.Encode(&buf, &v)
 	b.SetBytes(int64(buf.Len()))
@@ -220,8 +220,8 @@ func BenchmarkEncodeJsonMsg(b *testing.B) {
 	en.Flush()
 }
 
-func BenchmarkDecodeJsonMsg(b *testing.B) {
-	v := JsonMsg{}
+func BenchmarkDecodeJsonMsgs(b *testing.B) {
+	v := JsonMsgs{}
 	var buf bytes.Buffer
 	msgp.Encode(&buf, &v)
 	b.SetBytes(int64(buf.Len()))

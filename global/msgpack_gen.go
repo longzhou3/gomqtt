@@ -147,7 +147,7 @@ func (z *DelToken) Msgsize() (s int) {
 }
 
 // DecodeMsg implements msgp.Decodable
-func (z *JsonMsg) DecodeMsg(dc *msgp.Reader) (err error) {
+func (z *JsonMsgs) DecodeMsg(dc *msgp.Reader) (err error) {
 	var field []byte
 	_ = field
 	var zbai uint32
@@ -162,16 +162,6 @@ func (z *JsonMsg) DecodeMsg(dc *msgp.Reader) (err error) {
 			return
 		}
 		switch msgp.UnsafeString(field) {
-		case "fac":
-			z.FAcc, err = dc.ReadBytes(z.FAcc)
-			if err != nil {
-				return
-			}
-		case "ft":
-			z.FTopic, err = dc.ReadBytes(z.FTopic)
-			if err != nil {
-				return
-			}
 		case "rc":
 			z.RetryCount, err = dc.ReadInt32()
 			if err != nil {
@@ -179,11 +169,6 @@ func (z *JsonMsg) DecodeMsg(dc *msgp.Reader) (err error) {
 			}
 		case "q":
 			z.Qos, err = dc.ReadInt32()
-			if err != nil {
-				return
-			}
-		case "mi":
-			z.MsgID, err = dc.ReadBytes(z.MsgID)
 			if err != nil {
 				return
 			}
@@ -203,28 +188,10 @@ func (z *JsonMsg) DecodeMsg(dc *msgp.Reader) (err error) {
 }
 
 // EncodeMsg implements msgp.Encodable
-func (z *JsonMsg) EncodeMsg(en *msgp.Writer) (err error) {
-	// map header, size 6
-	// write "fac"
-	err = en.Append(0x86, 0xa3, 0x66, 0x61, 0x63)
-	if err != nil {
-		return err
-	}
-	err = en.WriteBytes(z.FAcc)
-	if err != nil {
-		return
-	}
-	// write "ft"
-	err = en.Append(0xa2, 0x66, 0x74)
-	if err != nil {
-		return err
-	}
-	err = en.WriteBytes(z.FTopic)
-	if err != nil {
-		return
-	}
+func (z *JsonMsgs) EncodeMsg(en *msgp.Writer) (err error) {
+	// map header, size 3
 	// write "rc"
-	err = en.Append(0xa2, 0x72, 0x63)
+	err = en.Append(0x83, 0xa2, 0x72, 0x63)
 	if err != nil {
 		return err
 	}
@@ -241,15 +208,6 @@ func (z *JsonMsg) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return
 	}
-	// write "mi"
-	err = en.Append(0xa2, 0x6d, 0x69)
-	if err != nil {
-		return err
-	}
-	err = en.WriteBytes(z.MsgID)
-	if err != nil {
-		return
-	}
 	// write "m"
 	err = en.Append(0xa1, 0x6d)
 	if err != nil {
@@ -263,24 +221,15 @@ func (z *JsonMsg) EncodeMsg(en *msgp.Writer) (err error) {
 }
 
 // MarshalMsg implements msgp.Marshaler
-func (z *JsonMsg) MarshalMsg(b []byte) (o []byte, err error) {
+func (z *JsonMsgs) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
-	// map header, size 6
-	// string "fac"
-	o = append(o, 0x86, 0xa3, 0x66, 0x61, 0x63)
-	o = msgp.AppendBytes(o, z.FAcc)
-	// string "ft"
-	o = append(o, 0xa2, 0x66, 0x74)
-	o = msgp.AppendBytes(o, z.FTopic)
+	// map header, size 3
 	// string "rc"
-	o = append(o, 0xa2, 0x72, 0x63)
+	o = append(o, 0x83, 0xa2, 0x72, 0x63)
 	o = msgp.AppendInt32(o, z.RetryCount)
 	// string "q"
 	o = append(o, 0xa1, 0x71)
 	o = msgp.AppendInt32(o, z.Qos)
-	// string "mi"
-	o = append(o, 0xa2, 0x6d, 0x69)
-	o = msgp.AppendBytes(o, z.MsgID)
 	// string "m"
 	o = append(o, 0xa1, 0x6d)
 	o = msgp.AppendBytes(o, z.Msg)
@@ -288,7 +237,7 @@ func (z *JsonMsg) MarshalMsg(b []byte) (o []byte, err error) {
 }
 
 // UnmarshalMsg implements msgp.Unmarshaler
-func (z *JsonMsg) UnmarshalMsg(bts []byte) (o []byte, err error) {
+func (z *JsonMsgs) UnmarshalMsg(bts []byte) (o []byte, err error) {
 	var field []byte
 	_ = field
 	var zcmr uint32
@@ -303,16 +252,6 @@ func (z *JsonMsg) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			return
 		}
 		switch msgp.UnsafeString(field) {
-		case "fac":
-			z.FAcc, bts, err = msgp.ReadBytesBytes(bts, z.FAcc)
-			if err != nil {
-				return
-			}
-		case "ft":
-			z.FTopic, bts, err = msgp.ReadBytesBytes(bts, z.FTopic)
-			if err != nil {
-				return
-			}
 		case "rc":
 			z.RetryCount, bts, err = msgp.ReadInt32Bytes(bts)
 			if err != nil {
@@ -320,11 +259,6 @@ func (z *JsonMsg) UnmarshalMsg(bts []byte) (o []byte, err error) {
 			}
 		case "q":
 			z.Qos, bts, err = msgp.ReadInt32Bytes(bts)
-			if err != nil {
-				return
-			}
-		case "mi":
-			z.MsgID, bts, err = msgp.ReadBytesBytes(bts, z.MsgID)
 			if err != nil {
 				return
 			}
@@ -345,8 +279,8 @@ func (z *JsonMsg) UnmarshalMsg(bts []byte) (o []byte, err error) {
 }
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
-func (z *JsonMsg) Msgsize() (s int) {
-	s = 1 + 4 + msgp.BytesPrefixSize + len(z.FAcc) + 3 + msgp.BytesPrefixSize + len(z.FTopic) + 3 + msgp.Int32Size + 2 + msgp.Int32Size + 3 + msgp.BytesPrefixSize + len(z.MsgID) + 2 + msgp.BytesPrefixSize + len(z.Msg)
+func (z *JsonMsgs) Msgsize() (s int) {
+	s = 1 + 3 + msgp.Int32Size + 2 + msgp.Int32Size + 2 + msgp.BytesPrefixSize + len(z.Msg)
 	return
 }
 
