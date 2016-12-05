@@ -25,6 +25,7 @@ type TextMsg struct {
 	Msg        []byte `msg:"m"`
 }
 
+// JsonMsgs package
 type JsonMsgs struct {
 	RetryCount int32    `msg:"rc"`
 	Qos        int32    `msg:"q"`
