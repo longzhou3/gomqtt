@@ -28,7 +28,6 @@ type TextMsg struct {
 // JsonMsgs package
 type JsonMsgs struct {
 	RetryCount int32    `msg:"rc"`
-	Qos        int32    `msg:"q"`
 	Topics     [][]byte `msg:"ts"`
 	MsgID      [][]byte `msg:"mis"`
 	Msg        []byte   `msg:"m"`
