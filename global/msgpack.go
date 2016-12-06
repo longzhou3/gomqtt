@@ -27,11 +27,28 @@ type TextMsg struct {
 
 // JsonMsgs package
 type JsonMsgs struct {
-	RetryCount int32    `msg:"rc"`
-	Qos        int32    `msg:"q"` //该批消息的最大qos
-	Topics     [][]byte `msg:"ts"`
-	MsgID      [][]byte `msg:"mis"`
-	Msg        []byte   `msg:"m"`
+	RetryCount []int32   `msg:"rc"`
+	Qos        []int32   `msg:"q"`
+	Topics     [][]byte  `msg:"ts"`
+	MsgID      [][]byte  `msg:"mis"`
+	Data       *JsonData `msg:"d"`
+}
+
+//easyjson:json
+type JsonData struct {
+	Msgs []*JsonMsg `json:"msgs"`
+}
+
+//easyjson:json
+type JsonMsg struct {
+	FAcc   string `json:"facc"`
+	FTopic string `json:"ftopic"`
+	Type   int    `json:"type"`
+	Qos    int    `json:"qos"`
+	Time   int    `json:"time"`
+	Nick   string `json:"nick"`
+	MsgID  string `json:"msgid"`
+	Msg    []byte `json:"msg"`
 }
 
 //-------------------------APNS-----------------------------------------
