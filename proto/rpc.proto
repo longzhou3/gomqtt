@@ -35,8 +35,9 @@ message PubJsonMsg {
     bytes  toAcc   = 2;      // to accound
     bytes  ttp     = 3;      // to topic 
     int32  qos     = 4;      // Qos
-    bytes  mid     = 5;      // msgid
-    bytes  msg     = 6;      // 用户push信息 
+    int32  msgtype = 5;      // 消息功能
+    bytes  mid     = 6;      // msgid
+    bytes  msg     = 7;      // 用户push信息 
 }
 
 
@@ -53,8 +54,9 @@ message PubTextMsg {
     bytes  toAcc   = 2;      // to accound
     bytes  ttp     = 3;      // to topic 
     int32  qos     = 4;      // Qos
-    bytes  mid     = 5;      // msgid
-    bytes  msg     = 6;      // 用户push信息 
+    int32  msgtype = 5;      // 消息功能
+    bytes  mid     = 6;      // msgid
+    bytes  msg     = 7;      // 用户push信息 
 }
 
 
