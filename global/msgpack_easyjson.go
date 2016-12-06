@@ -40,8 +40,6 @@ func easyjsonF2feebfaDecodeGithubComAiyunGomqttGlobal(in *jlexer.Lexer, out *Jso
 			out.FTopic = string(in.String())
 		case "type":
 			out.Type = int(in.Int())
-		case "qos":
-			out.Qos = int(in.Int())
 		case "time":
 			out.Time = int(in.Int())
 		case "nick":
@@ -87,12 +85,6 @@ func easyjsonF2feebfaEncodeGithubComAiyunGomqttGlobal(out *jwriter.Writer, in Js
 	first = false
 	out.RawString("\"type\":")
 	out.Int(int(in.Type))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"qos\":")
-	out.Int(int(in.Qos))
 	if !first {
 		out.RawByte(',')
 	}

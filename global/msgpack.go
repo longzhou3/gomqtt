@@ -27,9 +27,8 @@ type TextMsg struct {
 
 // JsonMsgs package
 type JsonMsgs struct {
-	RetryCount []int32   `msg:"rc"`
-	Qos        []int32   `msg:"q"`
-	Topics     [][]byte  `msg:"ts"`
+	RetryCount int32     `msg:"rc"`
+	Qos        int32     `msg:"q"`
 	MsgID      [][]byte  `msg:"mis"`
 	Data       *JsonData `msg:"d"`
 }
@@ -44,7 +43,6 @@ type JsonMsg struct {
 	FAcc   string `json:"facc"`
 	FTopic string `json:"ftopic"`
 	Type   int    `json:"type"`
-	Qos    int    `json:"qos"`
 	Time   int    `json:"time"`
 	Nick   string `json:"nick"`
 	MsgID  string `json:"msgid"`
