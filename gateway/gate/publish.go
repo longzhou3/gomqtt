@@ -20,9 +20,36 @@ import (
 //@ToDo
 //从客户端过来的只能是私聊或者单播
 func publish(ci *connInfo, p *proto.PublishPacket) error {
+	ci.inCount++
+
 	switch ci.payloadProtoType {
+	case global.PayloadJson:
+		c2s := &global.C2SMsg{}
+		err := c2s.UnmarshalJSON(p.Payload())
+		if err != nil {
+			return fmt.Errorf("unmarshal error: %v, data: %s", err, p.Payload())
+		}
+
+		var mid string
+		if c2s.MsgID == "" {
+			mid = uuid.GenStr()
+		} else {
+			mid = c2s.MsgID
+		}
+
+		err := ci.rpc.pubText(&rpc.PubTextMsg{
+			Cid:   ci.id,
+			ToAcc: tools.String2Bytes(c2s.Acc),
+			Ttp:   tools.String2Bytes(c2s.Topic),
+			Qos:   int32(c2s.Qos),
+			Mid:   tools.String2Bytes(mid),
+			Msg:   c2s.Msg,
+		})
+		if err != nil {
+			return fmt.Errorf("pubJson rpc error: %v", err)
+		}
+
 	case global.PayloadText:
-		ci.inCount++
 		// text格式，需要生成MsgID
 		mid := tools.String2Bytes(uuid.GenStr())
 		tps := bytes.Split(p.Topic(), topicSep)
@@ -32,7 +59,7 @@ func publish(ci *connInfo, p *proto.PublishPacket) error {
 
 		qos := qosTrans(p.QoS())
 
-		Logger.Debug("client publish", zap.String("topic", string(tps[0])),
+		Logger.Debug("client publish text", zap.String("topic", string(tps[0])),
 			zap.String("acc", string(tps[1])), zap.Int("in_count", ci.inCount))
 		err := ci.rpc.pubText(&rpc.PubTextMsg{
 			Cid:   ci.id,
@@ -70,6 +97,7 @@ func puback(ci *connInfo, p *proto.PubackPacket) error {
 	if ok {
 		err := ci.rpc.puback(&rpc.PubAckMsg{
 			Acc:  ci.acc,
+			Plty: ci.payloadProtoType,
 			Mids: ids,
 		})
 		if err != nil {

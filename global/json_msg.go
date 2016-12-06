@@ -20,7 +20,8 @@ type JsonMsg struct {
 
 //easyjson:json
 type C2SMsg struct {
-	ToAcc string `json:"toacc"`
+	Acc   string `json:"acc"`
+	Topic string `json:"topic"`
 	Type  int    `json:"type"`
 	Qos   int    `json:"qos"`
 	MsgID string `json:"msgid"`
