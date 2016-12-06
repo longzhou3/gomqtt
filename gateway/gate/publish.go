@@ -37,7 +37,7 @@ func publish(ci *connInfo, p *proto.PublishPacket) error {
 			mid = c2s.MsgID
 		}
 
-		err := ci.rpc.pubText(&rpc.PubTextMsg{
+		err = ci.rpc.pubText(&rpc.PubTextMsg{
 			Cid:   ci.id,
 			ToAcc: tools.String2Bytes(c2s.Acc),
 			Ttp:   tools.String2Bytes(c2s.Topic),
