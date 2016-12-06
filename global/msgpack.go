@@ -29,6 +29,7 @@ type TextMsg struct {
 type JsonMsgs struct {
 	RetryCount int32     `msg:"rc"`
 	Qos        int32     `msg:"q"`
+	TTopics    [][]byte  `msg:"ts"`
 	MsgID      [][]byte  `msg:"mis"`
 	Data       *JsonData `msg:"d"`
 }
