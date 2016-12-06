@@ -8,12 +8,21 @@ type Messages struct {
 
 //easyjson:json
 type JsonMsg struct {
-	FAcc   []byte `json:"facc"`
-	FTopic []byte `json:"ftopic"`
+	FAcc   string `json:"facc"`
+	FTopic string `json:"ftopic"`
 	Type   int    `json:"type"`
 	Qos    int    `json:"qos"`
 	Time   int    `json:"time"`
-	Nick   []byte `json:"nick"`
-	MsgID  []byte `json:"mi"`
-	Msg    []byte `json:"m"`
+	Nick   string `json:"nick"`
+	MsgID  string `json:"msgid"`
+	Msg    []byte `json:"msg"`
+}
+
+//easyjson:json
+type C2SMsg struct {
+	ToAcc string `json:"toacc"`
+	Type  int    `json:"type"`
+	Qos   int    `json:"qos"`
+	MsgID string `json:"msgid"`
+	Msg   []byte `json:"msg"`
 }

@@ -89,9 +89,13 @@ func initConnection(ci *connInfo) (error, proto.ConnackCode) {
 	}
 
 	if ci.appID != nil {
+		// 通过appid获取topics、compress、qos等信息
 		// subscribe and login
 		topics := make([][]byte, 1)
 		qoses := make([]byte, 1)
+
+		// Json协议下采用snappy压缩
+		ci.compress = 211
 		ci.payloadProtoType = global.PayloadText
 		err = loginAndSub(ci, topics, qoses, 1)
 		if err != nil {
@@ -100,5 +104,7 @@ func initConnection(ci *connInfo) (error, proto.ConnackCode) {
 		ci.isInstantLogin = true
 	}
 
+	// Json协议下默认采用snappy压缩
+	ci.compress = 211
 	return nil, proto.ConnectionAccepted
 }

@@ -15,8 +15,116 @@ var (
 	_ = jwriter.Writer{}
 )
 
-func easyjsonA390b27cDecodeGithubComAiyunGomqttGlobal(in *jlexer.Lexer, out *JsonMsg) {
+func easyjsonA390b27cDecodeGithubComAiyunGomqttGlobal(in *jlexer.Lexer, out *C2SMsg) {
+	isTopLevel := in.IsStart()
 	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "toacc":
+			out.ToAcc = string(in.String())
+		case "type":
+			out.Type = int(in.Int())
+		case "qos":
+			out.Qos = int(in.Int())
+		case "msgid":
+			out.MsgID = string(in.String())
+		case "msg":
+			if in.IsNull() {
+				in.Skip()
+				out.Msg = nil
+			} else {
+				out.Msg = in.Bytes()
+			}
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonA390b27cEncodeGithubComAiyunGomqttGlobal(out *jwriter.Writer, in C2SMsg) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"toacc\":")
+	out.String(string(in.ToAcc))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"type\":")
+	out.Int(int(in.Type))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"qos\":")
+	out.Int(int(in.Qos))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"msgid\":")
+	out.String(string(in.MsgID))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"msg\":")
+	out.Base64Bytes(in.Msg)
+	out.RawByte('}')
+}
+
+// MarshalJSON supports json.Marshaler interface
+func (v C2SMsg) MarshalJSON() ([]byte, error) {
+	w := jwriter.Writer{}
+	easyjsonA390b27cEncodeGithubComAiyunGomqttGlobal(&w, v)
+	return w.Buffer.BuildBytes(), w.Error
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v C2SMsg) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonA390b27cEncodeGithubComAiyunGomqttGlobal(w, v)
+}
+
+// UnmarshalJSON supports json.Unmarshaler interface
+func (v *C2SMsg) UnmarshalJSON(data []byte) error {
+	r := jlexer.Lexer{Data: data}
+	easyjsonA390b27cDecodeGithubComAiyunGomqttGlobal(&r, v)
+	return r.Error()
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *C2SMsg) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonA390b27cDecodeGithubComAiyunGomqttGlobal(l, v)
+}
+func easyjsonA390b27cDecodeGithubComAiyunGomqttGlobal1(in *jlexer.Lexer, out *JsonMsg) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
 		in.Skip()
 		return
 	}
@@ -31,19 +139,9 @@ func easyjsonA390b27cDecodeGithubComAiyunGomqttGlobal(in *jlexer.Lexer, out *Jso
 		}
 		switch key {
 		case "facc":
-			if in.IsNull() {
-				in.Skip()
-				out.FAcc = nil
-			} else {
-				out.FAcc = in.Bytes()
-			}
+			out.FAcc = string(in.String())
 		case "ftopic":
-			if in.IsNull() {
-				in.Skip()
-				out.FTopic = nil
-			} else {
-				out.FTopic = in.Bytes()
-			}
+			out.FTopic = string(in.String())
 		case "type":
 			out.Type = int(in.Int())
 		case "qos":
@@ -51,20 +149,10 @@ func easyjsonA390b27cDecodeGithubComAiyunGomqttGlobal(in *jlexer.Lexer, out *Jso
 		case "time":
 			out.Time = int(in.Int())
 		case "nick":
-			if in.IsNull() {
-				in.Skip()
-				out.Nick = nil
-			} else {
-				out.Nick = in.Bytes()
-			}
-		case "mi":
-			if in.IsNull() {
-				in.Skip()
-				out.MsgID = nil
-			} else {
-				out.MsgID = in.Bytes()
-			}
-		case "m":
+			out.Nick = string(in.String())
+		case "msgid":
+			out.MsgID = string(in.String())
+		case "msg":
 			if in.IsNull() {
 				in.Skip()
 				out.Msg = nil
@@ -77,8 +165,11 @@ func easyjsonA390b27cDecodeGithubComAiyunGomqttGlobal(in *jlexer.Lexer, out *Jso
 		in.WantComma()
 	}
 	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
 }
-func easyjsonA390b27cEncodeGithubComAiyunGomqttGlobal(out *jwriter.Writer, in JsonMsg) {
+func easyjsonA390b27cEncodeGithubComAiyunGomqttGlobal1(out *jwriter.Writer, in JsonMsg) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -87,13 +178,13 @@ func easyjsonA390b27cEncodeGithubComAiyunGomqttGlobal(out *jwriter.Writer, in Js
 	}
 	first = false
 	out.RawString("\"facc\":")
-	out.Base64Bytes(in.FAcc)
+	out.String(string(in.FAcc))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
 	out.RawString("\"ftopic\":")
-	out.Base64Bytes(in.FTopic)
+	out.String(string(in.FTopic))
 	if !first {
 		out.RawByte(',')
 	}
@@ -117,18 +208,18 @@ func easyjsonA390b27cEncodeGithubComAiyunGomqttGlobal(out *jwriter.Writer, in Js
 	}
 	first = false
 	out.RawString("\"nick\":")
-	out.Base64Bytes(in.Nick)
+	out.String(string(in.Nick))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"mi\":")
-	out.Base64Bytes(in.MsgID)
+	out.RawString("\"msgid\":")
+	out.String(string(in.MsgID))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"m\":")
+	out.RawString("\"msg\":")
 	out.Base64Bytes(in.Msg)
 	out.RawByte('}')
 }
@@ -136,28 +227,32 @@ func easyjsonA390b27cEncodeGithubComAiyunGomqttGlobal(out *jwriter.Writer, in Js
 // MarshalJSON supports json.Marshaler interface
 func (v JsonMsg) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonA390b27cEncodeGithubComAiyunGomqttGlobal(&w, v)
+	easyjsonA390b27cEncodeGithubComAiyunGomqttGlobal1(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v JsonMsg) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonA390b27cEncodeGithubComAiyunGomqttGlobal(w, v)
+	easyjsonA390b27cEncodeGithubComAiyunGomqttGlobal1(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *JsonMsg) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonA390b27cDecodeGithubComAiyunGomqttGlobal(&r, v)
+	easyjsonA390b27cDecodeGithubComAiyunGomqttGlobal1(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *JsonMsg) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonA390b27cDecodeGithubComAiyunGomqttGlobal(l, v)
+	easyjsonA390b27cDecodeGithubComAiyunGomqttGlobal1(l, v)
 }
-func easyjsonA390b27cDecodeGithubComAiyunGomqttGlobal1(in *jlexer.Lexer, out *Messages) {
+func easyjsonA390b27cDecodeGithubComAiyunGomqttGlobal2(in *jlexer.Lexer, out *Messages) {
+	isTopLevel := in.IsStart()
 	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
 		in.Skip()
 		return
 	}
@@ -186,8 +281,11 @@ func easyjsonA390b27cDecodeGithubComAiyunGomqttGlobal1(in *jlexer.Lexer, out *Me
 		in.WantComma()
 	}
 	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
 }
-func easyjsonA390b27cEncodeGithubComAiyunGomqttGlobal1(out *jwriter.Writer, in Messages) {
+func easyjsonA390b27cEncodeGithubComAiyunGomqttGlobal2(out *jwriter.Writer, in Messages) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -209,23 +307,23 @@ func easyjsonA390b27cEncodeGithubComAiyunGomqttGlobal1(out *jwriter.Writer, in M
 // MarshalJSON supports json.Marshaler interface
 func (v Messages) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonA390b27cEncodeGithubComAiyunGomqttGlobal1(&w, v)
+	easyjsonA390b27cEncodeGithubComAiyunGomqttGlobal2(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Messages) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonA390b27cEncodeGithubComAiyunGomqttGlobal1(w, v)
+	easyjsonA390b27cEncodeGithubComAiyunGomqttGlobal2(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Messages) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonA390b27cDecodeGithubComAiyunGomqttGlobal1(&r, v)
+	easyjsonA390b27cDecodeGithubComAiyunGomqttGlobal2(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Messages) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonA390b27cDecodeGithubComAiyunGomqttGlobal1(l, v)
+	easyjsonA390b27cDecodeGithubComAiyunGomqttGlobal2(l, v)
 }

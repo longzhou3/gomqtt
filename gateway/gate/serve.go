@@ -74,6 +74,13 @@ type connInfo struct {
 	// 可选3种： PlayText、Protobuf、Json
 	payloadProtoType int32
 
+	// Json格式的Payload才能进行压缩
+	// 压缩信息 百位保存压缩算法，十位压缩级别，个位保存是否压缩
+	// 百位，1:gzip,2:snappy
+	// 十位
+	// 个位: 1压缩，其它不压缩
+	compress int
+
 	// 当前的mqtt id
 	// 该id是mqtt协议使用的uint16 id,通过真实的msgid映射而来
 	msgID uint16

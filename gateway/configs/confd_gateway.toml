@@ -16,6 +16,8 @@ keys = [
         "/gomqtt/gateway/enabletls",
         "/gomqtt/gateway/tlscert",
         "/gomqtt/gateway/tlskey",
+        "/gomqtt/gateway/wsaddr",
+        
 
 	"/gomqtt/gateway/etcdaddrs",
 	"/gomqtt/gateway/etcd/streams",
@@ -29,6 +31,7 @@ keys = [
         "/gomqtt/gateway/maxpasswordlen",
 
         "/gomqtt/gateway/dispatch/addr",
+        
         "/gomqtt/gateway/mutex/type",
 
         

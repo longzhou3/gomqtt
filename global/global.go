@@ -20,6 +20,6 @@ const (
 // payload proto types
 const (
 	PayloadText     = 1
-	PayloadProtobuf = 2
-	PayloadJson     = 3
+	PayloadJson     = 2
+	PayloadProtobuf = 3
 )

@@ -3,6 +3,7 @@ package gate
 /* 接收从Stream发送到客户端的消息，Pub2Client */
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"time"
 
@@ -24,7 +25,18 @@ func pub2c(ci *connInfo, msg *nats.Msg) {
 	}
 
 	switch ci.payloadProtoType {
-	case global.PayloadProtobuf:
+	case global.PayloadJson:
+		d := &global.JsonMsgs{}
+		_, err := d.UnmarshalMsg(msg.Data)
+		if err != nil {
+			Logger.Info("unmarshal JsonMsgs error", zap.Error(err), zap.Int64("cid", ci.id))
+			return
+		}
+
+		err = pubJson(ci, d)
+		if err != nil {
+			Logger.Debug("pubJson error", zap.Error(err))
+		}
 
 	case global.PayloadText:
 		d := &global.TextMsgs{}
@@ -38,8 +50,8 @@ func pub2c(ci *connInfo, msg *nats.Msg) {
 		if err != nil {
 			Logger.Debug("pubText error", zap.Error(err))
 		}
+	case global.PayloadProtobuf:
 
-	case global.PayloadJson:
 	}
 
 }
@@ -70,6 +82,37 @@ func pubText(ci *connInfo, m *global.TextMsgs) error {
 	return nil
 }
 
+func pubJson(ci *connInfo, msg *global.JsonMsgs) error {
+	p := proto.NewPublishPacket()
+	p.SetQoS(byte(msg.Qos))
+
+	j := &global.Messages{}
+
+	j.Compress = ci.compress
+	data, err := compress(ci, msg)
+	if err != nil {
+		return err
+	}
+	j.Data = data
+
+	b, err := j.MarshalJSON()
+	if err != nil {
+		return err
+	}
+
+	p.SetPayload(b)
+	id, err := mapID(ci, msg.Topics, msg.MsgID, msg.Qos)
+	p.SetPacketID(id)
+
+	Logger.Debug("recv nats msg", zap.String("msg", string(msg.Msg)), zap.Int("id", int(id)))
+	err = write(ci, p)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func mapTextID(ci *connInfo, topic []byte, mid []byte, qos int32) (uint16, error) {
 	id, err := getID(ci)
 	if err != nil {
@@ -92,7 +135,11 @@ func mapTextID(ci *connInfo, topic []byte, mid []byte, qos int32) (uint16, error
 	return id, nil
 }
 
-func mapID(ci *connInfo, topic []byte, ids [][]byte, qos int32) (uint16, error) {
+func mapID(ci *connInfo, topics [][]byte, ids [][]byte, qos int32) (uint16, error) {
+	if len(topics) != len(ids) {
+		return 0, errors.New("topics and msgIDs must have the same length")
+	}
+
 	id, err := getID(ci)
 	if err != nil {
 		return 0, err
@@ -103,7 +150,7 @@ func mapID(ci *connInfo, topic []byte, ids [][]byte, qos int32) (uint16, error) 
 		acks := make([]*rpc.AckTopicMsgID, len(ids))
 		for k, v := range ids {
 			acks[k] = &rpc.AckTopicMsgID{
-				Tp:  topic,
+				Tp:  topics[k],
 				Mid: v,
 			}
 		}
