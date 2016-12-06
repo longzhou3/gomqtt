@@ -76,6 +76,19 @@ func (r *rpcServie) pubText(msg *rpc.PubTextMsg) error {
 	return nil
 }
 
+func (r *rpcServie) pubJson(msg *rpc.PubJsonMsg) error {
+	req, err := r.client.PubJson(context.Background(), msg)
+	if err != nil {
+		return err
+	}
+
+	if !req.R {
+		return errors.New(tools.Bytes2String(req.M))
+	}
+
+	return nil
+}
+
 func (r *rpcServie) puback(msg *rpc.PubAckMsg) error {
 	req, err := r.client.PubAck(context.Background(), msg)
 	if err != nil {
