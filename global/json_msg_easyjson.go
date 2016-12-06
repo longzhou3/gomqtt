@@ -34,8 +34,10 @@ func easyjsonA390b27cDecodeGithubComAiyunGomqttGlobal(in *jlexer.Lexer, out *C2S
 			continue
 		}
 		switch key {
-		case "toacc":
-			out.ToAcc = string(in.String())
+		case "acc":
+			out.Acc = string(in.String())
+		case "topic":
+			out.Topic = string(in.String())
 		case "type":
 			out.Type = int(in.Int())
 		case "qos":
@@ -67,8 +69,14 @@ func easyjsonA390b27cEncodeGithubComAiyunGomqttGlobal(out *jwriter.Writer, in C2
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"toacc\":")
-	out.String(string(in.ToAcc))
+	out.RawString("\"acc\":")
+	out.String(string(in.Acc))
+	if !first {
+		out.RawByte(',')
+	}
+	first = false
+	out.RawString("\"topic\":")
+	out.String(string(in.Topic))
 	if !first {
 		out.RawByte(',')
 	}
