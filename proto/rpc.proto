@@ -22,7 +22,7 @@ service Rpc {
     // 用户发布
     rpc Publish(PubMsg)         returns (PubRet)     {}
     rpc PubText(PubTextMsg)     returns (PubTextRet) {}
-    rpc PubJson(PubTextMsg)     returns (PubJsonRet) {}
+    rpc PubJson(PubJsonMsg)     returns (PubJsonRet) {}
     rpc PubAck(PubAckMsg)       returns (PubAckRet)  {}
 
     // rpc Publish(PubMsg)      returns (PubRet) {}
