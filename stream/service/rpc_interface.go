@@ -166,10 +166,6 @@ func (rpc *Rpc) PubText(ctx context.Context, msg *proto.PubTextMsg) (*proto.PubT
 	return &proto.PubTextRet{R: true, M: []byte("PubText 成功调用")}, nil
 }
 
-// Tp  []byte `protobuf:"bytes,1,opt,name=tp,proto3" json:"tp,omitempty"`
-// Mid []byte `protobuf:"bytes,2,opt,name=mid,proto3" json:"mid,omitempty"`
-
-// @TODO 消息Ack需要删除离线数据列表，已经删除数据缓存
 // PubAck  puback
 func (rpc *Rpc) PubAck(ctx context.Context, msg *proto.PubAckMsg) (*proto.PubAckRet, error) {
 	// 通过acc计算出队列
@@ -199,7 +195,7 @@ func (rpc *Rpc) PubAck(ctx context.Context, msg *proto.PubAckMsg) (*proto.PubAck
 }
 
 // PubJson json格式推送
-func (rpc *Rpc) PubJson(ctx context.Context, in *proto.PubTextMsg) (*proto.PubJsonRet, error) {
+func (rpc *Rpc) PubJson(ctx context.Context, in *proto.PubJsonMsg) (*proto.PubJsonRet, error) {
 	return &proto.PubJsonRet{R: true, M: []byte("PubJson 成功调用")}, nil
 }
 
