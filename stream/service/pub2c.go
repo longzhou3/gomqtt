@@ -134,8 +134,8 @@ func PushOffLineMsg(t *taskMsg) {
 	for _, topicMsg := range t.ts {
 		cacheTask := CacheTask{
 			MsgTy:   CACHE_SELECT,
-			Acc:     t.acc,
-			Topic:   topicMsg.Tp,
+			TAcc:    t.acc,
+			TTopic:  topicMsg.Tp,
 			RetChan: t.retChan,
 		}
 		t.queue.Publish(cacheTask)
@@ -156,7 +156,7 @@ func PushOffLineMsg(t *taskMsg) {
 				Logger.Info("PushOffLineMsg", zap.String("msgid", tools.Bytes2String(msgidMsg.MsgID)))
 
 				getTask := CacheTask{
-					MsgTy:   CACHE_GET,
+					MsgTy:   CACHE_TEXT_GET,
 					MsgIDs:  [][]byte{msgidMsg.MsgID},
 					RetChan: t.retChan,
 				}
@@ -166,7 +166,7 @@ func PushOffLineMsg(t *taskMsg) {
 					Logger.Error("PushOffLineMsg", zap.String("Acc", tools.Bytes2String(t.acc)))
 					return
 				}
-				// if data, ok := gStream.cache.msgCache.Get(msgidMsg.MsgID); ok {
+
 				if retCache.Data != nil {
 					var Qos int32
 					if msgidMsg.MsgQos <= topicMsg.Qos {
@@ -175,14 +175,14 @@ func PushOffLineMsg(t *taskMsg) {
 						Qos = topicMsg.Qos
 					}
 					Msg := &global.TextMsg{
-						FAcc:       t.acc,
-						FTopic:     topicMsg.Tp,
+						FAcc:       msgidMsg.FAcc,   //t.acc,
+						FTopic:     msgidMsg.FTopic, //topicMsg.Tp,
 						RetryCount: 3,
 						Qos:        Qos,
 						MsgID:      msgidMsg.MsgID,
 						Msg:        retCache.Data,
 					}
-					log.Println("data is  ", string(retCache.Data))
+					Logger.Info("Push", zap.String("data", tools.Bytes2String(retCache.Data)))
 					MsgsCacha = append(MsgsCacha, Msg)
 				}
 			}

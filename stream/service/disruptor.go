@@ -16,10 +16,10 @@ import (
 )
 
 const (
-	CACHE_INSERT = 1000 // 插入
-	CACHE_GET    = 2000 // 获取
-	CACHE_SELECT = 3000 // 查询
-	CACHE_DELETE = 4000 // 删除
+	CACHE_TEXT_INSERT = 1000 // 插入
+	CACHE_TEXT_GET    = 2000 // 获取
+	CACHE_SELECT      = 3000 // 查询
+	CACHE_DELETE      = 4000 // 删除
 )
 
 var gQueue map[string]*Controller
@@ -68,10 +68,16 @@ func CloseQueue() {
 type CacheTask struct {
 	MsgTy   int
 	RetChan chan *CacheRet
-	Acc     []byte
-	Topic   []byte
-	Msg     *proto.PubTextMsg // []byte
-	MsgIDs  [][]byte
+	// Acc     []byte
+	// Topic   []byte
+	// @TODO
+	// 这里要区分来源Acc和目标Acc, msgid里面存放的为这条消息的具体信息, 完美
+	FAcc   []byte            //来源Acc
+	FTopic []byte            //来源Topic
+	TAcc   []byte            //目标Acc
+	TTopic []byte            //目标topic
+	Msg    *proto.PubTextMsg // []byte
+	MsgIDs [][]byte
 }
 
 type CacheRet struct {
@@ -151,38 +157,37 @@ func (this Writer) Consume(lower, upper int64) {
 		bufPool.Data = this.queue.ring[lower&this.queue.bufferMask]
 		// 消费
 		switch bufPool.Data.MsgTy {
-		case CACHE_INSERT:
+		case CACHE_TEXT_INSERT:
 			// 插入数据
-			this.queue.msgCache.Insert(bufPool.Data.Msg.Mid, bufPool.Data.Msg.Msg)
-			this.queue.msgIDManger.InsertTextMsgID(bufPool.Data.Msg)
-			Logger.Info("Consume", zap.String("ToAcc", tools.Bytes2String(bufPool.Data.Msg.ToAcc)), zap.String("Topic", tools.Bytes2String(bufPool.Data.Msg.Ttp)), zap.String("Msg", tools.Bytes2String(bufPool.Data.Msg.Msg)))
+			this.queue.msgCache.TextInsert(bufPool.Data.Msg.Mid, bufPool.Data.Msg.Msg)
+			this.queue.msgIDManger.InsertTextMsgID(bufPool.Data.FAcc, bufPool.Data.FTopic, bufPool.Data.Msg)
+			Logger.Info("CACHE_TEXT_INSERT", zap.String("ToAcc", tools.Bytes2String(bufPool.Data.Msg.ToAcc)), zap.String("Topic", tools.Bytes2String(bufPool.Data.Msg.Ttp)), zap.String("Msg", tools.Bytes2String(bufPool.Data.Msg.Msg)))
 			break
-		case CACHE_GET:
-			Logger.Info("CACHE_GET", zap.String("Acc", tools.Bytes2String(bufPool.Data.Acc)), zap.String("Topic", tools.Bytes2String(bufPool.Data.Topic)))
+		case CACHE_TEXT_GET:
+			Logger.Info("CACHE_TEXT_GET", zap.String("Msgid", tools.Bytes2String(bufPool.Data.MsgIDs[0])))
 			ret := &CacheRet{}
-			data, ok := this.queue.msgCache.Get(bufPool.Data.MsgIDs[0])
+			data, ok := this.queue.msgCache.TextGet(bufPool.Data.MsgIDs[0])
 			if ok {
 				ret.Data = data
 			}
 			bufPool.Data.RetChan <- ret
 			break
 		case CACHE_SELECT:
-			Logger.Info("Select", zap.String("Acc", tools.Bytes2String(bufPool.Data.Acc)), zap.String("Topic", tools.Bytes2String(bufPool.Data.Topic)))
+			Logger.Info("Select", zap.String("Acc", tools.Bytes2String(bufPool.Data.TAcc)), zap.String("Topic", tools.Bytes2String(bufPool.Data.TTopic)))
 			// 查询返回msgid信息
-			tm := this.queue.msgIDManger.GetMsgIDs(bufPool.Data.Acc, bufPool.Data.Topic)
+			tm := this.queue.msgIDManger.GetMsgIDs(bufPool.Data.TAcc, bufPool.Data.TTopic)
 			ret := &CacheRet{
 				MsgIDs: tm,
 			}
 			bufPool.Data.RetChan <- ret
-			// gRetChan <- ret
 			break
 		case CACHE_DELETE:
-			this.queue.msgCache.Delete(bufPool.Data.MsgIDs)
+			this.queue.msgCache.TextDelete(bufPool.Data.MsgIDs)
+			for _, msgid := range bufPool.Data.MsgIDs {
+				this.queue.msgIDManger.TextMsgAck(bufPool.Data.TAcc, bufPool.Data.TTopic, msgid)
+			}
 			break
 		}
-
-		// <-bufPool.Data.RetChan
-		// fmt.Println(<-bufPool.Data.RetChan)
 		this.bufPool.Put(buf)
 		lower++
 	}

@@ -12,33 +12,33 @@ import (
 // NewMsgCache   key:msgid, value:msg
 type MsgCache struct {
 	sync.RWMutex
-	Msgs map[string][]byte
+	TextMsgs map[string][]byte
 }
 
 func NewMsgCache() *MsgCache {
 	msgcache := &MsgCache{
-		Msgs: make(map[string][]byte),
+		TextMsgs: make(map[string][]byte),
 	}
 	return msgcache
 }
 
-func (msgCache *MsgCache) Insert(msgid []byte, msg []byte) error {
-	msgCache.Msgs[string(msgid)] = msg
+func (msgCache *MsgCache) TextInsert(msgid []byte, msg []byte) error {
+	msgCache.TextMsgs[string(msgid)] = msg
 	log.Println("insert msg , msgid is", string(msgid), ",msg is", string(msg))
 	return nil
 }
 
-func (msgCache *MsgCache) Delete(msgid [][]byte) error {
+func (msgCache *MsgCache) TextDelete(msgid [][]byte) error {
 	for _, id := range msgid {
-		delete(msgCache.Msgs, tools.Bytes2String(id))
+		delete(msgCache.TextMsgs, tools.Bytes2String(id))
 		Logger.Info("Delete", zap.String("msgid", tools.Bytes2String(id)))
 	}
 
 	return nil
 }
 
-func (msgCache *MsgCache) Get(msgid []byte) ([]byte, bool) {
-	if msg, ok := msgCache.Msgs[string(msgid)]; ok {
+func (msgCache *MsgCache) TextGet(msgid []byte) ([]byte, bool) {
+	if msg, ok := msgCache.TextMsgs[string(msgid)]; ok {
 		return msg, true
 	}
 	return nil, false
@@ -49,18 +49,18 @@ type MsgIdManger struct {
 	AccMap map[string]*AccTopicMap
 }
 
-func (mim *MsgIdManger) InsertTextMsgID(msg *proto.PubTextMsg) error {
+func (mim *MsgIdManger) InsertTextMsgID(facc, ftopic []byte, msg *proto.PubTextMsg) error {
 	acc, ok := mim.AccMap[string(msg.ToAcc)]
 	if ok {
 		tm, ok := acc.TopicMsgID[string(msg.Ttp)]
 		if ok {
-			msgid := NewMsgID(msg)
+			msgid := NewMsgID(facc, ftopic, msg)
 			tm.MsgID[string(msg.Mid)] = msgid
 			log.Println("InsertTextMsgID msg , msgid is", string(msgid.MsgID))
 		} else {
 			tm := NewTopicIDMap()
 			acc.TopicMsgID[string(msg.Ttp)] = tm
-			msgid := NewMsgID(msg)
+			msgid := NewMsgID(facc, ftopic, msg)
 			tm.MsgID[string(msg.Mid)] = msgid
 			log.Println("InsertTextMsgID msg , msgid is", string(msgid.MsgID))
 		}
@@ -69,7 +69,7 @@ func (mim *MsgIdManger) InsertTextMsgID(msg *proto.PubTextMsg) error {
 		mim.AccMap[string(msg.ToAcc)] = acc
 		tm := NewTopicIDMap()
 		acc.TopicMsgID[string(msg.Ttp)] = tm
-		msgid := NewMsgID(msg)
+		msgid := NewMsgID(facc, ftopic, msg)
 		tm.MsgID[string(msg.Mid)] = msgid
 		log.Println("InsertTextMsgID msg , msgid is", string(msgid.MsgID))
 	}
@@ -145,18 +145,22 @@ func NewTopicIDMap() *TopicIDMap {
 type MsgID struct {
 	MsgTy      int32  // 消息类型
 	MsgQos     int32  // 消息Qos
+	FAcc       []byte //消息来源Acc
+	FTopic     []byte // 消息来源主题
 	RetryCount int32  // 消息重发次数
 	Expiration int64  // 消息过期时间
 	RecvTime   int64  // 消息接收时间
 	MsgID      []byte // 消息ID
 }
 
-func NewMsgID(msg *proto.PubTextMsg) *MsgID {
+func NewMsgID(facc, ftopic []byte, msg *proto.PubTextMsg) *MsgID {
 	msgID := &MsgID{
 		// MsgTy:
 		// Expiration: msg.Qos,
 		// RecvTime:   msg.Qos,
 		// RetryCount: msg.RetryCount,
+		FAcc:   facc,
+		FTopic: ftopic,
 		MsgQos: msg.Qos,
 		MsgID:  msg.Mid,
 	}

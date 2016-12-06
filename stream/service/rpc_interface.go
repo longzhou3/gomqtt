@@ -133,6 +133,7 @@ func (rpc *Rpc) PubText(ctx context.Context, msg *proto.PubTextMsg) (*proto.PubT
 	if !ok {
 		return &proto.PubTextRet{R: false, M: []byte(fmt.Sprint("unfind cid %d", msg.Cid))}, nil
 	}
+
 	Logger.Info("Push", zap.String("ToAcc", tools.Bytes2String(msg.ToAcc)),
 		zap.String("Topic", tools.Bytes2String(msg.Ttp)), zap.String("Msg", tools.Bytes2String(msg.Msg)))
 
@@ -142,10 +143,13 @@ func (rpc *Rpc) PubText(ctx context.Context, msg *proto.PubTextMsg) (*proto.PubT
 		Logger.Error("GetQueue", zap.Error(err), zap.String("acc", tools.Bytes2String(msg.ToAcc)))
 		return nil, err
 	}
+
 	cacheTask := CacheTask{
-		MsgTy:  CACHE_INSERT,
-		Acc:    msg.ToAcc,
-		Topic:  msg.Ttp,
+		MsgTy:  CACHE_TEXT_INSERT,
+		FAcc:   accMsg.acc,
+		FTopic: msg.Ttp,
+		TAcc:   msg.ToAcc,
+		TTopic: msg.Ttp,
 		Msg:    msg,
 		MsgIDs: [][]byte{msg.Mid},
 	}
@@ -162,15 +166,41 @@ func (rpc *Rpc) PubText(ctx context.Context, msg *proto.PubTextMsg) (*proto.PubT
 	return &proto.PubTextRet{R: true, M: []byte("PubText 成功调用")}, nil
 }
 
-// 	(ctx context.Context, in *PubAckMsg, opts ...grpc.CallOption) (*PubAckRet, error)
+// Tp  []byte `protobuf:"bytes,1,opt,name=tp,proto3" json:"tp,omitempty"`
+// Mid []byte `protobuf:"bytes,2,opt,name=mid,proto3" json:"mid,omitempty"`
+
+// @TODO 消息Ack需要删除离线数据列表，已经删除数据缓存
+// PubAck  puback
 func (rpc *Rpc) PubAck(ctx context.Context, msg *proto.PubAckMsg) (*proto.PubAckRet, error) {
-	for _, msgidMsg := range msg.Mids {
-		// gStream.cache.msgCache.Get(msgid)
-		// gStream.cache.msgCache.Delete(msgidMsg.Mid)
-		// gStream.cache.msgIDManger.TextMsgAck(msg.Acc, msgidMsg.Tp, msgidMsg.Mid)
+	// 通过acc计算出队列
+	queue, err := GetQueue(msg.Acc)
+	if err != nil {
+		Logger.Error("GetQueue", zap.Error(err), zap.String("acc", tools.Bytes2String(msg.Acc)))
+		return &proto.PubAckRet{R: false, M: []byte(err.Error())}, err
+	}
+
+	MsgIDs := make([][]byte, len(msg.Mids), len(msg.Mids))
+	var ttopic []byte
+	for index, msgidMsg := range msg.Mids {
+		MsgIDs[index] = msgidMsg.Mid
+		ttopic = msgidMsg.Tp
 		Logger.Info("PubAck", zap.String("msgid", tools.Bytes2String(msgidMsg.Mid)))
 	}
+
+	cacheTask := CacheTask{
+		MsgTy:  CACHE_DELETE,
+		TAcc:   msg.Acc,
+		TTopic: ttopic,
+		MsgIDs: MsgIDs,
+	}
+	queue.Publish(cacheTask)
+
 	return &proto.PubAckRet{R: true, M: []byte("PubAck 成功调用")}, nil
+}
+
+// PubJson json格式推送
+func (rpc *Rpc) PubJson(ctx context.Context, in *proto.PubTextMsg) (*proto.PubJsonRet, error) {
+	return &proto.PubJsonRet{R: true, M: []byte("PubJson 成功调用")}, nil
 }
 
 // SetAppID 设置AppID
