@@ -67,8 +67,9 @@ message PubTextRet {
 
 // 消息Ack
 message PubAckMsg {
-                bytes         acc = 1;   // acc
-    repeated    AckTopicMsgID mids = 2;  // 消息ID列表
+                bytes         acc  = 1;  // acc
+                int32         plty = 2;  // 登陆协议方式
+    repeated    AckTopicMsgID mids = 3;  // 消息ID列表
 }
 
 message AckTopicMsgID {
