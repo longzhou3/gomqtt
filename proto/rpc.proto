@@ -31,13 +31,14 @@ service Rpc {
 
 // 推送Json消息结构
 message PubJsonMsg {
-    int64  cid     = 1;      // 链接id
-    bytes  toAcc   = 2;      // to accound
-    bytes  ttp     = 3;      // to topic 
-    int32  qos     = 4;      // Qos
-    int32  msgtype = 5;      // 消息功能
-    bytes  mid     = 6;      // msgid
-    bytes  msg     = 7;      // 用户push信息 
+    bytes  fAcc    = 1;      // f accound
+    bytes  ftp     = 2;      // f topic 
+    bytes  toAcc   = 3;      // to accound
+    bytes  ttp     = 4;      // to topic 
+    int32  qos     = 5;      // Qos
+    int32  msgtype = 6;      // 消息功能
+    bytes  mid     = 7;      // msgid
+    bytes  msg     = 8;      // 用户push信息 
 }
 
 
@@ -50,13 +51,14 @@ message PubJsonRet {
 
 // 推送text消息结构
 message PubTextMsg {
-    int64  cid     = 1;      // 链接id
-    bytes  toAcc   = 2;      // to accound
-    bytes  ttp     = 3;      // to topic 
-    int32  qos     = 4;      // Qos
-    int32  msgtype = 5;      // 消息功能
-    bytes  mid     = 6;      // msgid
-    bytes  msg     = 7;      // 用户push信息 
+    bytes  fAcc    = 1;      // f accound
+    bytes  ftp     = 2;      // f topic 
+    bytes  toAcc   = 3;      // to accound
+    bytes  ttp     = 4;      // to topic 
+    int32  qos     = 5;      // Qos
+    int32  msgtype = 6;      // 消息功能
+    bytes  mid     = 7;      // msgid
+    bytes  msg     = 8;      // 用户push信息 
 }
 
 
@@ -198,8 +200,9 @@ message Topic {
 
 // 订阅主题消息
 message SubMsg {
-             int64 cid     = 1;      // 链接id
-    repeated Topic ts      = 2;      // topic列表
+             bytes  acc        = 1;      // 账户名
+             bytes  appID      = 2;      // appid
+    repeated Topic  ts         = 3;      // topic列表
 }
 
 // 订阅主题消息返回消息
@@ -210,8 +213,9 @@ message SubRet {
 
 // 取消订阅主题消息
 message UnSubMsg {
-             int64 cid     = 1;      // 链接id
-    repeated Topic ts      = 2;      // topic列表
+             bytes  acc        = 1;      // 账户名
+             bytes  appID      = 2;      // appid
+    repeated Topic  ts         = 3;      // topic列表
 }
 
 
