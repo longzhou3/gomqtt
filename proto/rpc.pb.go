@@ -581,6 +581,7 @@ type RpcClient interface {
 	PubAck(ctx context.Context, in *PubAckMsg, opts ...grpc.CallOption) (*PubAckRet, error)
 }
 
+//
 type rpcClient struct {
 	cc *grpc.ClientConn
 }
