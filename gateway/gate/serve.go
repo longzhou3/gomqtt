@@ -45,8 +45,6 @@ type connInfo struct {
 
 	relogin chan struct{}
 
-	rpc *rpcServie
-
 	test []byte
 
 	acc []byte
@@ -161,8 +159,15 @@ func serve(ci *connInfo) {
 
 STOP:
 	if ci.isSubed {
-		err = ci.rpc.logout(&rpc.LogoutMsg{
-			Cid: ci.id,
+		rpcH, err := getRpc(ci)
+		if err != nil {
+			Logger.Info("logout get rpc error", zap.Error(err))
+			return
+		}
+
+		err = rpcH.logout(&rpc.LogoutMsg{
+			Acc:   ci.acc,
+			AppID: ci.appID,
 		})
 
 		Logger.Debug("user logout", zap.Error(err), zap.Int64("cid", ci.id))
