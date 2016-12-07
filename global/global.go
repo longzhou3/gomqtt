@@ -10,10 +10,10 @@ const (
 	// Group Chat Topic
 	GChatTopic = 4000
 
-	// Singe PUsh Topic
+	// Singe Push Topic
 	SPushTopic = 3000
 
-	// Broadcast PUsh Topic
+	// Broadcast Push Topic
 	BPushTopic = 5000
 )
 
@@ -22,4 +22,10 @@ const (
 	PayloadText     = 1
 	PayloadJson     = 2
 	PayloadProtobuf = 3
+)
+
+// message types
+const (
+	// PChatPush
+	PrivateChat = 11000
 )
