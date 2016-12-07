@@ -17,7 +17,12 @@ func subscribe(ci *connInfo, p *proto.SubscribePacket) error {
 		return err
 	}
 
-	err = ci.rpc.subscribe(&rpc.SubMsg{
+	rpcH, err := getRpc(ci)
+	if err != nil {
+		return err
+	}
+
+	err = rpcH.subscribe(&rpc.SubMsg{
 		Acc:   ci.acc,
 		AppID: ci.appID,
 		Ts:    topics,
@@ -43,7 +48,12 @@ func unsubscribe(ci *connInfo, p *proto.UnsubscribePacket) error {
 		return err
 	}
 
-	err = ci.rpc.unSubscribe(&rpc.UnSubMsg{
+	rpcH, err := getRpc(ci)
+	if err != nil {
+		return err
+	}
+
+	err = rpcH.unSubscribe(&rpc.UnSubMsg{
 		Acc:   ci.acc,
 		AppID: ci.appID,
 		Ts:    topics,

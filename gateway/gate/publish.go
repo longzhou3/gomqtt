@@ -109,7 +109,11 @@ func puback(ci *connInfo, p *proto.PubackPacket) error {
 	ids, ok := ci.idMap[mid]
 	ci.rwm.RUnlock()
 	if ok {
-		err := ci.rpc.puback(&rpc.PubAckMsg{
+		rpcH, err := getRpc(ci)
+		if err != nil {
+			return err
+		}
+		err = rpcH.puback(&rpc.PubAckMsg{
 			Acc:  ci.acc,
 			Plty: ci.payloadProtoType,
 			Mids: ids,
