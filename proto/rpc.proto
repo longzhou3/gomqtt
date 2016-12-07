@@ -35,7 +35,8 @@ message PubJsonMsg {
     int32  qos     = 5;      // Qos
     int32  msgtype = 6;      // 消息功能
     bytes  mid     = 7;      // msgid
-    bytes  msg     = 8;      // 用户push信息 
+    bytes  msg     = 8;      // 用户push信息
+    bytes  AppID   = 9;      // AppID
 }
 
 
