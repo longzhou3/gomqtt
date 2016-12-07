@@ -89,7 +89,15 @@ func pubJson(ci *connInfo, msg *global.JsonMsgs) error {
 	j := &global.Messages{}
 
 	j.Compress = ci.compress
-	data, err := compress(ci, msg)
+
+	// 对Msgs列表进行JSON编码
+	d, err := msg.Data.MarshalJSON()
+	if err != nil {
+		return nil
+	}
+
+	// 对Json编码后的数据进行压缩
+	data, err := compress(ci, d)
 	if err != nil {
 		return err
 	}
@@ -101,10 +109,10 @@ func pubJson(ci *connInfo, msg *global.JsonMsgs) error {
 	}
 
 	p.SetPayload(b)
-	id, err := mapID(ci, msg.Topics, msg.MsgID, msg.Qos)
+	id, err := mapID(ci, msg.TTopics, msg.MsgID, msg.Qos)
 	p.SetPacketID(id)
 
-	Logger.Debug("recv nats msg", zap.String("msg", string(msg.Msg)), zap.Int("id", int(id)))
+	Logger.Debug("recv nats msg", zap.Int("id", int(id)))
 	err = write(ci, p)
 	if err != nil {
 		return err

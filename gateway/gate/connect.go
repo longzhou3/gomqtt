@@ -3,7 +3,6 @@ package gate
 /* mqtt connect包处理模块 */
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/aiyun/gomqtt/global"
@@ -60,17 +59,6 @@ func initConnection(ci *connInfo) (error, proto.ConnackCode) {
 	ok = validate(ci.acc, ci.cp.Password())
 	if !ok {
 		return errors.New("validate failed"), proto.ErrIdentifierRejected
-	}
-
-	// connect to stream
-	ip, err := consist.Get(tools.Bytes2String(ci.acc))
-	if err != nil {
-		return err, proto.ErrServerUnavailable
-	}
-
-	ci.rpc, ok = rpcRoutes[ip]
-	if !ok {
-		return fmt.Errorf("no stream rpc available: %v", ip), proto.ErrServerUnavailable
 	}
 
 	// if keepalive == 0 ,we should specify a default keepalive

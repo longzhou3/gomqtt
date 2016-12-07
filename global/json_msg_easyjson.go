@@ -4,6 +4,7 @@ package global
 
 import (
 	json "encoding/json"
+
 	jlexer "github.com/mailru/easyjson/jlexer"
 	jwriter "github.com/mailru/easyjson/jwriter"
 )
@@ -34,14 +35,10 @@ func easyjsonA390b27cDecodeGithubComAiyunGomqttGlobal(in *jlexer.Lexer, out *C2S
 			continue
 		}
 		switch key {
-		case "acc":
-			out.Acc = string(in.String())
-		case "topic":
-			out.Topic = string(in.String())
+		case "toacc":
+			out.ToAcc = string(in.String())
 		case "type":
 			out.Type = int(in.Int())
-		case "qos":
-			out.Qos = int(in.Int())
 		case "msgid":
 			out.MsgID = string(in.String())
 		case "msg":
@@ -69,26 +66,14 @@ func easyjsonA390b27cEncodeGithubComAiyunGomqttGlobal(out *jwriter.Writer, in C2
 		out.RawByte(',')
 	}
 	first = false
-	out.RawString("\"acc\":")
-	out.String(string(in.Acc))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"topic\":")
-	out.String(string(in.Topic))
+	out.RawString("\"toacc\":")
+	out.String(string(in.ToAcc))
 	if !first {
 		out.RawByte(',')
 	}
 	first = false
 	out.RawString("\"type\":")
 	out.Int(int(in.Type))
-	if !first {
-		out.RawByte(',')
-	}
-	first = false
-	out.RawString("\"qos\":")
-	out.Int(int(in.Qos))
 	if !first {
 		out.RawByte(',')
 	}

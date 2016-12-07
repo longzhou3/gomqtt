@@ -36,7 +36,11 @@ func loginAndSub(ci *connInfo, tps [][]byte, qoses []byte, pid uint16) error {
 	ci.isNatsSubed = true
 
 	// 这里的AppID先设置为CLientId，具体参见connInfo结构
-	err = ci.rpc.login(&rpc.LoginMsg{
+	rpcH, err := getRpc(ci)
+	if err != nil {
+		return err
+	}
+	err = rpcH.login(&rpc.LoginMsg{
 		Acc:   ci.acc,
 		AppID: ci.appID,
 		PT:    ci.payloadProtoType,

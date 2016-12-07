@@ -3,6 +3,7 @@ package gate
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"google.golang.org/grpc"
 
@@ -12,6 +13,21 @@ import (
 
 func initRpc() {
 
+}
+
+func getRpc(ci *connInfo) (*rpcServie, error) {
+	// connect to stream
+	ip, err := consist.Get(tools.Bytes2String(ci.acc))
+	if err != nil {
+		return nil, err
+	}
+
+	rpc, ok := rpcRoutes[ip]
+	if !ok {
+		return nil, fmt.Errorf("no stream rpc available: %v", ip)
+	}
+
+	return rpc, nil
 }
 
 type rpcServie struct {

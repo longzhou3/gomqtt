@@ -3,11 +3,10 @@ package gate
 import (
 	"fmt"
 
-	"github.com/aiyun/gomqtt/global"
 	"github.com/golang/snappy"
 )
 
-func compress(ci *connInfo, msg *global.JsonMsgs) ([]byte, error) {
+func compress(ci *connInfo, msg []byte) ([]byte, error) {
 	needC := ci.compress % 10
 	typeC := ci.compress / 100
 	levelC := ((ci.compress % 100) - needC) / 10
@@ -20,7 +19,7 @@ func compress(ci *connInfo, msg *global.JsonMsgs) ([]byte, error) {
 		// 	return out, err
 
 		case 2: //snappy
-			out := snappyC(msg.Msg, levelC)
+			out := snappyC(msg, levelC)
 			return out, nil
 
 		default:
@@ -28,7 +27,7 @@ func compress(ci *connInfo, msg *global.JsonMsgs) ([]byte, error) {
 		}
 	}
 
-	return msg.Msg, nil
+	return msg, nil
 }
 
 // func gzipC(data []byte, lv int) ([]byte, error) {

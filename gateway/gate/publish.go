@@ -37,11 +37,19 @@ func publish(ci *connInfo, p *proto.PublishPacket) error {
 			mid = c2s.MsgID
 		}
 
-		err = ci.rpc.pubJson(&rpc.PubJsonMsg{
-			Cid:   ci.id,
-			ToAcc: tools.String2Bytes(c2s.Acc),
-			Ttp:   tools.String2Bytes(c2s.Topic),
-			Qos:   int32(c2s.Qos),
+		Logger.Debug("client publish JSON", zap.String("mid", mid), zap.String("topic", tools.Bytes2String(p.Topic())),
+			zap.String("acc", c2s.ToAcc), zap.Int("in_count", ci.inCount))
+
+		rpcH, err := getRpc(ci)
+		if err != nil {
+			return err
+		}
+		err = rpcH.pubJson(&rpc.PubJsonMsg{
+			FAcc:  ci.acc,
+			Ftp:   ci.appID,
+			ToAcc: tools.String2Bytes(c2s.ToAcc),
+			Ttp:   p.Topic(),
+			Qos:   int32(p.QoS()),
 			Mid:   tools.String2Bytes(mid),
 			Msg:   c2s.Msg,
 		})
@@ -61,8 +69,14 @@ func publish(ci *connInfo, p *proto.PublishPacket) error {
 
 		Logger.Debug("client publish text", zap.String("topic", string(tps[0])),
 			zap.String("acc", string(tps[1])), zap.Int("in_count", ci.inCount))
-		err := ci.rpc.pubText(&rpc.PubTextMsg{
-			Cid:   ci.id,
+
+		rpcH, err := getRpc(ci)
+		if err != nil {
+			return err
+		}
+		err = rpcH.pubText(&rpc.PubTextMsg{
+			FAcc:  ci.acc,
+			Ftp:   ci.appID,
 			ToAcc: tps[1],
 			Ttp:   tps[0],
 			Qos:   int32(qos),
