@@ -49,8 +49,7 @@ func (ats *Accounts) Login(msg *proto.LoginMsg) error {
 	if ok {
 		err = acc.Login(msg)
 	} else {
-		// 数据库中拉取
-		// New Account
+		// @ToDo   需要从db中拉取用户的信息，比如好友群信息等
 		acc = NewAccount(msg.Acc)
 		acc.Login(msg)
 		ats.Accounts[string(msg.Acc)] = acc
@@ -73,13 +72,72 @@ func (ats *Accounts) Logout(accid, appid []byte) error {
 	return err
 }
 
-func (ats *Accounts) PubText(facc *Account, appid *AppID, msg *proto.PubTextMsg) error {
+// GetQueueAndRetChan get queue and retchan
+func (ats *Accounts) GetQueueAndRetChan(accid, appid []byte) (*Controller, chan *CacheRet, error) {
+	ats.RLock()
+	acc, ok := ats.Accounts[string(accid)]
+	ats.RUnlock()
+	if !ok {
+		return nil, nil, fmt.Errorf("unfind acc %s, appid %s", tools.Bytes2String(accid), tools.Bytes2String(appid))
+	}
+	acc.RLock()
+	app, ok := acc.AppIDs[string(appid)]
+	acc.RUnlock()
+	if !ok {
+		return nil, nil, fmt.Errorf("unfind acc %s, appid %s", tools.Bytes2String(accid), tools.Bytes2String(appid))
+	}
+	return app.Queue, app.RetChan, nil
+}
+
+func (ats *Accounts) PubText(msg *proto.PubTextMsg) error {
+
+	gStream.cache.As.RLock()
+	acc, ok := gStream.cache.As.Accounts[string(msg.ToAcc)]
+	gStream.cache.As.RUnlock()
+	if !ok {
+		return fmt.Errorf("unfind acc %s, topic %s", tools.Bytes2String(msg.ToAcc), tools.Bytes2String(msg.Ttp))
+	}
+
+	acc.RLock()
+	topicMsg, ok := acc.PTopics[string(msg.Ttp)]
+	acc.RUnlock()
+
+	if !ok {
+		return fmt.Errorf("unfind topic, acc is %s, topic %s", tools.Bytes2String(msg.ToAcc), tools.Bytes2String(msg.Ttp))
+	}
+
+	if topicMsg.nastTopic != "0" {
+		var Qos int32
+		if msg.Qos <= topicMsg.qos {
+			Qos = msg.Qos
+		} else {
+			Qos = topicMsg.qos
+		}
+		Msg := &global.TextMsg{
+			FAcc:       msg.FAcc,
+			FTopic:     msg.Ftp,
+			RetryCount: 3,
+			Qos:        Qos,
+			MsgID:      msg.Mid,
+			Msg:        msg.Msg,
+		}
+		msg := &global.TextMsgs{
+			Msgs: []*global.TextMsg{Msg},
+		}
+		// push to nats
+		gStream.nats.pushText(topicMsg.nastTopic, msg)
+	}
+
+	return nil
+}
+
+func (ats *Accounts) PubJson(facc *Account, appid *AppID, msg *proto.PubJsonMsg) error {
 	var err error
 	ats.RLock()
 	acc, ok := ats.Accounts[string(msg.ToAcc)]
 	ats.RUnlock()
 	if ok {
-		err = acc.PubText(facc, appid, msg)
+		err = acc.PubJson(facc, appid, msg)
 	}
 	return err
 }
@@ -125,6 +183,7 @@ func (acc *Account) NewUser(msg *proto.LoginMsg) error {
 	return nil
 }
 
+// Login save appid msg and topic msg
 func (acc *Account) Login(msg *proto.LoginMsg) error {
 	acc.Lock()
 	var appID *AppID
@@ -133,26 +192,39 @@ func (acc *Account) Login(msg *proto.LoginMsg) error {
 		appID = NewAppID()
 		acc.AppIDs[string(msg.AppID)] = appID
 	}
+
+	// 通过acc计算出队列
+	queue, err := GetQueue(msg.Acc)
+	if err != nil {
+		Logger.Error("GetQueue", zap.Error(err), zap.String("acc", tools.Bytes2String(msg.Acc)))
+		return err
+	}
+	retChan := make(chan *CacheRet, 10)
+
+	appID.Queue = queue
+	appID.RetChan = retChan
 	appID.Gip = msg.Gip
 	appID.Cid = msg.Cid
 	appID.PT = msg.PT
 	appID.Oline = ONLINE
 	appID.LastLogin = time.Now().Unix()
 
+	// 保存topic 和 cid
 	for _, topic := range msg.Ts {
-		if global.PChatTopic == topic.Ty || global.SPushTopic == topic.Ty {
-			// 保存topic 和 cid
+		if global.PChatTopic == topic.Ty {
+			// private chat
 			topic2Nats := newtopicTypeCid(topic.Ty, topic.Qos, strconv.FormatInt(msg.Cid, 10))
-			acc.STopics[string(topic.Tp)] = topic2Nats
+			acc.PTopics[string(topic.Tp)] = topic2Nats
+		} else if global.SPushTopic == topic.Ty {
+			// single chat
+			topic2Nats := newtopicTypeCid(topic.Ty, topic.Qos, strconv.FormatInt(msg.Cid, 10))
+			acc.PTopics[string(topic.Tp)] = topic2Nats
 		} else if global.BPushTopic == topic.Ty {
-			// 广播特殊处理
+			// broad chat
 		}
 	}
 
-	// for k, v := range acc.STopics {
-	// 	log.Println("topic", k, v)
-	// }
-	// 订阅
+	// save topic
 	for _, topic := range msg.Ts {
 		appID.Topics[string(topic.Tp)] = topic
 	}
@@ -169,14 +241,25 @@ func (acc *Account) Logout(appid []byte) error {
 	}
 	appID.Oline = OFFLINE
 	appID.LastLogout = time.Now().Unix()
-	acc.Unlock()
-
-	// cid 置为0
+	// close chan
+	close(appID.RetChan)
+	// set topic cid offline
 	for _, topic := range appID.Topics {
-		if topic2Nats, ok := acc.STopics[string(topic.Tp)]; ok {
-			topic2Nats.nastTopic = "0"
+		if topic.Ty == global.SPushTopic {
+			if topic2Nats, ok := acc.STopics[string(topic.Tp)]; ok {
+				topic2Nats.nastTopic = "0"
+			}
+		}
+
+		if topic.Ty == global.PChatTopic {
+			if topic2Nats, ok := acc.PTopics[string(topic.Tp)]; ok {
+				topic2Nats.nastTopic = "0"
+			}
 		}
 	}
+
+	acc.Unlock()
+
 	return nil
 }
 
@@ -253,6 +336,45 @@ func (acc *Account) PubText(facc *Account, appid *AppID, msg *proto.PubTextMsg) 
 	return nil
 }
 
+func (acc *Account) PubJson(facc *Account, appid *AppID, msg *proto.PubJsonMsg) error {
+	if tycid, ok := acc.STopics[string(msg.Ttp)]; ok {
+		// 保存消息
+		if tycid.nastTopic != "0" {
+			var Qos int32
+			if msg.Qos <= tycid.qos {
+				Qos = msg.Qos
+			} else {
+				Qos = tycid.qos
+			}
+
+			// type JsonMsgs struct {
+			// 	RetryCount int32     `msg:"rc"`
+			// 	Qos        int32     `msg:"q"`
+			// 	TTopics    [][]byte  `msg:"ts"`
+			// 	MsgID      [][]byte  `msg:"mis"`
+			// 	Data       *JsonData `msg:"d"`
+			// }
+
+			// type JsonData struct {
+			// 	Msgs []*JsonMsg `json:"msgs"`
+			// }
+
+			msg := &global.JsonMsgs{
+				RetryCount: 3,
+				Qos:        Qos,
+				TTopics:    [][]byte{msg.Ttp},
+				MsgID:      [][]byte{msg.Mid},
+				// Data:       &JsonData{
+				// // Msgs: []*JsonMsg{},
+				// },
+			}
+			// push to nats
+			gStream.nats.pushJson(tycid.nastTopic, msg)
+		}
+	}
+	return nil
+}
+
 // AppID appid
 type AppID struct {
 	Cid        int64  // 连接版本号
@@ -263,6 +385,8 @@ type AppID struct {
 	LastLogout int64  // 最后登出时间
 	ApnsToken  []byte // apns token
 	Topics     map[string]*proto.Topic
+	Queue      *Controller
+	RetChan    chan *CacheRet
 }
 
 func NewAppID() *AppID {

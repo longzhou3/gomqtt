@@ -13,27 +13,42 @@ import (
 type MsgCache struct {
 	sync.RWMutex
 	TextMsgs map[string][]byte
+	JsonMsgs map[string][]byte
 }
 
 func NewMsgCache() *MsgCache {
 	msgcache := &MsgCache{
 		TextMsgs: make(map[string][]byte),
+		JsonMsgs: make(map[string][]byte),
 	}
 	return msgcache
 }
 
 func (msgCache *MsgCache) TextInsert(msgid []byte, msg []byte) error {
 	msgCache.TextMsgs[string(msgid)] = msg
-	log.Println("insert msg , msgid is", string(msgid), ",msg is", string(msg))
+	log.Println("TextInsert msg , msgid is", string(msgid), ",msg is", string(msg))
+	return nil
+}
+
+func (msgCache *MsgCache) JsonInsert(msgid []byte, msg []byte) error {
+	msgCache.JsonMsgs[string(msgid)] = msg
+	log.Println("JsonInsert msg , msgid is", string(msgid), ",msg is", string(msg))
 	return nil
 }
 
 func (msgCache *MsgCache) TextDelete(msgid [][]byte) error {
 	for _, id := range msgid {
 		delete(msgCache.TextMsgs, tools.Bytes2String(id))
-		Logger.Info("Delete", zap.String("msgid", tools.Bytes2String(id)))
+		Logger.Info("TextDelete", zap.String("msgid", tools.Bytes2String(id)))
 	}
+	return nil
+}
 
+func (msgCache *MsgCache) JsonDelete(msgid [][]byte) error {
+	for _, id := range msgid {
+		delete(msgCache.JsonMsgs, tools.Bytes2String(id))
+		Logger.Info("JsonDelete", zap.String("msgid", tools.Bytes2String(id)))
+	}
 	return nil
 }
 
@@ -44,25 +59,32 @@ func (msgCache *MsgCache) TextGet(msgid []byte) ([]byte, bool) {
 	return nil, false
 }
 
+func (msgCache *MsgCache) JsonGet(msgid []byte) ([]byte, bool) {
+	if msg, ok := msgCache.JsonMsgs[string(msgid)]; ok {
+		return msg, true
+	}
+	return nil, false
+}
+
 // MsgIdManger 推送消息Id缓存，离线用户用来查看自己是否有消息需要拉取,网关或者消息中心推送的消息id通过acc、topic为键值来存放数据ID
 type MsgIdManger struct {
 	AccMap map[string]*AccTopicMap
 }
 
-func (mim *MsgIdManger) InsertTextMsgID(facc, ftopic []byte, msg *proto.PubTextMsg) error {
+func (mim *MsgIdManger) InsertMsgID(facc, ftopic []byte, msg *proto.PubTextMsg) error {
 	acc, ok := mim.AccMap[string(msg.ToAcc)]
 	if ok {
 		tm, ok := acc.TopicMsgID[string(msg.Ttp)]
 		if ok {
 			msgid := NewMsgID(facc, ftopic, msg)
 			tm.MsgID[string(msg.Mid)] = msgid
-			log.Println("InsertTextMsgID msg , msgid is", string(msgid.MsgID))
+			log.Println("InsertMsgID msg , msgid is", string(msgid.MsgID))
 		} else {
 			tm := NewTopicIDMap()
 			acc.TopicMsgID[string(msg.Ttp)] = tm
 			msgid := NewMsgID(facc, ftopic, msg)
 			tm.MsgID[string(msg.Mid)] = msgid
-			log.Println("InsertTextMsgID msg , msgid is", string(msgid.MsgID))
+			log.Println("InsertMsgID msg , msgid is", string(msgid.MsgID))
 		}
 	} else {
 		acc := NewAccTopicMap()
@@ -71,7 +93,7 @@ func (mim *MsgIdManger) InsertTextMsgID(facc, ftopic []byte, msg *proto.PubTextM
 		acc.TopicMsgID[string(msg.Ttp)] = tm
 		msgid := NewMsgID(facc, ftopic, msg)
 		tm.MsgID[string(msg.Mid)] = msgid
-		log.Println("InsertTextMsgID msg , msgid is", string(msgid.MsgID))
+		log.Println("InsertMsgID msg , msgid is", string(msgid.MsgID))
 	}
 	return nil
 }
@@ -98,13 +120,13 @@ func (mim *MsgIdManger) GetMsgIDs(acc []byte, topic []byte) *TopicIDMap {
 	return nil
 }
 
-func (mim *MsgIdManger) TextMsgAck(acc []byte, topic []byte, msgid []byte) error {
+func (mim *MsgIdManger) MsgAck(acc []byte, topic []byte, msgid []byte) error {
 	accMap, ok := mim.AccMap[string(acc)]
-	Logger.Info("TextMsgAck", zap.String("topic", tools.Bytes2String(topic)), zap.String("msgid", tools.Bytes2String(msgid)))
+	Logger.Info("MsgAck", zap.String("topic", tools.Bytes2String(topic)), zap.String("msgid", tools.Bytes2String(msgid)))
 	if ok {
 		if topicMsg, ok := accMap.TopicMsgID[string(topic)]; ok {
 			delete(topicMsg.MsgID, tools.Bytes2String(msgid))
-			Logger.Info("TextMsgAck", zap.String("msgid", tools.Bytes2String(msgid)))
+			Logger.Info("MsgAck", zap.String("msgid", tools.Bytes2String(msgid)))
 		}
 	}
 	return nil

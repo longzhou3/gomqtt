@@ -23,10 +23,11 @@ func newconIDs() *conIDs {
 
 // accMsg 存放acccound和appid的映射关系,主题下面保存该用户的信息
 type accMsg struct {
-	acc     []byte
-	appID   []byte
-	queue   *Controller
-	retChan chan *CacheRet
+	acc       []byte
+	appID     []byte
+	payloadty int32
+	queue     *Controller
+	retChan   chan *CacheRet
 }
 
 func newaccMsg() *accMsg {
@@ -45,6 +46,7 @@ func (cids *conIDs) add(msg *proto.LoginMsg) error {
 	cids.Lock()
 	if acc, ok := cids.cids[msg.Cid]; ok {
 		acc.appID = msg.AppID
+		acc.payloadty = msg.PT
 		acc.queue = queue
 		if acc.retChan == nil {
 			acc.retChan = make(chan *CacheRet, 10)
@@ -53,6 +55,7 @@ func (cids *conIDs) add(msg *proto.LoginMsg) error {
 		acc := newaccMsg()
 		acc.acc = msg.Acc
 		acc.appID = msg.AppID
+		acc.payloadty = msg.PT
 		acc.queue = queue
 		acc.retChan = make(chan *CacheRet, 10)
 		cids.cids[msg.Cid] = acc

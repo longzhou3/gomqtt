@@ -41,7 +41,22 @@ func (ns *natsInfo) pushText(subject string, msg *global.TextMsgs) error {
 		return err
 	}
 
-	log.Println("pushText --- nats", subject, len(msg.Msgs))
+	// log.Println("pushText --- nats", subject, len(msg.Msgs))
+	Logger.Info("pushText", zap.String("subject", subject), zap.Int("len", len(msg.Msgs)))
+
+	err = ns.nc.Publish(subject, b)
+	return err
+}
+
+// pushJson 推送消息至nats服务
+func (ns *natsInfo) pushJson(subject string, msg *global.JsonMsgs) error {
+
+	b, err := msg.MarshalMsg(nil)
+	if err != nil {
+		return err
+	}
+
+	Logger.Info("pushJson", zap.String("subject", subject), zap.Int("len", len(msg.Data.Msgs)))
 
 	err = ns.nc.Publish(subject, b)
 	return err
@@ -75,11 +90,13 @@ func initNatsConn(addrs []string) *nats.Conn {
 
 // taskMsg msg
 type taskMsg struct {
-	cid     int64
-	acc     []byte
-	queue   *Controller
-	retChan chan *CacheRet
-	ts      []*proto.Topic
+	cid         int64
+	acc         []byte
+	appid       []byte
+	payloadType int32
+	queue       *Controller
+	retChan     chan *CacheRet
+	ts          []*proto.Topic
 }
 
 var gRetChan chan *CacheRet
@@ -118,9 +135,12 @@ func dealTask(ch chan *taskMsg, sc chan bool) {
 				Logger.Panic("Chan", zap.String("dealTask", "recv chan failed"))
 				break
 			}
-			// Logger.Info("dealTask", zap.Object("taskMsg", t))
-			// log.Println("dealTask", t)
-			PushOffLineMsg(t)
+			if t.payloadType == int32(global.PayloadText) {
+				PushTextOffLineMsg(t)
+			} else if t.payloadType == int32(global.PayloadJson) {
+				PushJsonOffLineMsg(t)
+			}
+
 			break
 		case <-sc:
 			Logger.Info("Chan", zap.String("dealTask", "get stop signal"))
@@ -130,10 +150,10 @@ func dealTask(ch chan *taskMsg, sc chan bool) {
 	}
 }
 
-func PushOffLineMsg(t *taskMsg) {
+func PushTextOffLineMsg(t *taskMsg) {
 	for _, topicMsg := range t.ts {
 		cacheTask := CacheTask{
-			MsgTy:   CACHE_SELECT,
+			MsgTy:   CACHE_TEXT_SELECT,
 			TAcc:    t.acc,
 			TTopic:  topicMsg.Tp,
 			RetChan: t.retChan,
@@ -154,7 +174,6 @@ func PushOffLineMsg(t *taskMsg) {
 			// get Msg
 			for _, msgidMsg := range retCache.MsgIDs.MsgID {
 				Logger.Info("PushOffLineMsg", zap.String("msgid", tools.Bytes2String(msgidMsg.MsgID)))
-
 				getTask := CacheTask{
 					MsgTy:   CACHE_TEXT_GET,
 					MsgIDs:  [][]byte{msgidMsg.MsgID},
@@ -166,7 +185,6 @@ func PushOffLineMsg(t *taskMsg) {
 					Logger.Error("PushOffLineMsg", zap.String("Acc", tools.Bytes2String(t.acc)))
 					return
 				}
-
 				if retCache.Data != nil {
 					var Qos int32
 					if msgidMsg.MsgQos <= topicMsg.Qos {
@@ -194,6 +212,70 @@ func PushOffLineMsg(t *taskMsg) {
 			}
 		}
 	}
+}
+
+func PushJsonOffLineMsg(t *taskMsg) {
+	// for _, topicMsg := range t.ts {
+	// 	cacheTask := CacheTask{
+	// 		MsgTy:   CACHE_JSON_SELECT,
+	// 		TAcc:    t.acc,
+	// 		TTopic:  topicMsg.Tp,
+	// 		RetChan: t.retChan,
+	// 	}
+	// 	t.queue.Publish(cacheTask)
+
+	// 	retCache, ok := <-t.retChan
+	// 	if !ok {
+	// 		Logger.Error("PushOffLineMsg", zap.String("Acc", tools.Bytes2String(t.acc)))
+	// 		return
+	// 	}
+	// 	if retCache.MsgIDs != nil {
+	// 		for mmm, msgidMsg := range retCache.MsgIDs.MsgID {
+	// 			log.Println(mmm, "----------msgidMsg : ", msgidMsg)
+	// 		}
+	// 		// push
+	// 		MsgsCacha := make([]*global.JsonMsgs, 0, len(retCache.MsgIDs.MsgID))
+	// 		// get Msg
+	// 		for _, msgidMsg := range retCache.MsgIDs.MsgID {
+	// 			Logger.Info("PushOffLineMsg", zap.String("msgid", tools.Bytes2String(msgidMsg.MsgID)))
+	// 			getTask := CacheTask{
+	// 				MsgTy:   CACHE_TEXT_GET,
+	// 				MsgIDs:  [][]byte{msgidMsg.MsgID},
+	// 				RetChan: t.retChan,
+	// 			}
+	// 			t.queue.Publish(getTask)
+	// 			retCache, ok := <-t.retChan
+	// 			if !ok {
+	// 				Logger.Error("PushOffLineMsg", zap.String("Acc", tools.Bytes2String(t.acc)))
+	// 				return
+	// 			}
+	// 			if retCache.Data != nil {
+	// 				var Qos int32
+	// 				if msgidMsg.MsgQos <= topicMsg.Qos {
+	// 					Qos = msgidMsg.MsgQos
+	// 				} else {
+	// 					Qos = topicMsg.Qos
+	// 				}
+	// 				Msg := &global.TextMsg{
+	// 					FAcc:       msgidMsg.FAcc,   //t.acc,
+	// 					FTopic:     msgidMsg.FTopic, //topicMsg.Tp,
+	// 					RetryCount: 3,
+	// 					Qos:        Qos,
+	// 					MsgID:      msgidMsg.MsgID,
+	// 					Msg:        retCache.Data,
+	// 				}
+	// 				Logger.Info("Push", zap.String("data", tools.Bytes2String(retCache.Data)))
+	// 				MsgsCacha = append(MsgsCacha, Msg)
+	// 			}
+	// 		}
+	// 		if len(MsgsCacha) > 0 {
+	// 			pushMsg := &global.TextMsgs{
+	// 				Msgs: MsgsCacha,
+	// 			}
+	// 			gStream.nats.pushText(strconv.FormatInt(t.cid, 10), pushMsg)
+	// 		}
+	// 	}
+	// }
 }
 
 // if tycid, ok := acc.STopics[string(msg.Ttp)]; ok {
