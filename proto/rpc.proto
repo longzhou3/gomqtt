@@ -37,7 +37,7 @@ message PubJsonMsg {
     int32  msgType = 6;      // 消息功能
     bytes  mid     = 7;      // msgid
     bytes  msg     = 8;      // 用户push信息
-    bytes  AppID   = 9;      // AppID
+    bytes  AppID   = 9;      // AppID,如果是设置系统消息，ftp不一定是是用户的appid，所以这里需要再带一个appid
 }
 
 
