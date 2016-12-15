@@ -93,6 +93,6 @@ func initConnection(ci *connInfo) (error, proto.ConnackCode) {
 	}
 
 	// Json协议下默认采用snappy压缩
-	ci.compress = 211
+	ci.compress = 200
 	return nil, proto.ConnectionAccepted
 }

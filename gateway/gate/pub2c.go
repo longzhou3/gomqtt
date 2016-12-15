@@ -111,6 +111,7 @@ func pubJson(ci *connInfo, msg *global.JsonMsgs) error {
 	p.SetPayload(b)
 	id, err := mapID(ci, msg.TTopics, msg.MsgID, msg.Qos)
 	p.SetPacketID(id)
+	p.SetTopic(ci.appID)
 
 	Logger.Debug("recv nats msg", zap.Int("id", int(id)))
 	err = write(ci, p)
