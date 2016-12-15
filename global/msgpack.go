@@ -25,20 +25,6 @@ type TextMsg struct {
 	Msg        []byte `msg:"m"`
 }
 
-// JsonMsgs package
-type JsonMsgs struct {
-	RetryCount int32     `msg:"rc"`
-	Qos        int32     `msg:"q"`
-	TTopics    [][]byte  `msg:"ts"`
-	MsgID      [][]byte  `msg:"mis"`
-	Data       *JsonData `msg:"d"`
-}
-
-//easyjson:json
-type JsonData struct {
-	Msgs []*JsonMsg `json:"msgs"`
-}
-
 //easyjson:json
 type JsonMsg struct {
 	FAcc   string `json:"facc"`
@@ -48,6 +34,20 @@ type JsonMsg struct {
 	Nick   string `json:"nick"`
 	MsgID  string `json:"msgid"`
 	Msg    []byte `json:"msg"`
+}
+
+//easyjson:json
+type JsonData struct {
+	Msgs []*JsonMsg `json:"msgs"`
+}
+
+// JsonMsgs package
+type JsonMsgs struct {
+	RetryCount int32     `msg:"rc"`
+	Qos        int32     `msg:"q"`
+	TTopics    [][]byte  `msg:"ts"`
+	MsgID      [][]byte  `msg:"mis"`
+	Data       *JsonData `msg:"d"`
 }
 
 //-------------------------APNS-----------------------------------------
