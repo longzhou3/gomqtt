@@ -17,6 +17,14 @@ type Config struct {
 		LogLevel string
 		LogPath  string
 	}
+
+	Mysql struct {
+		Addr     string
+		Port     string
+		Database string
+		Acc      string
+		Pw       string
+	}
 }
 
 var Conf = &Config{}

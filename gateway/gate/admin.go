@@ -21,7 +21,7 @@ func adminStart() {
 
 	err := e.Start(":8907")
 	if err != nil {
-		e.Logger.Fatal(err.Error())
+		Logger.Fatal("echo http start failed", zap.Error(err))
 	}
 }
 

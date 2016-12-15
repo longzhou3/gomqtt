@@ -45,13 +45,14 @@ func publish(ci *connInfo, p *proto.PublishPacket) error {
 			return err
 		}
 		err = rpcH.pubJson(&rpc.PubJsonMsg{
-			FAcc:  ci.acc,
-			Ftp:   ci.appID,
-			ToAcc: tools.String2Bytes(c2s.ToAcc),
-			Ttp:   p.Topic(),
-			Qos:   int32(p.QoS()),
-			Mid:   tools.String2Bytes(mid),
-			Msg:   c2s.Msg,
+			FAcc:    ci.acc,
+			Ftp:     ci.appID,
+			ToAcc:   tools.String2Bytes(c2s.ToAcc),
+			Ttp:     p.Topic(),
+			Qos:     int32(p.QoS()),
+			Mid:     tools.String2Bytes(mid),
+			Msg:     c2s.Msg,
+			MsgType: int32(c2s.Type),
 		})
 		if err != nil {
 			return fmt.Errorf("pubJson rpc error: %v", err)
