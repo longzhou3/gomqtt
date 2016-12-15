@@ -76,7 +76,7 @@ func (rpc *Rpc) Login(ctx context.Context, msg *proto.LoginMsg) (*proto.LoginRet
 		ts:          msg.Ts,
 	}
 	addTask(task)
-	return &proto.LoginRet{R: true, M: []byte("ok")}, nil
+	return &proto.LoginRet{R: true}, nil
 }
 
 // Logout 登出
@@ -85,7 +85,7 @@ func (rpc *Rpc) Logout(ctx context.Context, msg *proto.LogoutMsg) (*proto.Logout
 	if err != nil {
 		return &proto.LogoutRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, nil
 	}
-	return &proto.LogoutRet{R: true, M: []byte("ok")}, nil
+	return &proto.LogoutRet{R: true}, nil
 }
 
 // ---------------- 订阅相关接口  ----------------
@@ -93,49 +93,13 @@ func (rpc *Rpc) Logout(ctx context.Context, msg *proto.LogoutMsg) (*proto.Logout
 // Subscribe 订阅
 func (rpc *Rpc) Subscribe(ctx context.Context, msg *proto.SubMsg) (*proto.SubRet, error) {
 
-	return &proto.SubRet{R: true, M: []byte("Subscribe 成功调用")}, nil
+	return &proto.SubRet{R: true}, nil
 }
 
 // UnSubscribe 取消订阅
 func (rpc *Rpc) UnSubscribe(ctx context.Context, msg *proto.UnSubMsg) (*proto.UnSubRet, error) {
 
-	return &proto.UnSubRet{R: true, M: []byte("UnSubscribe 成功调用")}, nil
-}
-
-// PubText
-func (rpc *Rpc) PubText(ctx context.Context, msg *proto.PubTextMsg) (*proto.PubTextRet, error) {
-
-	// if msg.Msgtype == global.PrivateChat {
-
-	// compute queue by acc
-	queue, err := GetQueue(msg.ToAcc)
-	if err != nil {
-		Logger.Error("GetQueue", zap.Error(err), zap.String("acc", tools.Bytes2String(msg.ToAcc)))
-		return nil, err
-	}
-
-	cacheTask := CacheTask{
-		MsgTy:  CACHE_TEXT_INSERT,
-		FAcc:   msg.FAcc,
-		FTopic: msg.Ftp,
-		TAcc:   msg.ToAcc,
-		TTopic: msg.Ttp,
-		Msg:    msg,
-		MsgIDs: [][]byte{msg.Mid},
-	}
-	queue.Publish(cacheTask)
-	// push data
-	err = gStream.cache.As.PubText(msg)
-	if err != nil {
-		Logger.Error("PubText", zap.Error(err))
-		return &proto.PubTextRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, nil
-	}
-
-	// } else {
-	// 	// other
-	// }
-
-	return &proto.PubTextRet{R: true, M: []byte("PubText 成功调用")}, nil
+	return &proto.UnSubRet{R: true}, nil
 }
 
 // PubAck  puback
@@ -169,44 +133,65 @@ func (rpc *Rpc) PubAck(ctx context.Context, msg *proto.PubAckMsg) (*proto.PubAck
 
 	queue.Publish(cacheTask)
 
-	return &proto.PubAckRet{R: true, M: []byte("PubAck ok")}, nil
+	return &proto.PubAckRet{R: true}, nil
+}
+
+// PubText
+func (rpc *Rpc) PubText(ctx context.Context, msg *proto.PubTextMsg) (*proto.PubTextRet, error) {
+
+	// compute queue by acc
+	queue, err := GetQueue(msg.ToAcc)
+	if err != nil {
+		Logger.Error("GetQueue", zap.Error(err), zap.String("acc", tools.Bytes2String(msg.ToAcc)))
+		return &proto.PubTextRet{R: false, M: []byte(err.Error())}, nil
+	}
+
+	cacheTask := CacheTask{
+		MsgTy:  CACHE_TEXT_INSERT,
+		FAcc:   msg.FAcc,
+		FTopic: msg.Ftp,
+		TAcc:   msg.ToAcc,
+		TTopic: msg.Ttp,
+		Msg:    msg,
+		MsgIDs: [][]byte{msg.Mid},
+	}
+	queue.Publish(cacheTask)
+	// push data
+	err = gStream.cache.As.PubText(msg)
+	if err != nil {
+		Logger.Error("PubText", zap.Error(err))
+		return &proto.PubTextRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, nil
+	}
+
+	return &proto.PubTextRet{R: true}, nil
 }
 
 // PubJson json格式推送
 func (rpc *Rpc) PubJson(ctx context.Context, msg *proto.PubJsonMsg) (*proto.PubJsonRet, error) {
-
-	// accMsg, ok := gStream.cache.Cids.get(msg.Cid)
-	// if !ok {
-	// 	return &proto.PubJsonRet{R: false, M: []byte(fmt.Sprint("unfind cid %d", msg.Cid))}, nil
-	// }
-
-	// // 通过acc计算出队列
-	// queue, err := GetQueue(msg.ToAcc)
-	// if err != nil {
-	// 	Logger.Error("GetQueue", zap.Error(err), zap.String("acc", tools.Bytes2String(msg.ToAcc)))
-	// 	return nil, err
-	// }
+	// 通过acc计算出队列
+	queue, err := GetQueue(msg.ToAcc)
+	if err != nil {
+		Logger.Error("GetQueue", zap.Error(err), zap.String("acc", tools.Bytes2String(msg.ToAcc)))
+		return &proto.PubJsonRet{R: false, M: []byte(err.Error())}, nil
+	}
 	// // @TODO  JsonMsg 存储添加
+	// Logger.Debug("PubJson", zap.Object("queue", queue))
+	cacheTask := CacheTask{
+		MsgTy:   CACHE_JSON_INSERT,
+		FAcc:    msg.FAcc,
+		FTopic:  msg.Ftp,
+		TAcc:    msg.ToAcc,
+		TTopic:  msg.Ttp,
+		JsonMsg: msg,
+		MsgIDs:  [][]byte{msg.Mid},
+	}
 
-	// cacheTask := CacheTask{
-	// // MsgTy:   CACHE_JSON_INSERT,
-	// // FAcc:    accMsg.acc,
-	// // FTopic:  msg.Ttp,
-	// // TAcc:    msg.ToAcc,
-	// // TTopic:  msg.Ttp,
-	// // JsonMsg: msg,
-	// // MsgIDs:  [][]byte{msg.Mid},
-	// }
+	queue.Publish(cacheTask)
 
-	// queue.Publish(cacheTask)
-
-	// if acc, appid, ok := gStream.cache.As.GetAccAndAppID(accMsg.acc, accMsg.appID); ok {
-	// 	// 通过 acc topic找到cid
-	// 	if err := gStream.cache.As.PubJson(acc, appid, msg); err != nil {
-	// 		return &proto.PubJsonRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, nil
-	// 	}
-	// }
-	return &proto.PubJsonRet{R: true, M: []byte("PubJson 成功调用")}, nil
+	if err := gStream.cache.As.PubJson(msg); err != nil {
+		return &proto.PubJsonRet{R: false, M: []byte(err.Error())}, nil
+	}
+	return &proto.PubJsonRet{R: true}, nil
 }
 
 // SetAppID 设置AppID

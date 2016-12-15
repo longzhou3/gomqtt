@@ -131,15 +131,61 @@ func (ats *Accounts) PubText(msg *proto.PubTextMsg) error {
 	return nil
 }
 
-func (ats *Accounts) PubJson(facc *Account, appid *AppID, msg *proto.PubJsonMsg) error {
-	var err error
-	ats.RLock()
-	acc, ok := ats.Accounts[string(msg.ToAcc)]
-	ats.RUnlock()
-	if ok {
-		err = acc.PubJson(facc, appid, msg)
+func (ats *Accounts) PubJson(msg *proto.PubJsonMsg) error {
+	gStream.cache.As.RLock()
+	acc, ok := gStream.cache.As.Accounts[string(msg.ToAcc)]
+	gStream.cache.As.RUnlock()
+	if !ok {
+		return fmt.Errorf("unfind acc %s, topic %s", tools.Bytes2String(msg.ToAcc), tools.Bytes2String(msg.Ttp))
 	}
-	return err
+
+	acc.RLock()
+	topicMsg, ok := acc.PTopics[string(msg.Ttp)]
+	acc.RUnlock()
+
+	if !ok {
+		return fmt.Errorf("unfind topic, acc is %s, topic %s", tools.Bytes2String(msg.ToAcc), tools.Bytes2String(msg.Ttp))
+	}
+
+	if topicMsg.nastTopic != "0" {
+		var Qos int32
+		if msg.Qos <= topicMsg.qos {
+			Qos = msg.Qos
+		} else {
+			Qos = topicMsg.qos
+		}
+
+		sendMsg := &global.JsonMsg{
+			FAcc:   tools.Bytes2String(msg.FAcc),
+			FTopic: tools.Bytes2String(msg.Ttp),
+			Type:   int(msg.MsgType),
+			Time:   int(time.Now().Unix()),
+			// @Optimize nick这里先传用户账号,因为发送者不一定和接收者在一台机器上
+			Nick:  tools.Bytes2String(msg.FAcc),
+			MsgID: tools.Bytes2String(msg.Mid),
+			Msg:   msg.Msg,
+		}
+
+		datas := &global.JsonData{
+			Msgs: []*global.JsonMsg{sendMsg},
+		}
+
+		pushData := &global.JsonMsgs{
+			RetryCount: 3,
+			Qos:        Qos,
+			TTopics:    [][]byte{msg.Ttp},
+			MsgID:      [][]byte{msg.Mid},
+			Data:       datas,
+		}
+		// push to nats
+		err := gStream.nats.pushJson(topicMsg.nastTopic, pushData)
+		if err != nil {
+			Logger.Error("pushJson", zap.Error(err))
+			return err
+		}
+	}
+	return nil
+
 }
 
 type Account struct {
