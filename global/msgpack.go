@@ -33,7 +33,7 @@ type JsonMsg struct {
 	Time   int    `json:"time"`
 	Nick   string `json:"nick"`
 	MsgID  string `json:"msgid"`
-	Msg    []byte `json:"msg"`
+	Msg    string `json:"msg"`
 }
 
 //easyjson:json

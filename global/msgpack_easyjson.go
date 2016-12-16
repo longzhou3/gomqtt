@@ -154,12 +154,7 @@ func easyjsonF2feebfaDecodeGithubComAiyunGomqttGlobal1(in *jlexer.Lexer, out *Js
 		case "msgid":
 			out.MsgID = string(in.String())
 		case "msg":
-			if in.IsNull() {
-				in.Skip()
-				out.Msg = nil
-			} else {
-				out.Msg = in.Bytes()
-			}
+			out.Msg = string(in.String())
 		default:
 			in.SkipRecursive()
 		}
@@ -215,7 +210,7 @@ func easyjsonF2feebfaEncodeGithubComAiyunGomqttGlobal1(out *jwriter.Writer, in J
 	}
 	first = false
 	out.RawString("\"msg\":")
-	out.Base64Bytes(in.Msg)
+	out.String(string(in.Msg))
 	out.RawByte('}')
 }
 

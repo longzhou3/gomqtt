@@ -363,7 +363,7 @@ func (z *JsonMsg) DecodeMsg(dc *msgp.Reader) (err error) {
 				return
 			}
 		case "Msg":
-			z.Msg, err = dc.ReadBytes(z.Msg)
+			z.Msg, err = dc.ReadString()
 			if err != nil {
 				return
 			}
@@ -439,7 +439,7 @@ func (z *JsonMsg) EncodeMsg(en *msgp.Writer) (err error) {
 	if err != nil {
 		return err
 	}
-	err = en.WriteBytes(z.Msg)
+	err = en.WriteString(z.Msg)
 	if err != nil {
 		return
 	}
@@ -470,7 +470,7 @@ func (z *JsonMsg) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.AppendString(o, z.MsgID)
 	// string "Msg"
 	o = append(o, 0xa3, 0x4d, 0x73, 0x67)
-	o = msgp.AppendBytes(o, z.Msg)
+	o = msgp.AppendString(o, z.Msg)
 	return
 }
 
@@ -521,7 +521,7 @@ func (z *JsonMsg) UnmarshalMsg(bts []byte) (o []byte, err error) {
 				return
 			}
 		case "Msg":
-			z.Msg, bts, err = msgp.ReadBytesBytes(bts, z.Msg)
+			z.Msg, bts, err = msgp.ReadStringBytes(bts)
 			if err != nil {
 				return
 			}
@@ -538,7 +538,7 @@ func (z *JsonMsg) UnmarshalMsg(bts []byte) (o []byte, err error) {
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *JsonMsg) Msgsize() (s int) {
-	s = 1 + 5 + msgp.StringPrefixSize + len(z.FAcc) + 7 + msgp.StringPrefixSize + len(z.FTopic) + 5 + msgp.IntSize + 5 + msgp.IntSize + 5 + msgp.StringPrefixSize + len(z.Nick) + 6 + msgp.StringPrefixSize + len(z.MsgID) + 4 + msgp.BytesPrefixSize + len(z.Msg)
+	s = 1 + 5 + msgp.StringPrefixSize + len(z.FAcc) + 7 + msgp.StringPrefixSize + len(z.FTopic) + 5 + msgp.IntSize + 5 + msgp.IntSize + 5 + msgp.StringPrefixSize + len(z.Nick) + 6 + msgp.StringPrefixSize + len(z.MsgID) + 4 + msgp.StringPrefixSize + len(z.Msg)
 	return
 }
 

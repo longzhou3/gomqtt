@@ -4,7 +4,6 @@ package global
 
 import (
 	json "encoding/json"
-
 	jlexer "github.com/mailru/easyjson/jlexer"
 	jwriter "github.com/mailru/easyjson/jwriter"
 )
@@ -42,12 +41,7 @@ func easyjsonA390b27cDecodeGithubComAiyunGomqttGlobal(in *jlexer.Lexer, out *C2S
 		case "msgid":
 			out.MsgID = string(in.String())
 		case "msg":
-			if in.IsNull() {
-				in.Skip()
-				out.Msg = nil
-			} else {
-				out.Msg = in.Bytes()
-			}
+			out.Msg = string(in.String())
 		default:
 			in.SkipRecursive()
 		}
@@ -85,7 +79,7 @@ func easyjsonA390b27cEncodeGithubComAiyunGomqttGlobal(out *jwriter.Writer, in C2
 	}
 	first = false
 	out.RawString("\"msg\":")
-	out.Base64Bytes(in.Msg)
+	out.String(string(in.Msg))
 	out.RawByte('}')
 }
 
@@ -134,12 +128,7 @@ func easyjsonA390b27cDecodeGithubComAiyunGomqttGlobal1(in *jlexer.Lexer, out *Me
 		case "compress":
 			out.Compress = int(in.Int())
 		case "data":
-			if in.IsNull() {
-				in.Skip()
-				out.Data = nil
-			} else {
-				out.Data = in.Bytes()
-			}
+			out.Data = string(in.String())
 		default:
 			in.SkipRecursive()
 		}
@@ -165,7 +154,7 @@ func easyjsonA390b27cEncodeGithubComAiyunGomqttGlobal1(out *jwriter.Writer, in M
 	}
 	first = false
 	out.RawString("\"data\":")
-	out.Base64Bytes(in.Data)
+	out.String(string(in.Data))
 	out.RawByte('}')
 }
 
