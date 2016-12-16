@@ -163,7 +163,7 @@ func (ats *Accounts) PubJson(msg *proto.PubJsonMsg) error {
 			// @Optimize nick这里先传用户账号,因为发送者不一定和接收者在一台机器上
 			Nick:  tools.Bytes2String(msg.FAcc),
 			MsgID: tools.Bytes2String(msg.Mid),
-			Msg:   msg.Msg,
+			Msg:   tools.Bytes2String(msg.Msg),
 		}
 
 		datas := &global.JsonData{
