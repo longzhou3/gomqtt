@@ -51,7 +51,7 @@ func publish(ci *connInfo, p *proto.PublishPacket) error {
 			Ttp:     p.Topic(),
 			Qos:     int32(p.QoS()),
 			Mid:     tools.String2Bytes(mid),
-			Msg:     c2s.Msg,
+			Msg:     tools.String2Bytes(c2s.Msg),
 			MsgType: int32(c2s.Type),
 		})
 		if err != nil {

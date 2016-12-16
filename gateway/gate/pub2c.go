@@ -14,6 +14,7 @@ import (
 	proto "github.com/aiyun/gomqtt/mqtt/protocol"
 
 	rpc "github.com/aiyun/gomqtt/proto"
+	"github.com/corego/tools"
 )
 
 // 从nats接收订阅消息，然后推送给客户端
@@ -101,7 +102,7 @@ func pubJson(ci *connInfo, msg *global.JsonMsgs) error {
 	if err != nil {
 		return err
 	}
-	j.Data = data
+	j.Data = tools.Bytes2String(data)
 
 	b, err := j.MarshalJSON()
 	if err != nil {
