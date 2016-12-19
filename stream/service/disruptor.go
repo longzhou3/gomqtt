@@ -169,6 +169,10 @@ func (this Writer) Consume(lower, upper int64) {
 			Logger.Info("CACHE_TEXT_INSERT", zap.String("ToAcc", tools.Bytes2String(bufPool.Data.Msg.ToAcc)), zap.String("Topic", tools.Bytes2String(bufPool.Data.Msg.Ttp)), zap.String("Msg", tools.Bytes2String(bufPool.Data.Msg.Msg)))
 			break
 		case CACHE_JSON_INSERT:
+			this.queue.msgCache.JsonInsert(bufPool.Data.JsonMsg.Mid, bufPool.Data.JsonMsg.Msg)
+			this.queue.msgIDManger.InsertJsonMsgID(bufPool.Data.FAcc, bufPool.Data.FTopic, bufPool.Data.JsonMsg)
+			Logger.Info("CACHE_JSON_INSERT", zap.String("ToAcc", tools.Bytes2String(bufPool.Data.JsonMsg.ToAcc)),
+				zap.String("Topic", tools.Bytes2String(bufPool.Data.JsonMsg.Ttp)), zap.String("Msg", tools.Bytes2String(bufPool.Data.JsonMsg.Msg)))
 			break
 		case CACHE_TEXT_GET:
 			Logger.Info("CACHE_TEXT_GET", zap.String("Msgid", tools.Bytes2String(bufPool.Data.MsgIDs[0])))
@@ -180,7 +184,25 @@ func (this Writer) Consume(lower, upper int64) {
 			bufPool.Data.RetChan <- ret
 			break
 		case CACHE_TEXT_SELECT:
-			Logger.Info("Select", zap.String("Acc", tools.Bytes2String(bufPool.Data.TAcc)), zap.String("Topic", tools.Bytes2String(bufPool.Data.TTopic)))
+			Logger.Info("Text_Select", zap.String("TAcc", tools.Bytes2String(bufPool.Data.TAcc)), zap.String("TTopic", tools.Bytes2String(bufPool.Data.TTopic)))
+			// 查询返回msgid信息
+			tm := this.queue.msgIDManger.GetMsgIDs(bufPool.Data.TAcc, bufPool.Data.TTopic)
+			ret := &CacheRet{
+				MsgIDs: tm,
+			}
+			bufPool.Data.RetChan <- ret
+			break
+		case CACHE_JSON_GET:
+			ret := &CacheRet{}
+			Logger.Info("CACHE_JSON_GET", zap.String("Msgid", tools.Bytes2String(bufPool.Data.MsgIDs[0])))
+			data, ok := this.queue.msgCache.JsonGet(bufPool.Data.MsgIDs[0])
+			if ok {
+				ret.Data = data
+			}
+			bufPool.Data.RetChan <- ret
+			break
+		case CACHE_JSON_SELECT:
+			Logger.Info("Json_Select", zap.String("TAcc", tools.Bytes2String(bufPool.Data.TAcc)), zap.String("TTopic", tools.Bytes2String(bufPool.Data.TTopic)))
 			// 查询返回msgid信息
 			tm := this.queue.msgIDManger.GetMsgIDs(bufPool.Data.TAcc, bufPool.Data.TTopic)
 			ret := &CacheRet{

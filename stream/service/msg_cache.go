@@ -98,6 +98,33 @@ func (mim *MsgIdManger) InsertMsgID(facc, ftopic []byte, msg *proto.PubTextMsg) 
 	return nil
 }
 
+func (mim *MsgIdManger) InsertJsonMsgID(facc, ftopic []byte, msg *proto.PubJsonMsg) error {
+	acc, ok := mim.AccMap[string(msg.ToAcc)]
+	if ok {
+		tm, ok := acc.TopicMsgID[string(msg.Ttp)]
+		if ok {
+			msgid := NewJsonMsgID(facc, ftopic, msg)
+			tm.MsgID[string(msg.Mid)] = msgid
+			log.Println("InsertMsgID msg , msgid is", string(msgid.MsgID))
+		} else {
+			tm := NewTopicIDMap()
+			acc.TopicMsgID[string(msg.Ttp)] = tm
+			msgid := NewJsonMsgID(facc, ftopic, msg)
+			tm.MsgID[string(msg.Mid)] = msgid
+			log.Println("InsertMsgID msg , msgid is", string(msgid.MsgID))
+		}
+	} else {
+		acc := NewAccTopicMap()
+		mim.AccMap[string(msg.ToAcc)] = acc
+		tm := NewTopicIDMap()
+		acc.TopicMsgID[string(msg.Ttp)] = tm
+		msgid := NewJsonMsgID(facc, ftopic, msg)
+		tm.MsgID[string(msg.Mid)] = msgid
+		log.Println("InsertMsgID msg , msgid is", string(msgid.MsgID))
+	}
+	return nil
+}
+
 func (mim *MsgIdManger) Len(acc []byte, topic []byte) int {
 	accMap, ok := mim.AccMap[string(acc)]
 	if ok {
@@ -176,6 +203,20 @@ type MsgID struct {
 }
 
 func NewMsgID(facc, ftopic []byte, msg *proto.PubTextMsg) *MsgID {
+	msgID := &MsgID{
+		// MsgTy:
+		// Expiration: msg.Qos,
+		// RecvTime:   msg.Qos,
+		// RetryCount: msg.RetryCount,
+		FAcc:   facc,
+		FTopic: ftopic,
+		MsgQos: msg.Qos,
+		MsgID:  msg.Mid,
+	}
+	return msgID
+}
+
+func NewJsonMsgID(facc, ftopic []byte, msg *proto.PubJsonMsg) *MsgID {
 	msgID := &MsgID{
 		// MsgTy:
 		// Expiration: msg.Qos,

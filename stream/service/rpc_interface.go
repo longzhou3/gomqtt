@@ -174,8 +174,8 @@ func (rpc *Rpc) PubJson(ctx context.Context, msg *proto.PubJsonMsg) (*proto.PubJ
 		Logger.Error("GetQueue", zap.Error(err), zap.String("acc", tools.Bytes2String(msg.ToAcc)))
 		return &proto.PubJsonRet{R: false, M: []byte(err.Error())}, nil
 	}
-	// // @TODO  JsonMsg 存储添加
-	// Logger.Debug("PubJson", zap.Object("queue", queue))
+
+	Logger.Info("PubJson", zap.String("to topic", string(msg.Ttp)), zap.String("ToAcc", string(msg.ToAcc)))
 	cacheTask := CacheTask{
 		MsgTy:   CACHE_JSON_INSERT,
 		FAcc:    msg.FAcc,
@@ -185,6 +185,8 @@ func (rpc *Rpc) PubJson(ctx context.Context, msg *proto.PubJsonMsg) (*proto.PubJ
 		JsonMsg: msg,
 		MsgIDs:  [][]byte{msg.Mid},
 	}
+
+	Logger.Info("JsonMsgInsert", zap.String("Mid", string(msg.Mid)))
 
 	queue.Publish(cacheTask)
 

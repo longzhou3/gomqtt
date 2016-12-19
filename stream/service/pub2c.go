@@ -215,89 +215,82 @@ func PushTextOffLineMsg(t *taskMsg) {
 }
 
 func PushJsonOffLineMsg(t *taskMsg) {
-	// for _, topicMsg := range t.ts {
-	// 	cacheTask := CacheTask{
-	// 		MsgTy:   CACHE_JSON_SELECT,
-	// 		TAcc:    t.acc,
-	// 		TTopic:  topicMsg.Tp,
-	// 		RetChan: t.retChan,
-	// 	}
-	// 	t.queue.Publish(cacheTask)
+	for _, topicMsg := range t.ts {
+		cacheTask := CacheTask{
+			MsgTy:   CACHE_JSON_SELECT,
+			TAcc:    t.acc,
+			TTopic:  topicMsg.Tp,
+			RetChan: t.retChan,
+		}
+		t.queue.Publish(cacheTask)
 
-	// 	retCache, ok := <-t.retChan
-	// 	if !ok {
-	// 		Logger.Error("PushOffLineMsg", zap.String("Acc", tools.Bytes2String(t.acc)))
-	// 		return
-	// 	}
-	// 	if retCache.MsgIDs != nil {
-	// 		for mmm, msgidMsg := range retCache.MsgIDs.MsgID {
-	// 			log.Println(mmm, "----------msgidMsg : ", msgidMsg)
-	// 		}
-	// 		// push
-	// 		MsgsCacha := make([]*global.JsonMsgs, 0, len(retCache.MsgIDs.MsgID))
-	// 		// get Msg
-	// 		for _, msgidMsg := range retCache.MsgIDs.MsgID {
-	// 			Logger.Info("PushOffLineMsg", zap.String("msgid", tools.Bytes2String(msgidMsg.MsgID)))
-	// 			getTask := CacheTask{
-	// 				MsgTy:   CACHE_TEXT_GET,
-	// 				MsgIDs:  [][]byte{msgidMsg.MsgID},
-	// 				RetChan: t.retChan,
-	// 			}
-	// 			t.queue.Publish(getTask)
-	// 			retCache, ok := <-t.retChan
-	// 			if !ok {
-	// 				Logger.Error("PushOffLineMsg", zap.String("Acc", tools.Bytes2String(t.acc)))
-	// 				return
-	// 			}
-	// 			if retCache.Data != nil {
-	// 				var Qos int32
-	// 				if msgidMsg.MsgQos <= topicMsg.Qos {
-	// 					Qos = msgidMsg.MsgQos
-	// 				} else {
-	// 					Qos = topicMsg.Qos
-	// 				}
-	// 				Msg := &global.TextMsg{
-	// 					FAcc:       msgidMsg.FAcc,   //t.acc,
-	// 					FTopic:     msgidMsg.FTopic, //topicMsg.Tp,
-	// 					RetryCount: 3,
-	// 					Qos:        Qos,
-	// 					MsgID:      msgidMsg.MsgID,
-	// 					Msg:        retCache.Data,
-	// 				}
-	// 				Logger.Info("Push", zap.String("data", tools.Bytes2String(retCache.Data)))
-	// 				MsgsCacha = append(MsgsCacha, Msg)
-	// 			}
-	// 		}
-	// 		if len(MsgsCacha) > 0 {
-	// 			pushMsg := &global.TextMsgs{
-	// 				Msgs: MsgsCacha,
-	// 			}
-	// 			gStream.nats.pushText(strconv.FormatInt(t.cid, 10), pushMsg)
-	// 		}
-	// 	}
-	// }
+		retCache, ok := <-t.retChan
+		if !ok {
+			Logger.Error("PushJsonOffLineMsg", zap.String("Acc", tools.Bytes2String(t.acc)))
+			return
+		}
+
+		Logger.Info("PushJsonOffLineMsg", zap.Object("retCache", retCache))
+		if retCache.MsgIDs != nil {
+			for mmm, msgidMsg := range retCache.MsgIDs.MsgID {
+				log.Println(mmm, "----------msgidMsg : ", msgidMsg)
+			}
+			// push
+			// MsgsCacha := make([]*global.JsonMsgs, 0, len(retCache.MsgIDs.MsgID))
+			pushData := &global.JsonMsgs{
+				RetryCount: 3,
+				TTopics:    [][]byte{},
+				MsgID:      [][]byte{},
+			}
+
+			datas := &global.JsonData{
+				Msgs: []*global.JsonMsg{},
+			}
+			// get Msg
+			for _, msgidMsg := range retCache.MsgIDs.MsgID {
+				Logger.Info("PushJsonOffLineMsg", zap.String("msgid", tools.Bytes2String(msgidMsg.MsgID)))
+				getTask := CacheTask{
+					MsgTy:   CACHE_JSON_GET,
+					MsgIDs:  [][]byte{msgidMsg.MsgID},
+					RetChan: t.retChan,
+				}
+				t.queue.Publish(getTask)
+				retCache, ok := <-t.retChan
+				if !ok {
+					Logger.Error("PushJsonOffLineMsg", zap.String("Acc", tools.Bytes2String(t.acc)))
+					return
+				}
+
+				if retCache.Data != nil {
+					if pushData.Qos <= topicMsg.Qos {
+						pushData.Qos = topicMsg.Qos
+					}
+
+					sendMsg := &global.JsonMsg{
+						FAcc:   tools.Bytes2String(msgidMsg.FAcc),
+						FTopic: tools.Bytes2String(msgidMsg.FTopic),
+						Type:   int(msgidMsg.MsgTy),
+						Time:   int(time.Now().Unix()),
+						// @Optimize nick这里先传用户账号,因为发送者不一定和接收者在一台机器上
+						Nick:  tools.Bytes2String(msgidMsg.FAcc),
+						MsgID: tools.Bytes2String(msgidMsg.MsgID),
+						Msg:   tools.Bytes2String(retCache.Data),
+					}
+					datas.Msgs = append(datas.Msgs, sendMsg)
+					pushData.TTopics = append(pushData.TTopics, topicMsg.Tp)
+					// log.Println(" to topis is ", string(topicMsg.Tp))
+					pushData.MsgID = append(pushData.MsgID, msgidMsg.MsgID)
+				}
+			}
+			pushData.Data = datas
+			if len(datas.Msgs) > 0 {
+				// push to nats
+				err := gStream.nats.pushJson(strconv.FormatInt(t.cid, 10), pushData)
+				if err != nil {
+					Logger.Error("pushJson", zap.Error(err))
+					return
+				}
+			}
+		}
+	}
 }
-
-// if tycid, ok := acc.STopics[string(msg.Ttp)]; ok {
-// 	if tycid.nastTopic != "0" {
-// 		var Qos int32
-// 		if msg.Qos <= tycid.qos {
-// 			Qos = msg.Qos
-// 		} else {
-// 			Qos = tycid.qos
-// 		}
-// 		Msg := &global.TextMsg{
-// 			FAcc:       facc.Acc,
-// 			FTopic:     msg.Ttp,
-// 			RetryCount: 3,
-// 			Qos:        Qos,
-// 			MsgID:      msg.Mid,
-// 			Msg:        msg.Msg,
-// 		}
-// 		msg := &global.TextMsgs{
-// 			Msgs: []*global.TextMsg{Msg},
-// 		}
-// 		// push to nats
-// 		gStream.nats.pushText(tycid.nastTopic, msg)
-// 	}
-// }
