@@ -14,7 +14,7 @@
 
 package main
 
-import "github.com/aiyun/gomqtt/apns/cmd"
+import "github.com/taitan-io/gomqtt/apns/cmd"
 
 func main() {
 	cmd.Execute()

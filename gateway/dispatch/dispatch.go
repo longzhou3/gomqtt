@@ -3,8 +3,8 @@ package dispatch
 import (
 	"net/http"
 
-	"github.com/aiyun/gomqtt/gateway/gate"
 	"github.com/labstack/echo"
+	"github.com/taitan-io/gomqtt/gateway/gate"
 	"github.com/uber-go/zap"
 )
 

@@ -4,8 +4,8 @@ import (
 	"log"
 	"sync"
 
-	"github.com/aiyun/gomqtt/proto"
 	"github.com/corego/tools"
+	"github.com/taitan-io/gomqtt/proto"
 	"github.com/uber-go/zap"
 )
 

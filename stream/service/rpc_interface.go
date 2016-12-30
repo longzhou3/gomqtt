@@ -8,9 +8,9 @@ import (
 
 	"google.golang.org/grpc"
 
-	"github.com/aiyun/gomqtt/global"
-	"github.com/aiyun/gomqtt/proto"
 	"github.com/corego/tools"
+	"github.com/taitan-io/gomqtt/global"
+	"github.com/taitan-io/gomqtt/proto"
 	"github.com/uber-go/zap"
 )
 

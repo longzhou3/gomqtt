@@ -9,9 +9,9 @@ import (
 
 	"stathat.com/c/consistent"
 
-	"github.com/aiyun/gomqtt/proto"
 	disruptor "github.com/smartystreets/go-disruptor"
 	"github.com/sunface/tools"
+	"github.com/taitan-io/gomqtt/proto"
 	"github.com/uber-go/zap"
 )
 

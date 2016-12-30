@@ -9,8 +9,8 @@ import (
 
 	"fmt"
 
-	proto "github.com/aiyun/gomqtt/mqtt/protocol"
-	rpc "github.com/aiyun/gomqtt/proto"
+	proto "github.com/taitan-io/gomqtt/mqtt/protocol"
+	rpc "github.com/taitan-io/gomqtt/proto"
 )
 
 // login and first subscribe

@@ -7,8 +7,8 @@ import (
 
 	"google.golang.org/grpc"
 
-	rpc "github.com/aiyun/gomqtt/proto"
 	"github.com/corego/tools"
+	rpc "github.com/taitan-io/gomqtt/proto"
 )
 
 func initRpc() {

@@ -20,7 +20,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/aiyun/gomqtt/stream/service"
+	"github.com/taitan-io/gomqtt/stream/service"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

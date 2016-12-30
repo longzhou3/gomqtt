@@ -4,17 +4,17 @@ package gate
 import (
 	"errors"
 
-	"github.com/aiyun/gomqtt/global"
-	proto "github.com/aiyun/gomqtt/mqtt/protocol"
-	"github.com/aiyun/gomqtt/uuid"
 	"github.com/corego/tools"
+	"github.com/taitan-io/gomqtt/global"
+	proto "github.com/taitan-io/gomqtt/mqtt/protocol"
+	"github.com/taitan-io/gomqtt/uuid"
 	"github.com/uber-go/zap"
 
 	"bytes"
 
 	"fmt"
 
-	rpc "github.com/aiyun/gomqtt/proto"
+	rpc "github.com/taitan-io/gomqtt/proto"
 )
 
 //@ToDo

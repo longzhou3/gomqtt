@@ -20,9 +20,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/aiyun/gomqtt/apns/service"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/taitan-io/gomqtt/apns/service"
 )
 
 var cfgFile string

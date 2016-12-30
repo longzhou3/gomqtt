@@ -6,8 +6,8 @@ import (
 	"errors"
 	"strconv"
 
-	"github.com/aiyun/gomqtt/global"
 	"github.com/corego/tools"
+	"github.com/taitan-io/gomqtt/global"
 )
 
 var topicSep = []byte{'-', '-'}

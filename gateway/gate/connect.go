@@ -5,9 +5,9 @@ import (
 	"errors"
 	"time"
 
-	"github.com/aiyun/gomqtt/global"
-	proto "github.com/aiyun/gomqtt/mqtt/protocol"
 	"github.com/corego/tools"
+	"github.com/taitan-io/gomqtt/global"
+	proto "github.com/taitan-io/gomqtt/mqtt/protocol"
 	"github.com/uber-go/zap"
 )
 

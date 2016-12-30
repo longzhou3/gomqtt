@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net"
 
-	proto "github.com/aiyun/gomqtt/mqtt/protocol"
+	proto "github.com/taitan-io/gomqtt/mqtt/protocol"
 
 	"github.com/gorilla/websocket"
 )

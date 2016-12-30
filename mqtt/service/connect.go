@@ -3,7 +3,7 @@ package service
 import (
 	"net"
 
-	"github.com/aiyun/gomqtt/mqtt/protocol"
+	"github.com/taitan-io/gomqtt/mqtt/protocol"
 )
 
 func connectPacket(conn net.Conn) (*protocol.ConnectPacket, error) {

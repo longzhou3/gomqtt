@@ -6,8 +6,8 @@ import (
 
 	"fmt"
 
-	proto "github.com/aiyun/gomqtt/mqtt/protocol"
 	"github.com/gorilla/websocket"
+	proto "github.com/taitan-io/gomqtt/mqtt/protocol"
 )
 
 func main() {

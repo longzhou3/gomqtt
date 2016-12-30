@@ -7,14 +7,14 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/aiyun/gomqtt/global"
 	"github.com/nats-io/nats"
+	"github.com/taitan-io/gomqtt/global"
 	"github.com/uber-go/zap"
 
-	proto "github.com/aiyun/gomqtt/mqtt/protocol"
+	proto "github.com/taitan-io/gomqtt/mqtt/protocol"
 
-	rpc "github.com/aiyun/gomqtt/proto"
 	"github.com/corego/tools"
+	rpc "github.com/taitan-io/gomqtt/proto"
 )
 
 // 从nats接收订阅消息，然后推送给客户端

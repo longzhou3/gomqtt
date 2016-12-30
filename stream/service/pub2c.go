@@ -6,10 +6,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/aiyun/gomqtt/global"
-	"github.com/aiyun/gomqtt/proto"
 	"github.com/corego/tools"
 	"github.com/nats-io/nats"
+	"github.com/taitan-io/gomqtt/global"
+	"github.com/taitan-io/gomqtt/proto"
 	"github.com/uber-go/zap"
 )
 

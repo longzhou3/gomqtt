@@ -20,10 +20,10 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/aiyun/gomqtt/gateway/dispatch"
-	"github.com/aiyun/gomqtt/gateway/gate"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/taitan-io/gomqtt/gateway/dispatch"
+	"github.com/taitan-io/gomqtt/gateway/gate"
 )
 
 var cfgFile string

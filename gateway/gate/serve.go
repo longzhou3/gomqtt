@@ -11,16 +11,16 @@ import (
 
 	"github.com/gorilla/websocket"
 
-	proto "github.com/aiyun/gomqtt/mqtt/protocol"
+	proto "github.com/taitan-io/gomqtt/mqtt/protocol"
 
 	"github.com/corego/tools"
 	"github.com/uber-go/zap"
 
-	rpc "github.com/aiyun/gomqtt/proto"
-	"github.com/aiyun/gomqtt/uuid"
 	"github.com/nats-io/nats"
+	rpc "github.com/taitan-io/gomqtt/proto"
+	"github.com/taitan-io/gomqtt/uuid"
 
-	"github.com/aiyun/gomqtt/mqtt/service"
+	"github.com/taitan-io/gomqtt/mqtt/service"
 )
 
 type connInfo struct {
