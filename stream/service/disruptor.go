@@ -11,7 +11,7 @@ import (
 
 	disruptor "github.com/smartystreets/go-disruptor"
 	"github.com/sunface/tools"
-	"github.com/taitan-io/gomqtt/proto"
+	"github.com/taitan-org/gomqtt/proto"
 	"github.com/uber-go/zap"
 )
 

@@ -22,8 +22,8 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/taitan-io/gomqtt/gateway/dispatch"
-	"github.com/taitan-io/gomqtt/gateway/gate"
+	"github.com/taitan-org/gomqtt/gateway/dispatch"
+	"github.com/taitan-org/gomqtt/gateway/gate"
 )
 
 var cfgFile string

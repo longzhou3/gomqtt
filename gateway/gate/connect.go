@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/corego/tools"
-	"github.com/taitan-io/gomqtt/global"
-	proto "github.com/taitan-io/gomqtt/mqtt/protocol"
+	"github.com/taitan-org/gomqtt/global"
+	proto "github.com/taitan-org/gomqtt/mqtt/protocol"
 	"github.com/uber-go/zap"
 )
 

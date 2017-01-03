@@ -5,16 +5,16 @@ import (
 	"errors"
 
 	"github.com/corego/tools"
-	"github.com/taitan-io/gomqtt/global"
-	proto "github.com/taitan-io/gomqtt/mqtt/protocol"
-	"github.com/taitan-io/gomqtt/uuid"
+	"github.com/taitan-org/gomqtt/global"
+	proto "github.com/taitan-org/gomqtt/mqtt/protocol"
+	"github.com/taitan-org/gomqtt/uuid"
 	"github.com/uber-go/zap"
 
 	"bytes"
 
 	"fmt"
 
-	rpc "github.com/taitan-io/gomqtt/proto"
+	rpc "github.com/taitan-org/gomqtt/proto"
 )
 
 //@ToDo

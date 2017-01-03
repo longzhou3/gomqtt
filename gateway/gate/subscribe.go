@@ -4,11 +4,11 @@ package gate
 import (
 	"errors"
 
-	proto "github.com/taitan-io/gomqtt/mqtt/protocol"
+	proto "github.com/taitan-org/gomqtt/mqtt/protocol"
 
 	"fmt"
 
-	rpc "github.com/taitan-io/gomqtt/proto"
+	rpc "github.com/taitan-org/gomqtt/proto"
 )
 
 func subscribe(ci *connInfo, p *proto.SubscribePacket) error {

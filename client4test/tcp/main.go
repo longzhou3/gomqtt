@@ -5,7 +5,7 @@ import (
 	"net"
 	"time"
 
-	proto "github.com/taitan-io/gomqtt/mqtt/protocol"
+	proto "github.com/taitan-org/gomqtt/mqtt/protocol"
 )
 
 func main() {

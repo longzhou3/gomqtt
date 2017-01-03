@@ -14,7 +14,7 @@
 
 package main
 
-import "github.com/taitan-io/gomqtt/gateway/cmd"
+import "github.com/taitan-org/gomqtt/gateway/cmd"
 
 func main() {
 	cmd.Execute()

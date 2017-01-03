@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/corego/tools"
-	"github.com/taitan-io/gomqtt/global"
+	"github.com/taitan-org/gomqtt/global"
 )
 
 var topicSep = []byte{'-', '-'}

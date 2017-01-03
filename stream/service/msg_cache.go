@@ -5,7 +5,7 @@ import (
 	"sync"
 
 	"github.com/corego/tools"
-	"github.com/taitan-io/gomqtt/proto"
+	"github.com/taitan-org/gomqtt/proto"
 	"github.com/uber-go/zap"
 )
 

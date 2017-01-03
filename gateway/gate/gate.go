@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/taitan-io/gomqtt/uuid"
+	"github.com/taitan-org/gomqtt/uuid"
 )
 
 type Gate struct {

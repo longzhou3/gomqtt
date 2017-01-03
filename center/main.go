@@ -14,7 +14,7 @@
 
 package main
 
-import "github.com/aiyun/gomqtt/center/cmd"
+import "github.com/taitan-org/gomqtt/center/cmd"
 
 func main() {
 	cmd.Execute()

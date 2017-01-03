@@ -14,7 +14,7 @@
 
 package main
 
-import "github.com/taitan-io/gomqtt/stream/cmd"
+import "github.com/taitan-org/gomqtt/stream/cmd"
 
 func main() {
 	cmd.Execute()

@@ -19,7 +19,7 @@ Gomqtt是一个全开源的推送和聊天平台，使用了现代化的架构�
 
 开源组织： <a href="http://taitan.org">泰坦(Taitan.org)</a></p>
 
-项目源码： <a href=" https://github.com/aiyun/gomqtt">github</a>
+项目源码： <a href="https://github.com/taitan-org/gomqtt">github</a>
 
 
 <br />

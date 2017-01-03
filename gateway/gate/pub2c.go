@@ -8,13 +8,13 @@ import (
 	"time"
 
 	"github.com/nats-io/nats"
-	"github.com/taitan-io/gomqtt/global"
+	"github.com/taitan-org/gomqtt/global"
 	"github.com/uber-go/zap"
 
-	proto "github.com/taitan-io/gomqtt/mqtt/protocol"
+	proto "github.com/taitan-org/gomqtt/mqtt/protocol"
 
 	"github.com/corego/tools"
-	rpc "github.com/taitan-io/gomqtt/proto"
+	rpc "github.com/taitan-org/gomqtt/proto"
 )
 
 // 从nats接收订阅消息，然后推送给客户端

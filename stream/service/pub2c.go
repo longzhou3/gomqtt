@@ -8,8 +8,8 @@ import (
 
 	"github.com/corego/tools"
 	"github.com/nats-io/nats"
-	"github.com/taitan-io/gomqtt/global"
-	"github.com/taitan-io/gomqtt/proto"
+	"github.com/taitan-org/gomqtt/global"
+	"github.com/taitan-org/gomqtt/proto"
 	"github.com/uber-go/zap"
 )
 

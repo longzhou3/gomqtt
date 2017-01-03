@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo"
-	"github.com/taitan-io/gomqtt/gateway/gate"
+	"github.com/taitan-org/gomqtt/gateway/gate"
 	"github.com/uber-go/zap"
 )
 
