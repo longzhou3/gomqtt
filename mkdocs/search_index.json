@@ -1,0 +1,64 @@
+{
+    "docs": [
+        {
+            "location": "/", 
+            "text": "Gomqtt\n\n\n\u5168\u7403\u9996\u53d1\uff0c\u57fa\u4e8eGo\u8bed\u8a00\u548cMqtt\u534f\u8bae\u7684\u4e2a\u6027\u5316\u6d88\u606f\u63a8\u9001\u548c\u804a\u5929\u5e73\u53f0\n\n\n\n\nGomqtt\u662f\u4e00\u4e2a\u5168\u5f00\u6e90\u7684\u63a8\u9001\u548c\u804a\u5929\u5e73\u53f0\uff0c\u4f7f\u7528\u4e86\u73b0\u4ee3\u5316\u7684\u67b6\u6784\u4f53\u7cfb\uff0c\u5177\u6709\u7b80\u5355\u6613\u7528\u3001\u529f\u80fd\u5b8c\u5584\u3001\u6027\u80fd\u5f3a\u52b2\u7b49\u4f18\u70b9\u3002\n\n\n\n\nnote\n\n\nGomqtt\u76ee\u524d\u652f\u6301Mqtt3.1.1\u534f\u8bae\uff0c\u8be5\u534f\u8bae\u540e\u7eed\u53ef\u80fd\u4f1a\u66f4\u65b0\uff0c\u8bf7\u4ee5\u8be5note\u4e3a\u51c6\u3002\n\n\n\n\n\n\n\u5f00\u53d1\u7ec4\u7ec7\n\n\n\n\n\u5f00\u6e90\u7ec4\u7ec7\uff1a \n\u6cf0\u5766(Taitan.org)\n\n\n\u9879\u76ee\u6e90\u7801\uff1a \ngithub\n\n\n\n\nWhy use gomqtt?\n\n\nGo\u8bed\u8a00\u662f\u4f1f\u5927\u7684,Mqtt\u662f\u4f1f\u5927\u7684\n\n\n\n\n\n1.Go\u8bed\u8a00\u7684\u4f18\u52bf\n\uff1a\n  \u8bed\u6cd5\u7b80\u5355\uff0c\u9ad8\u5e76\u53d1\u3001\u9ad8\u6027\u80fd\uff0c\u6807\u51c6\u5e93\u5b8c\u5584\uff0c\u8d44\u6e90\u5360\u7528\u4f4e\uff0c\u9759\u6001\u7f16\u8bd1\n\n\n2.Mqtt\u534f\u8bae\u7684\u4f18\u52bf\n\uff1a\n  \u4e8b\u5b9e\u4e0a\u7684\u6807\u51c6\uff0c\u534f\u8bae\u8f7b\u91cf\uff0c\u6d41\u91cf\u8017\u8d39\u5c11\uff0c\u624b\u673a\u8017\u7535\u4f4e\n\n\n3.\u91cd\u590d\u9020\u8f6e\u5b50\n\n\n\n\n\u6211\u4eec\u57fa\u4e8ego\u548cmqtt\n\n\n\u5b8c\u5584\u7684\u4ea7\u54c1\u529f\u80fd\n\n\n\u4f18\u79c0\u7684\u4ee3\u7801\n\n\n\u6781\u81f4\u7684\u6027\u80fd\n\n\n\u7edd\u4e0d\u592a\u76d1\n\n\n\n\n\n\n\u8de8\u5e73\u53f0\n\n\n\u652f\u6301\u4e3b\u6d41\u7684\u5e73\u53f0\n\n\n\n\n\n\n\n\nOS\n\n\nSupport\n\n\n\n\n\n\n\n\n\n\nUbuntu 12+\n\n\nYes\n\n\n\n\n\n\nDebian 6+\n\n\nYes\n\n\n\n\n\n\nRedHat\n\n\nYes\n\n\n\n\n\n\nCentOS 6+\n\n\nYes\n\n\n\n\n\n\nCoreOS\n\n\nYes\n\n\n\n\n\n\nOS X Yosemite+\n\n\nYes\n\n\n\n\n\n\nWindows\n\n\nYes", 
+            "title": "\u4e3b\u9875"
+        }, 
+        {
+            "location": "/#gomqtt", 
+            "text": "\u5168\u7403\u9996\u53d1\uff0c\u57fa\u4e8eGo\u8bed\u8a00\u548cMqtt\u534f\u8bae\u7684\u4e2a\u6027\u5316\u6d88\u606f\u63a8\u9001\u548c\u804a\u5929\u5e73\u53f0   Gomqtt\u662f\u4e00\u4e2a\u5168\u5f00\u6e90\u7684\u63a8\u9001\u548c\u804a\u5929\u5e73\u53f0\uff0c\u4f7f\u7528\u4e86\u73b0\u4ee3\u5316\u7684\u67b6\u6784\u4f53\u7cfb\uff0c\u5177\u6709\u7b80\u5355\u6613\u7528\u3001\u529f\u80fd\u5b8c\u5584\u3001\u6027\u80fd\u5f3a\u52b2\u7b49\u4f18\u70b9\u3002   note  Gomqtt\u76ee\u524d\u652f\u6301Mqtt3.1.1\u534f\u8bae\uff0c\u8be5\u534f\u8bae\u540e\u7eed\u53ef\u80fd\u4f1a\u66f4\u65b0\uff0c\u8bf7\u4ee5\u8be5note\u4e3a\u51c6\u3002", 
+            "title": "Gomqtt"
+        }, 
+        {
+            "location": "/#_1", 
+            "text": "\u5f00\u6e90\u7ec4\u7ec7\uff1a  \u6cf0\u5766(Taitan.org)  \u9879\u76ee\u6e90\u7801\uff1a  github", 
+            "title": "\u5f00\u53d1\u7ec4\u7ec7"
+        }, 
+        {
+            "location": "/#why-use-gomqtt", 
+            "text": "Go\u8bed\u8a00\u662f\u4f1f\u5927\u7684,Mqtt\u662f\u4f1f\u5927\u7684   1.Go\u8bed\u8a00\u7684\u4f18\u52bf \uff1a\n  \u8bed\u6cd5\u7b80\u5355\uff0c\u9ad8\u5e76\u53d1\u3001\u9ad8\u6027\u80fd\uff0c\u6807\u51c6\u5e93\u5b8c\u5584\uff0c\u8d44\u6e90\u5360\u7528\u4f4e\uff0c\u9759\u6001\u7f16\u8bd1  2.Mqtt\u534f\u8bae\u7684\u4f18\u52bf \uff1a\n  \u4e8b\u5b9e\u4e0a\u7684\u6807\u51c6\uff0c\u534f\u8bae\u8f7b\u91cf\uff0c\u6d41\u91cf\u8017\u8d39\u5c11\uff0c\u624b\u673a\u8017\u7535\u4f4e  3.\u91cd\u590d\u9020\u8f6e\u5b50   \u6211\u4eec\u57fa\u4e8ego\u548cmqtt  \u5b8c\u5584\u7684\u4ea7\u54c1\u529f\u80fd  \u4f18\u79c0\u7684\u4ee3\u7801  \u6781\u81f4\u7684\u6027\u80fd  \u7edd\u4e0d\u592a\u76d1", 
+            "title": "Why use gomqtt?"
+        }, 
+        {
+            "location": "/#_2", 
+            "text": "\u652f\u6301\u4e3b\u6d41\u7684\u5e73\u53f0     OS  Support      Ubuntu 12+  Yes    Debian 6+  Yes    RedHat  Yes    CentOS 6+  Yes    CoreOS  Yes    OS X Yosemite+  Yes    Windows  Yes", 
+            "title": "\u8de8\u5e73\u53f0"
+        }, 
+        {
+            "location": "/tech/architecture/", 
+            "text": "hello \u67b6\u6784", 
+            "title": "\u67b6\u6784\u8bbe\u8ba1"
+        }, 
+        {
+            "location": "/tech/proto/", 
+            "text": "hello proto!", 
+            "title": "\u534f\u8bae\u89e3\u6790"
+        }, 
+        {
+            "location": "/user-guide/install/", 
+            "text": "hello install:wq\n:", 
+            "title": "\u5b89\u88c5"
+        }, 
+        {
+            "location": "/user-guide/configuration/", 
+            "text": "hello \u914d\u7f6e!", 
+            "title": "\u914d\u7f6e"
+        }, 
+        {
+            "location": "/about/contribute/", 
+            "text": "hello \u8d21\u732e\u8005", 
+            "title": "Contributing"
+        }, 
+        {
+            "location": "/about/licence/", 
+            "text": "hello licence", 
+            "title": "Licence"
+        }, 
+        {
+            "location": "/about/release-notes/", 
+            "text": "hello release!", 
+            "title": "Release Notes"
+        }
+    ]
+}
