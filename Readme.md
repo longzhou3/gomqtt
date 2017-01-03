@@ -5,13 +5,15 @@
 Gomqtt是一个全开源的推送和聊天平台，使用了现代化的架构体系，具有简单易用、功能完善、性能强劲等优点。
 
 
+<br />
 
 ##Status
 
 Comming soon
 
+<br />
+
 ## 开发组织
----
 
 开源组织： <a href="http://taitan.org">泰坦(Taitan.org)</a></p>
 
