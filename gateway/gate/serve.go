@@ -13,7 +13,7 @@ import (
 
 	proto "github.com/taitan-org/gomqtt/mqtt/protocol"
 
-	"github.com/corego/tools"
+	"github.com/taitan-org/talents"
 	"github.com/uber-go/zap"
 
 	"github.com/nats-io/nats"
@@ -130,8 +130,8 @@ func serve(ci *connInfo) {
 		return
 	}
 
-	Logger.Debug("user connected ok!", zap.String("acc", tools.Bytes2String(ci.acc)),
-		zap.String("user", tools.Bytes2String(ci.appID)), zap.String("password", tools.Bytes2String(ci.cp.Password())), zap.Int64("cid", ci.id), zap.Float64("keepalive", float64(ci.cp.KeepAlive())))
+	Logger.Debug("user connected ok!", zap.String("acc", talents.Bytes2String(ci.acc)),
+		zap.String("user", talents.Bytes2String(ci.appID)), zap.String("password", talents.Bytes2String(ci.cp.Password())), zap.Int64("cid", ci.id), zap.Float64("keepalive", float64(ci.cp.KeepAlive())))
 
 	wait := time.Duration(ci.cp.KeepAlive()+10) * time.Second
 

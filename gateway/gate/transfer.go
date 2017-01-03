@@ -6,8 +6,8 @@ import (
 	"errors"
 	"strconv"
 
-	"github.com/corego/tools"
 	"github.com/taitan-org/gomqtt/global"
+	"github.com/taitan-org/talents"
 )
 
 var topicSep = []byte{'-', '-'}
@@ -37,7 +37,7 @@ func topicTrans(t []byte) ([]byte, int, error) {
 
 	var ty int
 	// check topic type
-	s := tools.Bytes2String(ts[1])
+	s := talents.Bytes2String(ts[1])
 	switch s {
 	case "1000", "2000", "3000", "4000", "5000":
 		ty, _ = strconv.Atoi(s)

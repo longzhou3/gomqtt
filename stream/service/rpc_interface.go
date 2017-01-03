@@ -8,9 +8,9 @@ import (
 
 	"google.golang.org/grpc"
 
-	"github.com/corego/tools"
 	"github.com/taitan-org/gomqtt/global"
 	"github.com/taitan-org/gomqtt/proto"
+	"github.com/taitan-org/talents"
 	"github.com/uber-go/zap"
 )
 
@@ -31,7 +31,7 @@ func (rpc *Rpc) Start() {
 
 	// var addr string
 	if Conf.GrpcC.Addr == "" {
-		Conf.GrpcC.Addr = tools.LocalIP() + ":" + Conf.GrpcC.Port
+		Conf.GrpcC.Addr = talents.LocalIP() + ":" + Conf.GrpcC.Port
 	}
 	Logger.Info("addr", zap.String("addr", Conf.GrpcC.Addr))
 
@@ -54,10 +54,10 @@ func (r *Rpc) Close() error {
 
 // Login 登陆
 func (rpc *Rpc) Login(ctx context.Context, msg *proto.LoginMsg) (*proto.LoginRet, error) {
-	Logger.Info("Login", zap.String("Acc", tools.Bytes2String(msg.Acc)), zap.String("AppID", tools.Bytes2String(msg.AppID)))
+	Logger.Info("Login", zap.String("Acc", talents.Bytes2String(msg.Acc)), zap.String("AppID", talents.Bytes2String(msg.AppID)))
 	err := gStream.cache.As.Login(msg)
 	if err != nil {
-		Logger.Error("Login", zap.Error(err), zap.String("Acc", tools.Bytes2String(msg.Acc)), zap.Int64("Cid", msg.Cid))
+		Logger.Error("Login", zap.Error(err), zap.String("Acc", talents.Bytes2String(msg.Acc)), zap.Int64("Cid", msg.Cid))
 		return &proto.LoginRet{R: false, M: []byte(fmt.Sprint("%s", err.Error()))}, err
 	}
 
@@ -107,7 +107,7 @@ func (rpc *Rpc) PubAck(ctx context.Context, msg *proto.PubAckMsg) (*proto.PubAck
 	// 通过acc计算出队列
 	queue, err := GetQueue(msg.Acc)
 	if err != nil {
-		Logger.Error("GetQueue", zap.Error(err), zap.String("acc", tools.Bytes2String(msg.Acc)))
+		Logger.Error("GetQueue", zap.Error(err), zap.String("acc", talents.Bytes2String(msg.Acc)))
 		return &proto.PubAckRet{R: false, M: []byte(err.Error())}, err
 	}
 
@@ -116,7 +116,7 @@ func (rpc *Rpc) PubAck(ctx context.Context, msg *proto.PubAckMsg) (*proto.PubAck
 	for index, msgidMsg := range msg.Mids {
 		MsgIDs[index] = msgidMsg.Mid
 		ttopic = msgidMsg.Tp
-		Logger.Info("PubAck", zap.String("msgid", tools.Bytes2String(msgidMsg.Mid)))
+		Logger.Info("PubAck", zap.String("msgid", talents.Bytes2String(msgidMsg.Mid)))
 	}
 
 	cacheTask := CacheTask{
@@ -142,7 +142,7 @@ func (rpc *Rpc) PubText(ctx context.Context, msg *proto.PubTextMsg) (*proto.PubT
 	// compute queue by acc
 	queue, err := GetQueue(msg.ToAcc)
 	if err != nil {
-		Logger.Error("GetQueue", zap.Error(err), zap.String("acc", tools.Bytes2String(msg.ToAcc)))
+		Logger.Error("GetQueue", zap.Error(err), zap.String("acc", talents.Bytes2String(msg.ToAcc)))
 		return &proto.PubTextRet{R: false, M: []byte(err.Error())}, nil
 	}
 
@@ -171,7 +171,7 @@ func (rpc *Rpc) PubJson(ctx context.Context, msg *proto.PubJsonMsg) (*proto.PubJ
 	// 通过acc计算出队列
 	queue, err := GetQueue(msg.ToAcc)
 	if err != nil {
-		Logger.Error("GetQueue", zap.Error(err), zap.String("acc", tools.Bytes2String(msg.ToAcc)))
+		Logger.Error("GetQueue", zap.Error(err), zap.String("acc", talents.Bytes2String(msg.ToAcc)))
 		return &proto.PubJsonRet{R: false, M: []byte(err.Error())}, nil
 	}
 

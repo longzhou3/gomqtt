@@ -3,7 +3,7 @@ package service
 import (
 	"sync"
 
-	"github.com/corego/tools"
+	"github.com/taitan-org/talents"
 )
 
 // 对于内存中广播消息ID的存储，需要每台Stream都要保存一份
@@ -56,7 +56,7 @@ func (bc *btCache) insert(acc []byte, topic []byte, appid []byte) error {
 func (bc *btCache) delete(acc []byte, topic []byte, appid []byte) error {
 	bc.Lock()
 	if acc, ok := bc.bts[string(topic)]; ok {
-		delete(acc.appID, tools.Bytes2String(appid))
+		delete(acc.appID, talents.Bytes2String(appid))
 	}
 	bc.Unlock()
 	return nil

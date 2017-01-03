@@ -10,8 +10,8 @@ import (
 	"stathat.com/c/consistent"
 
 	disruptor "github.com/smartystreets/go-disruptor"
-	"github.com/sunface/tools"
 	"github.com/taitan-org/gomqtt/proto"
+	"github.com/taitan-org/talents"
 	"github.com/uber-go/zap"
 )
 
@@ -49,11 +49,11 @@ func InitQueue(queueNum int) {
 }
 
 func GetQueue(acc []byte) (*Controller, error) {
-	index, err := gQueueHash.Get(tools.Bytes2String(acc))
+	index, err := gQueueHash.Get(talents.Bytes2String(acc))
 	if err != nil {
 		return nil, err
 	}
-	Logger.Info("Hash", zap.String("Acc", tools.Bytes2String(acc)), zap.String("index", index))
+	Logger.Info("Hash", zap.String("Acc", talents.Bytes2String(acc)), zap.String("index", index))
 	c, ok := gQueue[index]
 	if !ok {
 		return nil, fmt.Errorf("unfind index %s in map ", index)
@@ -166,16 +166,16 @@ func (this Writer) Consume(lower, upper int64) {
 			// 插入数据
 			this.queue.msgCache.TextInsert(bufPool.Data.Msg.Mid, bufPool.Data.Msg.Msg)
 			this.queue.msgIDManger.InsertMsgID(bufPool.Data.FAcc, bufPool.Data.FTopic, bufPool.Data.Msg)
-			Logger.Info("CACHE_TEXT_INSERT", zap.String("ToAcc", tools.Bytes2String(bufPool.Data.Msg.ToAcc)), zap.String("Topic", tools.Bytes2String(bufPool.Data.Msg.Ttp)), zap.String("Msg", tools.Bytes2String(bufPool.Data.Msg.Msg)))
+			Logger.Info("CACHE_TEXT_INSERT", zap.String("ToAcc", talents.Bytes2String(bufPool.Data.Msg.ToAcc)), zap.String("Topic", talents.Bytes2String(bufPool.Data.Msg.Ttp)), zap.String("Msg", talents.Bytes2String(bufPool.Data.Msg.Msg)))
 			break
 		case CACHE_JSON_INSERT:
 			this.queue.msgCache.JsonInsert(bufPool.Data.JsonMsg.Mid, bufPool.Data.JsonMsg.Msg)
 			this.queue.msgIDManger.InsertJsonMsgID(bufPool.Data.FAcc, bufPool.Data.FTopic, bufPool.Data.JsonMsg)
-			Logger.Info("CACHE_JSON_INSERT", zap.String("ToAcc", tools.Bytes2String(bufPool.Data.JsonMsg.ToAcc)),
-				zap.String("Topic", tools.Bytes2String(bufPool.Data.JsonMsg.Ttp)), zap.String("Msg", tools.Bytes2String(bufPool.Data.JsonMsg.Msg)))
+			Logger.Info("CACHE_JSON_INSERT", zap.String("ToAcc", talents.Bytes2String(bufPool.Data.JsonMsg.ToAcc)),
+				zap.String("Topic", talents.Bytes2String(bufPool.Data.JsonMsg.Ttp)), zap.String("Msg", talents.Bytes2String(bufPool.Data.JsonMsg.Msg)))
 			break
 		case CACHE_TEXT_GET:
-			Logger.Info("CACHE_TEXT_GET", zap.String("Msgid", tools.Bytes2String(bufPool.Data.MsgIDs[0])))
+			Logger.Info("CACHE_TEXT_GET", zap.String("Msgid", talents.Bytes2String(bufPool.Data.MsgIDs[0])))
 			ret := &CacheRet{}
 			data, ok := this.queue.msgCache.TextGet(bufPool.Data.MsgIDs[0])
 			if ok {
@@ -184,7 +184,7 @@ func (this Writer) Consume(lower, upper int64) {
 			bufPool.Data.RetChan <- ret
 			break
 		case CACHE_TEXT_SELECT:
-			Logger.Info("Text_Select", zap.String("TAcc", tools.Bytes2String(bufPool.Data.TAcc)), zap.String("TTopic", tools.Bytes2String(bufPool.Data.TTopic)))
+			Logger.Info("Text_Select", zap.String("TAcc", talents.Bytes2String(bufPool.Data.TAcc)), zap.String("TTopic", talents.Bytes2String(bufPool.Data.TTopic)))
 			// 查询返回msgid信息
 			tm := this.queue.msgIDManger.GetMsgIDs(bufPool.Data.TAcc, bufPool.Data.TTopic)
 			ret := &CacheRet{
@@ -194,7 +194,7 @@ func (this Writer) Consume(lower, upper int64) {
 			break
 		case CACHE_JSON_GET:
 			ret := &CacheRet{}
-			Logger.Info("CACHE_JSON_GET", zap.String("Msgid", tools.Bytes2String(bufPool.Data.MsgIDs[0])))
+			Logger.Info("CACHE_JSON_GET", zap.String("Msgid", talents.Bytes2String(bufPool.Data.MsgIDs[0])))
 			data, ok := this.queue.msgCache.JsonGet(bufPool.Data.MsgIDs[0])
 			if ok {
 				ret.Data = data
@@ -202,7 +202,7 @@ func (this Writer) Consume(lower, upper int64) {
 			bufPool.Data.RetChan <- ret
 			break
 		case CACHE_JSON_SELECT:
-			Logger.Info("Json_Select", zap.String("TAcc", tools.Bytes2String(bufPool.Data.TAcc)), zap.String("TTopic", tools.Bytes2String(bufPool.Data.TTopic)))
+			Logger.Info("Json_Select", zap.String("TAcc", talents.Bytes2String(bufPool.Data.TAcc)), zap.String("TTopic", talents.Bytes2String(bufPool.Data.TTopic)))
 			// 查询返回msgid信息
 			tm := this.queue.msgIDManger.GetMsgIDs(bufPool.Data.TAcc, bufPool.Data.TTopic)
 			ret := &CacheRet{

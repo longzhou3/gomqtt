@@ -4,8 +4,8 @@ import (
 	"log"
 	"sync"
 
-	"github.com/corego/tools"
 	"github.com/taitan-org/gomqtt/proto"
+	"github.com/taitan-org/talents"
 	"github.com/uber-go/zap"
 )
 
@@ -39,7 +39,7 @@ func (cids *conIDs) add(msg *proto.LoginMsg) error {
 	// // 通过acc计算出队列
 	queue, err := GetQueue(msg.Acc)
 	if err != nil {
-		Logger.Error("GetQueue", zap.Error(err), zap.String("acc", tools.Bytes2String(msg.Acc)))
+		Logger.Error("GetQueue", zap.Error(err), zap.String("acc", talents.Bytes2String(msg.Acc)))
 		return err
 	}
 
@@ -68,7 +68,7 @@ func (cids *conIDs) addAndRetQueueChan(msg *proto.LoginMsg) (*Controller, chan *
 	// // 通过acc计算出队列
 	queue, err := GetQueue(msg.Acc)
 	if err != nil {
-		Logger.Error("GetQueue", zap.Error(err), zap.String("acc", tools.Bytes2String(msg.Acc)))
+		Logger.Error("GetQueue", zap.Error(err), zap.String("acc", talents.Bytes2String(msg.Acc)))
 		return nil, nil, err
 	}
 	retChan := make(chan *CacheRet, 10)

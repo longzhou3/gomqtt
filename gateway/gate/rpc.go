@@ -7,8 +7,8 @@ import (
 
 	"google.golang.org/grpc"
 
-	"github.com/corego/tools"
 	rpc "github.com/taitan-org/gomqtt/proto"
+	"github.com/taitan-org/talents"
 )
 
 func initRpc() {
@@ -17,7 +17,7 @@ func initRpc() {
 
 func getRpc(ci *connInfo) (*rpcServie, error) {
 	// connect to stream
-	ip, err := consist.Get(tools.Bytes2String(ci.acc))
+	ip, err := consist.Get(talents.Bytes2String(ci.acc))
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +60,7 @@ func (r *rpcServie) login(msg *rpc.LoginMsg) error {
 	}
 
 	if !req.R {
-		return errors.New(tools.Bytes2String(req.M))
+		return errors.New(talents.Bytes2String(req.M))
 	}
 
 	return nil
@@ -73,7 +73,7 @@ func (r *rpcServie) logout(msg *rpc.LogoutMsg) error {
 	}
 
 	if !req.R {
-		return errors.New(tools.Bytes2String(req.M))
+		return errors.New(talents.Bytes2String(req.M))
 	}
 
 	return nil
@@ -86,7 +86,7 @@ func (r *rpcServie) pubText(msg *rpc.PubTextMsg) error {
 	}
 
 	if !req.R {
-		return errors.New(tools.Bytes2String(req.M))
+		return errors.New(talents.Bytes2String(req.M))
 	}
 
 	return nil
@@ -99,7 +99,7 @@ func (r *rpcServie) pubJson(msg *rpc.PubJsonMsg) error {
 	}
 
 	if !req.R {
-		return errors.New(tools.Bytes2String(req.M))
+		return errors.New(talents.Bytes2String(req.M))
 	}
 
 	return nil
@@ -112,7 +112,7 @@ func (r *rpcServie) puback(msg *rpc.PubAckMsg) error {
 	}
 
 	if !req.R {
-		return errors.New(tools.Bytes2String(req.M))
+		return errors.New(talents.Bytes2String(req.M))
 	}
 
 	return nil
@@ -125,7 +125,7 @@ func (r *rpcServie) subscribe(msg *rpc.SubMsg) error {
 	}
 
 	if !req.R {
-		return errors.New(tools.Bytes2String(req.M))
+		return errors.New(talents.Bytes2String(req.M))
 	}
 	return nil
 }
@@ -137,7 +137,7 @@ func (r *rpcServie) unSubscribe(msg *rpc.UnSubMsg) error {
 	}
 
 	if !req.R {
-		return errors.New(tools.Bytes2String(req.M))
+		return errors.New(talents.Bytes2String(req.M))
 	}
 	return nil
 }

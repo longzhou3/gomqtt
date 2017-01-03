@@ -13,8 +13,8 @@ import (
 
 	proto "github.com/taitan-org/gomqtt/mqtt/protocol"
 
-	"github.com/corego/tools"
 	rpc "github.com/taitan-org/gomqtt/proto"
+	"github.com/taitan-org/talents"
 )
 
 // 从nats接收订阅消息，然后推送给客户端
@@ -102,7 +102,7 @@ func pubJson(ci *connInfo, msg *global.JsonMsgs) error {
 	if err != nil {
 		return err
 	}
-	j.Data = tools.Bytes2String(data)
+	j.Data = talents.Bytes2String(data)
 
 	b, err := j.MarshalJSON()
 	if err != nil {

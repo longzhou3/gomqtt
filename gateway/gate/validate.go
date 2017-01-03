@@ -2,7 +2,7 @@ package gate
 
 /* 登录验证模块 */
 
-import "github.com/corego/tools"
+import "github.com/taitan-org/talents"
 
 var validated = make(map[string]string)
 
@@ -12,11 +12,11 @@ func validate(u []byte, p []byte) bool {
 		// 验证
 
 		// 验证通过
-		validated[string(u)] = tools.Bytes2String(p)
+		validated[string(u)] = talents.Bytes2String(p)
 		return true
 	}
 
-	if pw == tools.Bytes2String(p) {
+	if pw == talents.Bytes2String(p) {
 		// 之前已经登陆过
 		return true
 	}
@@ -24,7 +24,7 @@ func validate(u []byte, p []byte) bool {
 	// 缓存不通过，重新验证
 
 	//if 验证通过
-	validated[string(u)] = tools.Bytes2String(p)
+	validated[string(u)] = talents.Bytes2String(p)
 	return true
 
 	// else 验证失败

@@ -4,8 +4,8 @@ package gate
 import (
 	"strconv"
 
-	"github.com/corego/tools"
 	"github.com/nats-io/nats"
+	"github.com/taitan-org/talents"
 
 	"fmt"
 
@@ -45,7 +45,7 @@ func loginAndSub(ci *connInfo, tps [][]byte, qoses []byte, pid uint16) error {
 		AppID: ci.appID,
 		PT:    ci.payloadProtoType,
 		Cid:   ci.id,
-		Gip:   tools.String2Bytes(ci.rip),
+		Gip:   talents.String2Bytes(ci.rip),
 		Ts:    topics,
 	})
 	if err != nil {

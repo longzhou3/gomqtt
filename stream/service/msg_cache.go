@@ -4,8 +4,8 @@ import (
 	"log"
 	"sync"
 
-	"github.com/corego/tools"
 	"github.com/taitan-org/gomqtt/proto"
+	"github.com/taitan-org/talents"
 	"github.com/uber-go/zap"
 )
 
@@ -38,16 +38,16 @@ func (msgCache *MsgCache) JsonInsert(msgid []byte, msg []byte) error {
 
 func (msgCache *MsgCache) TextDelete(msgid [][]byte) error {
 	for _, id := range msgid {
-		delete(msgCache.TextMsgs, tools.Bytes2String(id))
-		Logger.Info("TextDelete", zap.String("msgid", tools.Bytes2String(id)))
+		delete(msgCache.TextMsgs, talents.Bytes2String(id))
+		Logger.Info("TextDelete", zap.String("msgid", talents.Bytes2String(id)))
 	}
 	return nil
 }
 
 func (msgCache *MsgCache) JsonDelete(msgid [][]byte) error {
 	for _, id := range msgid {
-		delete(msgCache.JsonMsgs, tools.Bytes2String(id))
-		Logger.Info("JsonDelete", zap.String("msgid", tools.Bytes2String(id)))
+		delete(msgCache.JsonMsgs, talents.Bytes2String(id))
+		Logger.Info("JsonDelete", zap.String("msgid", talents.Bytes2String(id)))
 	}
 	return nil
 }
@@ -149,11 +149,11 @@ func (mim *MsgIdManger) GetMsgIDs(acc []byte, topic []byte) *TopicIDMap {
 
 func (mim *MsgIdManger) MsgAck(acc []byte, topic []byte, msgid []byte) error {
 	accMap, ok := mim.AccMap[string(acc)]
-	Logger.Info("MsgAck", zap.String("topic", tools.Bytes2String(topic)), zap.String("msgid", tools.Bytes2String(msgid)))
+	Logger.Info("MsgAck", zap.String("topic", talents.Bytes2String(topic)), zap.String("msgid", talents.Bytes2String(msgid)))
 	if ok {
 		if topicMsg, ok := accMap.TopicMsgID[string(topic)]; ok {
-			delete(topicMsg.MsgID, tools.Bytes2String(msgid))
-			Logger.Info("MsgAck", zap.String("msgid", tools.Bytes2String(msgid)))
+			delete(topicMsg.MsgID, talents.Bytes2String(msgid))
+			Logger.Info("MsgAck", zap.String("msgid", talents.Bytes2String(msgid)))
 		}
 	}
 	return nil
@@ -253,10 +253,10 @@ func NewJsonMsgID(facc, ftopic []byte, msg *proto.PubJsonMsg) *MsgID {
 
 // func (msgCache *MsgCache) Delete(msgid []byte) error {
 // 	msgCache.Lock()
-// 	delete(msgCache.Msgs, tools.Bytes2String(msgid))
+// 	delete(msgCache.Msgs, talents.Bytes2String(msgid))
 // 	msgCache.Unlock()
 
-// 	Logger.Info("Delete", zap.String("msgid", tools.Bytes2String(msgid)))
+// 	Logger.Info("Delete", zap.String("msgid", talents.Bytes2String(msgid)))
 // 	return nil
 // }
 
@@ -281,7 +281,7 @@ func NewJsonMsgID(facc, ftopic []byte, msg *proto.PubJsonMsg) *MsgID {
 // 	acc, ok := mim.AccMap[string(msg.ToAcc)]
 // 	mim.RUnlock()
 
-// 	// Logger.Info("InsertTextMsgID", zap.String("ToAcc", tools.Bytes2String(msg.ToAcc)), zap.String("Ttp", tools.Bytes2String(msg.Ttp)), zap.String("msgid", tools.Bytes2String(msg.Mid)))
+// 	// Logger.Info("InsertTextMsgID", zap.String("ToAcc", talents.Bytes2String(msg.ToAcc)), zap.String("Ttp", talents.Bytes2String(msg.Ttp)), zap.String("msgid", talents.Bytes2String(msg.Mid)))
 
 // 	if ok {
 // 		acc.Lock()
@@ -351,12 +351,12 @@ func NewJsonMsgID(facc, ftopic []byte, msg *proto.PubJsonMsg) *MsgID {
 // 	mim.RLock()
 // 	accMap, ok := mim.AccMap[string(acc)]
 // 	mim.RUnlock()
-// 	Logger.Info("TextMsgAck", zap.String("topic", tools.Bytes2String(topic)), zap.String("msgid", tools.Bytes2String(msgid)))
+// 	Logger.Info("TextMsgAck", zap.String("topic", talents.Bytes2String(topic)), zap.String("msgid", talents.Bytes2String(msgid)))
 // 	if ok {
 // 		accMap.Lock()
 // 		if topicMsg, ok := accMap.TopicMsgID[string(topic)]; ok {
-// 			delete(topicMsg.MsgID, tools.Bytes2String(msgid))
-// 			Logger.Info("TextMsgAck", zap.String("msgid", tools.Bytes2String(msgid)))
+// 			delete(topicMsg.MsgID, talents.Bytes2String(msgid))
+// 			Logger.Info("TextMsgAck", zap.String("msgid", talents.Bytes2String(msgid)))
 // 		}
 // 		accMap.Unlock()
 // 	}

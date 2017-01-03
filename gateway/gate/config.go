@@ -15,10 +15,10 @@ import (
 
 	"sync"
 
-	"github.com/corego/tools"
 	"github.com/coreos/etcd/clientv3"
 	"github.com/naoina/toml"
 	"github.com/nats-io/nats"
+	"github.com/taitan-org/talents"
 	"github.com/uber-go/zap"
 )
 
@@ -248,7 +248,7 @@ func uploadEtcd(cli *clientv3.Client) {
 
 	var addr string
 	if Conf.Gateway.WebDomain == "" {
-		addr = tools.LocalIP()
+		addr = talents.LocalIP()
 	} else {
 		addr = Conf.Gateway.WebDomain
 	}

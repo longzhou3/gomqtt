@@ -9,10 +9,10 @@ import (
 
 	"fmt"
 
-	"github.com/corego/tools"
 	"github.com/coreos/etcd/clientv3"
 	"github.com/naoina/toml"
 	"github.com/nats-io/nats"
+	"github.com/taitan-org/talents"
 	"github.com/uber-go/zap"
 )
 
@@ -121,7 +121,7 @@ func initNatsConn() (*nats.Conn, error) {
 func uploadEtcd(cli *clientv3.Client) {
 	key := Conf.Etcd.ApnsAddrs + "/" + getHost()
 
-	addr := tools.LocalIP()
+	addr := talents.LocalIP()
 
 	Logger.Debug("apns local ip", zap.String("ip", addr))
 

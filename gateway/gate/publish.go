@@ -4,10 +4,10 @@ package gate
 import (
 	"errors"
 
-	"github.com/corego/tools"
 	"github.com/taitan-org/gomqtt/global"
 	proto "github.com/taitan-org/gomqtt/mqtt/protocol"
 	"github.com/taitan-org/gomqtt/uuid"
+	"github.com/taitan-org/talents"
 	"github.com/uber-go/zap"
 
 	"bytes"
@@ -37,7 +37,7 @@ func publish(ci *connInfo, p *proto.PublishPacket) error {
 			mid = c2s.MsgID
 		}
 
-		Logger.Debug("client publish JSON", zap.String("mid", mid), zap.String("topic", tools.Bytes2String(p.Topic())),
+		Logger.Debug("client publish JSON", zap.String("mid", mid), zap.String("topic", talents.Bytes2String(p.Topic())),
 			zap.String("acc", c2s.ToAcc), zap.Int("in_count", ci.inCount))
 
 		rpcH, err := getRpc(ci)
@@ -47,11 +47,11 @@ func publish(ci *connInfo, p *proto.PublishPacket) error {
 		err = rpcH.pubJson(&rpc.PubJsonMsg{
 			FAcc:    ci.acc,
 			Ftp:     ci.appID,
-			ToAcc:   tools.String2Bytes(c2s.ToAcc),
+			ToAcc:   talents.String2Bytes(c2s.ToAcc),
 			Ttp:     p.Topic(),
 			Qos:     int32(p.QoS()),
-			Mid:     tools.String2Bytes(mid),
-			Msg:     tools.String2Bytes(c2s.Msg),
+			Mid:     talents.String2Bytes(mid),
+			Msg:     talents.String2Bytes(c2s.Msg),
 			MsgType: int32(c2s.Type),
 		})
 		if err != nil {
@@ -60,7 +60,7 @@ func publish(ci *connInfo, p *proto.PublishPacket) error {
 
 	case global.PayloadText:
 		// text格式，需要生成MsgID
-		mid := tools.String2Bytes(uuid.GenStr())
+		mid := talents.String2Bytes(uuid.GenStr())
 		tps := bytes.Split(p.Topic(), topicSep)
 		if len(tps) != 2 {
 			return errors.New("invalid publish topic, text topic need to be topic--acc")

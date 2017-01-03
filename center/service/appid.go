@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/corego/tools"
 	"github.com/labstack/echo"
+	"github.com/taitan-org/talents"
 	"github.com/uber-go/zap"
 )
 
@@ -79,7 +79,7 @@ func createAppid(c echo.Context) error {
 
 	// 不存在，插入数据
 
-	query = fmt.Sprintf("INSERT INTO appid (`appid`, `payloadType`,`compress`,`user`,`password`,`desc` ,`inputDate`) VALUES ('%s','%d','%d','%s','%s','%s','%s')", appid, plType, compress, user, pw, desc, tools.Time2String(time.Now()))
+	query = fmt.Sprintf("INSERT INTO appid (`appid`, `payloadType`,`compress`,`user`,`password`,`desc` ,`inputDate`) VALUES ('%s','%d','%d','%s','%s','%s','%s')", appid, plType, compress, user, pw, desc, talents.Time2String(time.Now()))
 	_, err = db.Exec(query)
 	if err != nil {
 		Logger.Info("insert sql error", zap.String("sql", query))
@@ -118,7 +118,7 @@ func updateAppid(c echo.Context) error {
 	}
 
 	// 存在，更新数据
-	query = fmt.Sprintf("UPDATE appid SET `compress`='%d',updateDate='%s' WHERE `appid`='%s'", compress, tools.Time2String(time.Now()), appid)
+	query = fmt.Sprintf("UPDATE appid SET `compress`='%d',updateDate='%s' WHERE `appid`='%s'", compress, talents.Time2String(time.Now()), appid)
 	_, err = db.Exec(query)
 	if err != nil {
 		Logger.Info("update appid error", zap.String("sql", query))
@@ -219,7 +219,7 @@ func addTopics(c echo.Context) error {
 	}
 
 	// 存在，更新数据
-	query = fmt.Sprintf("UPDATE appid SET `topics`='%s',updateDate='%s' WHERE `appid`='%s'", string(b), tools.Time2String(time.Now()), appid)
+	query = fmt.Sprintf("UPDATE appid SET `topics`='%s',updateDate='%s' WHERE `appid`='%s'", string(b), talents.Time2String(time.Now()), appid)
 	_, err = db.Exec(query)
 	if err != nil {
 		Logger.Info("add topics error", zap.String("sql", query))

@@ -5,7 +5,7 @@ package gate
 import (
 	"sync"
 
-	"github.com/corego/tools"
+	"github.com/taitan-org/talents"
 )
 
 type account struct {
@@ -57,7 +57,7 @@ func mutexLogin(ci *connInfo) {
 		} else {
 			accounts[string(ci.acc)] = &account{
 				users: map[string]*connInfo{
-					tools.Bytes2String(ci.appID): ci,
+					talents.Bytes2String(ci.appID): ci,
 				},
 			}
 		}
@@ -93,17 +93,17 @@ func delMutex(ci *connInfo) {
 
 	case 2:
 		al.Lock()
-		delete(accounts, tools.Bytes2String(ci.acc))
+		delete(accounts, talents.Bytes2String(ci.acc))
 		al.Unlock()
 
 	case 3:
 		al.Lock()
 		acc, _ := accounts[string(ci.acc)]
-		delete(acc.users, tools.Bytes2String(ci.appID))
+		delete(acc.users, talents.Bytes2String(ci.appID))
 		al.Unlock()
 	case 4:
 		al.Lock()
-		delete(accounts, tools.Bytes2String(ci.cp.ClientId()))
+		delete(accounts, talents.Bytes2String(ci.cp.ClientId()))
 		al.Unlock()
 	}
 }

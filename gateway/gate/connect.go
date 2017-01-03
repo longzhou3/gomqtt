@@ -5,9 +5,9 @@ import (
 	"errors"
 	"time"
 
-	"github.com/corego/tools"
 	"github.com/taitan-org/gomqtt/global"
 	proto "github.com/taitan-org/gomqtt/mqtt/protocol"
+	"github.com/taitan-org/talents"
 	"github.com/uber-go/zap"
 )
 
@@ -16,15 +16,15 @@ func connect(ci *connInfo) error {
 	err, code := initConnection(ci)
 	reply.SetReturnCode(code)
 	if err != nil {
-		Logger.Info("user connect failed", zap.Int64("cid", ci.id), zap.Error(err), zap.String("acc", tools.Bytes2String(ci.acc)),
-			zap.String("user", tools.Bytes2String(ci.appID)))
+		Logger.Info("user connect failed", zap.Int64("cid", ci.id), zap.Error(err), zap.String("acc", talents.Bytes2String(ci.acc)),
+			zap.String("user", talents.Bytes2String(ci.appID)))
 		write(ci, reply)
 		return err
 	}
 
 	if err := write(ci, reply); err != nil {
 		Logger.Info("write connecaccept failed", zap.Int64("cid", ci.id), zap.Error(err),
-			zap.String("acc", tools.Bytes2String(ci.acc)), zap.String("user", tools.Bytes2String(ci.appID)), zap.String("password", tools.Bytes2String(ci.cp.Password())))
+			zap.String("acc", talents.Bytes2String(ci.acc)), zap.String("user", talents.Bytes2String(ci.appID)), zap.String("password", talents.Bytes2String(ci.cp.Password())))
 		return err
 	}
 

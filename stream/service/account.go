@@ -6,9 +6,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/corego/tools"
 	"github.com/taitan-org/gomqtt/global"
 	proto "github.com/taitan-org/gomqtt/proto"
+	"github.com/taitan-org/talents"
 	"github.com/uber-go/zap"
 )
 
@@ -66,7 +66,7 @@ func (ats *Accounts) Logout(accid, appid []byte) error {
 	if ok {
 		acc.Logout(appid)
 	} else {
-		err = fmt.Errorf("unfind acc %s, appid %s", tools.Bytes2String(accid), tools.Bytes2String(appid))
+		err = fmt.Errorf("unfind acc %s, appid %s", talents.Bytes2String(accid), talents.Bytes2String(appid))
 	}
 	ats.Unlock()
 	return err
@@ -78,13 +78,13 @@ func (ats *Accounts) GetQueueAndRetChan(accid, appid []byte) (*Controller, chan 
 	acc, ok := ats.Accounts[string(accid)]
 	ats.RUnlock()
 	if !ok {
-		return nil, nil, fmt.Errorf("unfind acc %s, appid %s", tools.Bytes2String(accid), tools.Bytes2String(appid))
+		return nil, nil, fmt.Errorf("unfind acc %s, appid %s", talents.Bytes2String(accid), talents.Bytes2String(appid))
 	}
 	acc.RLock()
 	app, ok := acc.AppIDs[string(appid)]
 	acc.RUnlock()
 	if !ok {
-		return nil, nil, fmt.Errorf("unfind acc %s, appid %s", tools.Bytes2String(accid), tools.Bytes2String(appid))
+		return nil, nil, fmt.Errorf("unfind acc %s, appid %s", talents.Bytes2String(accid), talents.Bytes2String(appid))
 	}
 	return app.Queue, app.RetChan, nil
 }
@@ -95,7 +95,7 @@ func (ats *Accounts) PubText(msg *proto.PubTextMsg) error {
 	acc, ok := gStream.cache.As.Accounts[string(msg.ToAcc)]
 	gStream.cache.As.RUnlock()
 	if !ok {
-		return fmt.Errorf("unfind acc %s, topic %s", tools.Bytes2String(msg.ToAcc), tools.Bytes2String(msg.Ttp))
+		return fmt.Errorf("unfind acc %s, topic %s", talents.Bytes2String(msg.ToAcc), talents.Bytes2String(msg.Ttp))
 	}
 
 	acc.RLock()
@@ -103,7 +103,7 @@ func (ats *Accounts) PubText(msg *proto.PubTextMsg) error {
 	acc.RUnlock()
 
 	if !ok {
-		return fmt.Errorf("unfind topic, acc is %s, topic %s", tools.Bytes2String(msg.ToAcc), tools.Bytes2String(msg.Ttp))
+		return fmt.Errorf("unfind topic, acc is %s, topic %s", talents.Bytes2String(msg.ToAcc), talents.Bytes2String(msg.Ttp))
 	}
 
 	if topicMsg.nastTopic != "0" {
@@ -136,7 +136,7 @@ func (ats *Accounts) PubJson(msg *proto.PubJsonMsg) error {
 	acc, ok := gStream.cache.As.Accounts[string(msg.ToAcc)]
 	gStream.cache.As.RUnlock()
 	if !ok {
-		return fmt.Errorf("unfind acc %s, topic %s", tools.Bytes2String(msg.ToAcc), tools.Bytes2String(msg.Ttp))
+		return fmt.Errorf("unfind acc %s, topic %s", talents.Bytes2String(msg.ToAcc), talents.Bytes2String(msg.Ttp))
 	}
 
 	acc.RLock()
@@ -144,7 +144,7 @@ func (ats *Accounts) PubJson(msg *proto.PubJsonMsg) error {
 	acc.RUnlock()
 
 	if !ok {
-		return fmt.Errorf("unfind topic, acc is %s, topic %s", tools.Bytes2String(msg.ToAcc), tools.Bytes2String(msg.Ttp))
+		return fmt.Errorf("unfind topic, acc is %s, topic %s", talents.Bytes2String(msg.ToAcc), talents.Bytes2String(msg.Ttp))
 	}
 
 	if topicMsg.nastTopic != "0" {
@@ -156,14 +156,14 @@ func (ats *Accounts) PubJson(msg *proto.PubJsonMsg) error {
 		}
 
 		sendMsg := &global.JsonMsg{
-			FAcc:   tools.Bytes2String(msg.FAcc),
-			FTopic: tools.Bytes2String(msg.Ttp),
+			FAcc:   talents.Bytes2String(msg.FAcc),
+			FTopic: talents.Bytes2String(msg.Ttp),
 			Type:   int(msg.MsgType),
 			Time:   int(time.Now().Unix()),
 			// @Optimize nick这里先传用户账号,因为发送者不一定和接收者在一台机器上
-			Nick:  tools.Bytes2String(msg.FAcc),
-			MsgID: tools.Bytes2String(msg.Mid),
-			Msg:   tools.Bytes2String(msg.Msg),
+			Nick:  talents.Bytes2String(msg.FAcc),
+			MsgID: talents.Bytes2String(msg.Mid),
+			Msg:   talents.Bytes2String(msg.Msg),
 		}
 
 		datas := &global.JsonData{
@@ -242,7 +242,7 @@ func (acc *Account) Login(msg *proto.LoginMsg) error {
 	// 通过acc计算出队列
 	queue, err := GetQueue(msg.Acc)
 	if err != nil {
-		Logger.Error("GetQueue", zap.Error(err), zap.String("acc", tools.Bytes2String(msg.Acc)))
+		Logger.Error("GetQueue", zap.Error(err), zap.String("acc", talents.Bytes2String(msg.Acc)))
 		return err
 	}
 	retChan := make(chan *CacheRet, 10)
@@ -283,7 +283,7 @@ func (acc *Account) Logout(appid []byte) error {
 	appID, ok := acc.AppIDs[string(appid)]
 	if !ok {
 		acc.Unlock()
-		return fmt.Errorf("unfind appID %s", tools.Bytes2String(appid))
+		return fmt.Errorf("unfind appID %s", talents.Bytes2String(appid))
 	}
 	appID.Oline = OFFLINE
 	appID.LastLogout = time.Now().Unix()
@@ -315,7 +315,7 @@ func (acc *Account) Subscribe(un []byte, msg *proto.SubMsg) error {
 	appID, ok := acc.AppIDs[string(un)]
 	if !ok {
 		acc.Unlock()
-		return fmt.Errorf("unfind appID %s  ", tools.Bytes2String(un))
+		return fmt.Errorf("unfind appID %s  ", talents.Bytes2String(un))
 	} else {
 		for _, topic := range msg.Ts {
 			appID.Topics[string(topic.Tp)] = topic
@@ -341,7 +341,7 @@ func (acc *Account) UnSubscribe(un []byte, msg *proto.UnSubMsg) error {
 	} else {
 		for _, topic := range msg.Ts {
 			if _, ok := appID.Topics[string(topic.Tp)]; ok {
-				delete(appID.Topics, tools.Bytes2String(topic.Tp))
+				delete(appID.Topics, talents.Bytes2String(topic.Tp))
 			}
 		}
 	}

@@ -6,10 +6,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/corego/tools"
 	"github.com/nats-io/nats"
 	"github.com/taitan-org/gomqtt/global"
 	"github.com/taitan-org/gomqtt/proto"
+	"github.com/taitan-org/talents"
 	"github.com/uber-go/zap"
 )
 
@@ -162,7 +162,7 @@ func PushTextOffLineMsg(t *taskMsg) {
 
 		retCache, ok := <-t.retChan
 		if !ok {
-			Logger.Error("PushOffLineMsg", zap.String("Acc", tools.Bytes2String(t.acc)))
+			Logger.Error("PushOffLineMsg", zap.String("Acc", talents.Bytes2String(t.acc)))
 			return
 		}
 		if retCache.MsgIDs != nil {
@@ -173,7 +173,7 @@ func PushTextOffLineMsg(t *taskMsg) {
 			MsgsCacha := make([]*global.TextMsg, 0, len(retCache.MsgIDs.MsgID))
 			// get Msg
 			for _, msgidMsg := range retCache.MsgIDs.MsgID {
-				Logger.Info("PushOffLineMsg", zap.String("msgid", tools.Bytes2String(msgidMsg.MsgID)))
+				Logger.Info("PushOffLineMsg", zap.String("msgid", talents.Bytes2String(msgidMsg.MsgID)))
 				getTask := CacheTask{
 					MsgTy:   CACHE_TEXT_GET,
 					MsgIDs:  [][]byte{msgidMsg.MsgID},
@@ -182,7 +182,7 @@ func PushTextOffLineMsg(t *taskMsg) {
 				t.queue.Publish(getTask)
 				retCache, ok := <-t.retChan
 				if !ok {
-					Logger.Error("PushOffLineMsg", zap.String("Acc", tools.Bytes2String(t.acc)))
+					Logger.Error("PushOffLineMsg", zap.String("Acc", talents.Bytes2String(t.acc)))
 					return
 				}
 				if retCache.Data != nil {
@@ -200,7 +200,7 @@ func PushTextOffLineMsg(t *taskMsg) {
 						MsgID:      msgidMsg.MsgID,
 						Msg:        retCache.Data,
 					}
-					Logger.Info("Push", zap.String("data", tools.Bytes2String(retCache.Data)))
+					Logger.Info("Push", zap.String("data", talents.Bytes2String(retCache.Data)))
 					MsgsCacha = append(MsgsCacha, Msg)
 				}
 			}
@@ -226,7 +226,7 @@ func PushJsonOffLineMsg(t *taskMsg) {
 
 		retCache, ok := <-t.retChan
 		if !ok {
-			Logger.Error("PushJsonOffLineMsg", zap.String("Acc", tools.Bytes2String(t.acc)))
+			Logger.Error("PushJsonOffLineMsg", zap.String("Acc", talents.Bytes2String(t.acc)))
 			return
 		}
 
@@ -248,7 +248,7 @@ func PushJsonOffLineMsg(t *taskMsg) {
 			}
 			// get Msg
 			for _, msgidMsg := range retCache.MsgIDs.MsgID {
-				Logger.Info("PushJsonOffLineMsg", zap.String("msgid", tools.Bytes2String(msgidMsg.MsgID)))
+				Logger.Info("PushJsonOffLineMsg", zap.String("msgid", talents.Bytes2String(msgidMsg.MsgID)))
 				getTask := CacheTask{
 					MsgTy:   CACHE_JSON_GET,
 					MsgIDs:  [][]byte{msgidMsg.MsgID},
@@ -257,7 +257,7 @@ func PushJsonOffLineMsg(t *taskMsg) {
 				t.queue.Publish(getTask)
 				retCache, ok := <-t.retChan
 				if !ok {
-					Logger.Error("PushJsonOffLineMsg", zap.String("Acc", tools.Bytes2String(t.acc)))
+					Logger.Error("PushJsonOffLineMsg", zap.String("Acc", talents.Bytes2String(t.acc)))
 					return
 				}
 
@@ -267,14 +267,14 @@ func PushJsonOffLineMsg(t *taskMsg) {
 					}
 
 					sendMsg := &global.JsonMsg{
-						FAcc:   tools.Bytes2String(msgidMsg.FAcc),
-						FTopic: tools.Bytes2String(msgidMsg.FTopic),
+						FAcc:   talents.Bytes2String(msgidMsg.FAcc),
+						FTopic: talents.Bytes2String(msgidMsg.FTopic),
 						Type:   int(msgidMsg.MsgTy),
 						Time:   int(time.Now().Unix()),
 						// @Optimize nick这里先传用户账号,因为发送者不一定和接收者在一台机器上
-						Nick:  tools.Bytes2String(msgidMsg.FAcc),
-						MsgID: tools.Bytes2String(msgidMsg.MsgID),
-						Msg:   tools.Bytes2String(retCache.Data),
+						Nick:  talents.Bytes2String(msgidMsg.FAcc),
+						MsgID: talents.Bytes2String(msgidMsg.MsgID),
+						Msg:   talents.Bytes2String(retCache.Data),
 					}
 					datas.Msgs = append(datas.Msgs, sendMsg)
 					pushData.TTopics = append(pushData.TTopics, topicMsg.Tp)
