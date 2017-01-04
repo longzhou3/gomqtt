@@ -4,7 +4,7 @@
     
     <url>
      <loc>/</loc>
-     <lastmod>2017-01-03</lastmod>
+     <lastmod>2017-01-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -13,13 +13,13 @@
         
     <url>
      <loc>/tech/architecture/</loc>
-     <lastmod>2017-01-03</lastmod>
+     <lastmod>2017-01-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/tech/proto/</loc>
-     <lastmod>2017-01-03</lastmod>
+     <lastmod>2017-01-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -29,13 +29,13 @@
         
     <url>
      <loc>/user-guide/install/</loc>
-     <lastmod>2017-01-03</lastmod>
+     <lastmod>2017-01-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/user-guide/configuration/</loc>
-     <lastmod>2017-01-03</lastmod>
+     <lastmod>2017-01-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -45,19 +45,19 @@
         
     <url>
      <loc>/about/contribute/</loc>
-     <lastmod>2017-01-03</lastmod>
+     <lastmod>2017-01-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/about/licence/</loc>
-     <lastmod>2017-01-03</lastmod>
+     <lastmod>2017-01-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>/about/release-notes/</loc>
-     <lastmod>2017-01-03</lastmod>
+     <lastmod>2017-01-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
         

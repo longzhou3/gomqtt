@@ -218,12 +218,129 @@
             <div class="col-md-3"><div id="sidenav" class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
     
+        <li class="main active"><a href="#etcd">Etcd</a></li>
+        
+            <li><a href="#_1">开源介绍</a>
+            
+            </li>
+        
+            <li><a href="#_2">下载</a>
+            
+            </li>
+        
+            <li><a href="#_3">启动</a>
+            
+            </li>
+        
+            <li><a href="#_4">注意事项</a>
+            
+            </li>
+        
+    
+        <li class="main "><a href="#nats">Nats</a></li>
+        
+            <li><a href="#_5">开源介绍</a>
+            
+            </li>
+        
+            <li><a href="#_6">下载</a>
+            
+            </li>
+        
+            <li><a href="#_7">启动</a>
+            
+            </li>
+        
+    
     </ul>
 </div></div>
             <div class="col-md-9" role="main">
 
-<p>hello install:wq
-:</p></div>
+<h2 id="etcd">Etcd</h2>
+<hr />
+<h5 id="_1">开源介绍</h5>
+<p>现代化的服务发现，可以替代Zookeeper </p>
+<p><br /></p>
+<h5 id="_2">下载</h5>
+<p>&nbsp;&nbsp;https://github.com/coreos/etcd/releases/ 在这里下载对应的最新版本的etcd zip包
+<br />
+<br /></p>
+<h5 id="_3">启动</h5>
+<p>&nbsp;&nbsp;<strong>单节点</strong></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;./bin/etcd
+<br />
+<br /></p>
+<p>&nbsp;&nbsp;<strong>集群</strong></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;节点组成(2个):</p>
+<ul>
+<li>10.7.24.191</li>
+<li>10.7.24.192
+<br />
+<br /></li>
+</ul>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;申请集群ID:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;这个是Etcd提供的方式：我们去访问etcd的官方网站获取一个集群id，然后启动节点时，通过该集群id，来完成集群之间的互通。<strong>注意，务必保证etcd所在的服务节点可以访问etcd的官网！！！</strong> 如果没有网络条件，可以去官方文档查看相应的启动方式。</p>
+<pre><code>&gt; curl https://discovery.etcd.io/new?size=2
+https://discovery.etcd.io/4b8d03d4630e134b7df4298ecb2f59c4
+</code></pre>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;4b8d03d4630e134b7df4298ecb2f59c4就是我们需要的id</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;启动集群</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;首先启动第一个节点：</p>
+<pre><code>&gt;nohup etcd --name test1 --initial-advertise-peer-urls http://10.7.24.191:2380 --listen-peer-urls http://10.7.24.191:2380 --listen-client-urls http://10.7.24.191:2379,http://127.0.0.1:2379 --advertise-client-urls http://10.7.24.191:2379 --discovery https://discovery.etcd.io/4b8d03d4630e134b7df4298ecb2f59c4 --data-dir /data/etcd &gt;&gt; /data/etcd/out.log 2&gt;&amp;1 &amp;
+</code></pre>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;注意，这里我们使用了自定义的节点名--name，使用了节点ip和集群id</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;接着启动第二个：</p>
+<pre><code>&gt;nohup etcd --name test2 --initial-advertise-peer-urls http://10.7.24.192:2380 --listen-peer-urls http://10.7.24.192:2380 --listen-client-urls http://10.7.24.192:2379,http://127.0.0.1:2379 --advertise-client-urls http://10.7.24.192:2379 --discovery https://discovery.etcd.io/4b8d03d4630e134b7df4298ecb2f59c4 --data-dir /data/etcd &gt;&gt; /data/etcd/out.log 2&gt;&amp;1 &amp;
+</code></pre>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;使用etcdctl查看集群是否启动成功:</p>
+<pre><code>&gt; etcdctl --endpoints=&quot;http://10.7.24.191:2379,http://10.7.24.192:2379&quot; cluster-health
+member 1f59512b5b6bc5f8 is healthy: got healthy result from http://10.7.24.191:2379
+member 78729fe03d1abdd3 is healthy: got healthy result from http://10.7.24.192:2379
+cluster is healthy
+</code></pre>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;--endpoints表示要访问的集群地址，etcdctl可以远程访问集群</p>
+<p><br /></p>
+<h5 id="_4">注意事项</h5>
+<p>集群id一旦使用过，且中间有任何失败，请重新申请</p>
+<h2 id="nats">Nats</h2>
+<h5 id="_5">开源介绍</h5>
+<p>现代化的超高性能、超稳定的MQ服务，详见nats.io</p>
+<p><br /></p>
+<h5 id="_6">下载</h5>
+<p>https://github.com/nats-io/gnatsd/releases 下载最新版本</p>
+<p><br /></p>
+<h5 id="_7">启动</h5>
+<p>&nbsp;&nbsp;<strong>单节点</strong></p>
+<pre><code>./gnatsd -p 42222 -m 8222
+</code></pre>
+
+<p>&nbsp;&nbsp;-p代表gnatsd监听的tcp端口，-m是监控monitor服务的端口</p>
+<p>&nbsp;&nbsp;<strong>集群</strong></p>
+<p>&nbsp;&nbsp;节点组成(3个)：</p>
+<ul>
+<li>10.10.0.1</li>
+<li>10.10.0.2</li>
+<li>10.10.0.3</li>
+</ul>
+<p>&nbsp;&nbsp;启动第一个节点：</p>
+<pre><code>gnatsd -p 4222 -m 82222 -cluster nats://10.10.0.1:5222 -routes nats://10.10.0.2:5222,nats://10.10.0.3:5222
+</code></pre>
+
+<p>&nbsp;&nbsp;启动第二个:</p>
+<pre><code>gnatsd -p 4222 -m 82222 -cluster nats://10.10.0.2:5222 -routes nats://10.10.0.1:5222,nats://10.10.0.3:5222
+</code></pre>
+
+<p>&nbsp;&nbsp;启动第三个:</p>
+<pre><code>gnatsd -p 4222 -m 82222 -cluster nats://10.10.0.3:5222 -routes nats://10.10.0.1:5222,nats://10.10.0.2:5222
+</code></pre>
+
+<p>&nbsp;&nbsp;全部节点启动完毕，验证一下：</p>
+<pre><code>curl http://10.10.0.1:8222/routez
+</code></pre></div>
         </div>
 
         <script src="../../js/jquery-1.10.2.min.js"></script>

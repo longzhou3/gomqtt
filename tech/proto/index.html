@@ -218,11 +218,52 @@
             <div class="col-md-3"><div id="sidenav" class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
     
+        <li class="main active"><a href="#1">1.网络协议</a></li>
+        
+    
+        <li class="main "><a href="#2">2.通信协议</a></li>
+        
+    
+        <li class="main "><a href="#3">3.编码</a></li>
+        
+    
+        <li class="main "><a href="#4">4.压缩</a></li>
+        
+    
+        <li class="main "><a href="#5">5.后续更新</a></li>
+        
+    
     </ul>
 </div></div>
             <div class="col-md-9" role="main">
 
-<p>hello proto!</p></div>
+<h3 id="1">1.网络协议</h3>
+<p><p>&nbsp;&nbsp;&nbsp;支持tcp(tls)和websocket访问(可以同时使用两种provider)</p></p>
+<p><br /></p>
+<h3 id="2">2.通信协议</h3>
+<p><p>&nbsp;&nbsp;&nbsp;mqtt3.1.1，在标准化的同时，进行了自定义，以便进行更灵活、更复杂的控制，所以接入时一定要看文档</p></p>
+<p><br /></p>
+<h3 id="3">3.编码</h3>
+<p><strong>编码对象</strong></p>
+<p>&nbsp;&nbsp;&nbsp;mqtt publish包的payload(payload的内容是我们真正要传递的消息内容，比如你想告诉对方hello world，那么payload="hello world")</p>
+<p><strong>编码格式：PlainText和Json</strong></p>
+<ul>
+<li>PlainText是文本模式，发送aaaaa，那么收到者就是aaaaa，不做任何编码</li>
+<li>选用Json格式的原因：</li>
+<li>支持更多样化的消息类型和内容控制</li>
+<li>具有良好的可读性</li>
+</ul>
+<p><br /></p>
+<h3 id="4">4.压缩</h3>
+<p>publish payload可以选用压缩方式和级别，通过json最外层的字段控制,压缩后的内容是在最外层Json的一个字段中存储</p>
+<p><br /></p>
+<h3 id="5">5.后续更新</h3>
+<p>更多的编码：
+- protobuf
+- messagepack
+更多的网络协议：
+- http
+- http2</p></div>
         </div>
 
         <script src="../../js/jquery-1.10.2.min.js"></script>
