@@ -25,8 +25,15 @@ Gomqtt是一个全开源的推送和聊天平台，使用了现代化的架构�
 
 <br />
 
-## Why use gomqtt?
+## 开源协议
+---
+[点击此处查看](about/license.md)
 
+ 
+ <br />
+
+## Why use gomqtt?
+---
 Go语言是伟大的,Mqtt是伟大的
 <br />
 <br />
@@ -51,6 +58,7 @@ Go语言是伟大的,Mqtt是伟大的
 
 
 ## 跨平台
+---
 支持主流的平台
 
 OS             | Support 
