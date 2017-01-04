@@ -252,6 +252,124 @@
             </li>
         
     
+        <li class="main "><a href="#tidb">TiDB</a></li>
+        
+            <li><a href="#_8">概述</a>
+            
+            </li>
+        
+            <li><a href="#binary">下载官方 Binary</a>
+            
+                <ul class="nav nav-stacked">
+                
+                <li><a href="#linux-centos-7-ubuntu-1404">Linux (CentOS 7+, Ubuntu 14.04+)</a><!--
+                -->
+                </li>
+                
+                <li><a href="#centos-6">CentOS 6（不推荐）</a><!--
+                -->
+                </li>
+                
+                </ul>
+            
+            </li>
+        
+            <li><a href="#_9">单节点方式快速部署</a>
+            
+            </li>
+        
+            <li><a href="#_10">多节点集群模式部署</a>
+            
+            </li>
+        
+            <li><a href="#_11">功能性测试部署</a>
+            
+            </li>
+        
+            <li><a href="#_12">动态添加节点</a>
+            
+            </li>
+        
+    
+        <li class="main "><a href="#gomqtt">Gomqtt平台</a></li>
+        
+            <li><a href="#stream">Stream</a>
+            
+                <ul class="nav nav-stacked">
+                
+                <li><a href="#_13">安装</a><!--
+                -->
+                </li>
+                
+                <li><a href="#_14">配置</a><!--
+                -->
+                </li>
+                
+                <li><a href="#_15">启动</a><!--
+                -->
+                </li>
+                
+                </ul>
+            
+            </li>
+        
+            <li><a href="#gateway">Gateway</a>
+            
+                <ul class="nav nav-stacked">
+                
+                <li><a href="#_16">安装</a><!--
+                -->
+                </li>
+                
+                <li><a href="#_17">配置</a><!--
+                -->
+                </li>
+                
+                <li><a href="#_18">启动</a><!--
+                -->
+                </li>
+                
+                </ul>
+            
+            </li>
+        
+            <li><a href="#center">Center</a>
+            
+                <ul class="nav nav-stacked">
+                
+                <li><a href="#_19">安装</a><!--
+                -->
+                </li>
+                
+                <li><a href="#_20">配置</a><!--
+                -->
+                </li>
+                
+                <li><a href="#_21">启动</a><!--
+                -->
+                </li>
+                
+                </ul>
+            
+            </li>
+        
+            <li><a href="#apns">Apns</a>
+            
+                <ul class="nav nav-stacked">
+                
+                <li><a href="#_22">安装</a><!--
+                -->
+                </li>
+                
+                <li><a href="#_23">配置</a><!--
+                -->
+                </li>
+                
+                </ul>
+            
+            </li>
+        
+    
     </ul>
 </div></div>
             <div class="col-md-9" role="main">
@@ -340,7 +458,361 @@ cluster is healthy
 
 <p>&nbsp;&nbsp;全部节点启动完毕，验证一下：</p>
 <pre><code>curl http://10.10.0.1:8222/routez
-</code></pre></div>
+</code></pre>
+
+<p><br /></p>
+<h2 id="tidb">TiDB</h2>
+<h5 id="_8">概述</h5>
+<p>一个完整的 TiDB 集群包括 PD，TiKV 以及 TiDB。启动顺序依次是 PD，TiKV 以及 TiDB。</p>
+<p>阅读本章前，请先确保阅读 <a href="../README.md#tidb-总览">TiDB 整体架构</a> 及 <a href="../op-guide/recommendation.md">部署建议</a></p>
+<p>快速了解和试用 TiDB，推荐使用<a href="#单节点方式快速部署">单节点方式快速部署</a>。</p>
+<p>功能性测试 TiDB，推荐使用<a href="#功能性测试部署">功能性测试部署</a>。</p>
+<p>生产环境使用 TiDB，推荐使用<a href="#多节点集群模式部署">多节点集群模式部署</a>。</p>
+<p><br /></p>
+<h5 id="binary">下载官方 Binary</h5>
+<h6 id="linux-centos-7-ubuntu-1404">Linux (CentOS 7+, Ubuntu 14.04+)</h6>
+<pre><code class="bash"># 下载压缩包
+wget http://download.pingcap.org/tidb-latest-linux-amd64.tar.gz
+wget http://download.pingcap.org/tidb-latest-linux-amd64.sha256
+
+# 检查文件完整性，返回 ok 则正确
+sha256sum -c tidb-latest-linux-amd64.sha256
+
+# 解开压缩包
+tar -xzf tidb-latest-linux-amd64.tar.gz
+cd tidb-latest-linux-amd64
+</code></pre>
+
+<h6 id="centos-6">CentOS 6（不推荐）</h6>
+<pre><code class="bash"># 下载 CentOS6 压缩包
+wget http://download.pingcap.org/tidb-latest-linux-amd64-centos6.tar.gz
+wget http://download.pingcap.org/tidb-latest-linux-amd64-centos6.sha256
+
+# 检查文件完整性，返回 ok 则正确
+sha256sum -c tidb-latest-linux-amd64-centos6.sha256
+
+# 解开压缩包
+tar -xzf tidb-latest-linux-amd64-centos6.tar.gz
+cd tidb-latest-linux-amd64-centos6
+</code></pre>
+
+<p><br /></p>
+<h5 id="_9">单节点方式快速部署</h5>
+<p>我们可以在单机上面，运行和测试 TiDB 集群，请按如下步骤<strong>依次启动</strong> PD，TiKV，TiDB：</p>
+<ol>
+<li>启动 PD.</li>
+</ol>
+<pre><code class="bash">./bin/pd-server --data-dir=pd
+</code></pre>
+
+<ol>
+<li>启动 TiKV.</li>
+</ol>
+<pre><code class="bash">./bin/tikv-server --pd=&quot;127.0.0.1:2379&quot; \
+--store=tikv
+</code></pre>
+
+<ol>
+<li>启动 TiDB.</li>
+</ol>
+<pre><code class="bash">./bin/tidb-server --store=tikv \
+--path=&quot;127.0.0.1:2379&quot;
+</code></pre>
+
+<ol>
+<li>使用官方的 <code>mysql</code> 客户端连接 TiDB.</li>
+</ol>
+<pre><code class="sh">mysql -h 127.0.0.1 -P 4000 -u root -D test
+</code></pre>
+
+<p><br /></p>
+<h5 id="_10">多节点集群模式部署</h5>
+<p>在生产环境中，我们推荐多节点部署 TiDB 集群，首先请参考<a href="./recommendation.md">部署建议</a>。</p>
+<p>这里我们使用六个节点，部署三个 PD，三个 TiKV，以及一个 TiDB，各个节点以及所运行服务信息如下：</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Host IP</th>
+<th>Services</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>node1</td>
+<td>192.168.199.113</td>
+<td>PD1, TiDB</td>
+</tr>
+<tr>
+<td>node2</td>
+<td>192.168.199.114</td>
+<td>PD2</td>
+</tr>
+<tr>
+<td>node3</td>
+<td>192.168.199.115</td>
+<td>PD3</td>
+</tr>
+<tr>
+<td>node4</td>
+<td>192.168.199.116</td>
+<td>TiKV1</td>
+</tr>
+<tr>
+<td>node5</td>
+<td>192.168.199.117</td>
+<td>TiKV2</td>
+</tr>
+<tr>
+<td>node6</td>
+<td>192.168.199.118</td>
+<td>TiKV3</td>
+</tr>
+</tbody>
+</table>
+<p>请按如下步骤<strong>依次启动</strong> PD 集群，TiKV 集群以及 TiDB：</p>
+<ol>
+<li>在 node1，node2，node3 启动 PD.</li>
+</ol>
+<pre><code class="bash">./bin/pd-server --name=pd1 \
+--data-dir=pd1 \
+--client-urls=&quot;http://192.168.199.113:2379&quot; \
+--peer-urls=&quot;http://192.168.199.113:2380&quot; \
+--initial-cluster=&quot;pd1=http://192.168.199.113:2380,pd2=http://192.168.199.114:2380,pd3=http://192.168.199.115:2380&quot;
+./bin/pd-server --name=pd2 \
+--data-dir=pd2 \
+--client-urls=&quot;http://192.168.199.114:2379&quot; \
+--peer-urls=&quot;http://192.168.199.114:2380&quot; \
+--initial-cluster=&quot;pd1=http://192.168.199.113:2380,pd2=http://192.168.199.114:2380,pd3=http://192.168.199.115:2380&quot;
+./bin/pd-server --name=pd3 \
+--data-dir=pd3 \
+--client-urls=&quot;http://192.168.199.115:2379&quot; \
+--peer-urls=&quot;http://192.168.199.115:2380&quot; \
+--initial-cluster=&quot;pd1=http://192.168.199.113:2380,pd2=http://192.168.199.114:2380,pd3=http://192.168.199.115:2380&quot;
+</code></pre>
+
+<ol>
+<li>在 node4，node5，node6 启动 TiKV.</li>
+</ol>
+<pre><code class="bash">./bin/tikv-server --pd=&quot;192.168.199.113:2379,192.168.199.114:2379,192.168.199.115:2379&quot; \
+--addr=&quot;192.168.199.116:20160&quot; \
+--store=tikv1
+./bin/tikv-server --pd=&quot;192.168.199.113:2379,192.168.199.114:2379,192.168.199.115:2379&quot; \
+--addr=&quot;192.168.199.117:20160&quot; \
+--store=tikv2
+./bin/tikv-server --pd=&quot;192.168.199.113:2379,192.168.199.114:2379,192.168.199.115:2379&quot; \
+--addr=&quot;192.168.199.118:20160&quot; \
+--store=tikv3
+</code></pre>
+
+<ol>
+<li>在 node1 启动 TiDB.</li>
+</ol>
+<pre><code class="bash">./bin/tidb-server --store=tikv \
+--path=&quot;192.168.199.113:2379,192.168.199.114:2379,192.168.199.115:2379&quot;
+</code></pre>
+
+<ol>
+<li>使用官方 <code>mysql</code> 客户端连接 TiDB.</li>
+</ol>
+<pre><code class="sh">mysql -h 192.168.199.113 -P 4000 -u root -D test
+</code></pre>
+
+<p><br /></p>
+<h5 id="_11">功能性测试部署</h5>
+<p>如果只是对 TiDB 进行测试，并且机器数量有限，我们可以只启动一台 PD 测试 整个集群。</p>
+<p>这里我们使用四个节点，部署一个 PD，三个 TiKV，以及一个 TiDB，各个节点以及所运行服务信息如下：</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Host IP</th>
+<th>Services</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>node1</td>
+<td>192.168.199.113</td>
+<td>PD1, TiDB</td>
+</tr>
+<tr>
+<td>node2</td>
+<td>192.168.199.114</td>
+<td>TiKV1</td>
+</tr>
+<tr>
+<td>node3</td>
+<td>192.168.199.115</td>
+<td>TiKV2</td>
+</tr>
+<tr>
+<td>node4</td>
+<td>192.168.199.116</td>
+<td>TiKV3</td>
+</tr>
+</tbody>
+</table>
+<p>请按如下步骤<strong>依次启动</strong> PD 集群，TiKV 集群以及 TiDB：</p>
+<ol>
+<li>在 node1 启动 PD.</li>
+</ol>
+<pre><code class="bash">./bin/pd-server --name=pd1 \
+--data-dir=pd1 \
+--client-urls=&quot;http://192.168.199.113:2379&quot; \
+--peer-urls=&quot;http://192.168.199.113:2380&quot; \
+--initial-cluster=&quot;pd1=http://192.168.199.113:2380&quot;
+</code></pre>
+
+<ol>
+<li>在 node2，node3，node4 启动 TiKV.</li>
+</ol>
+<pre><code class="bash">./bin/tikv-server --pd=&quot;192.168.199.113:2379&quot; \
+--addr=&quot;192.168.199.114:20160&quot; \
+--store=tikv1
+./bin/tikv-server --pd=&quot;192.168.199.113:2379&quot; \
+--addr=&quot;192.168.199.115:20160&quot; \
+--store=tikv2
+./bin/tikv-server --pd=&quot;192.168.199.113:2379&quot; \
+--addr=&quot;192.168.199.116:20160&quot; \
+--store=tikv3
+</code></pre>
+
+<ol>
+<li>在 node1 启动 TiDB.</li>
+</ol>
+<pre><code class="bash">./bin/tidb-server --store=tikv \
+--path=&quot;192.168.199.113:2379&quot;
+</code></pre>
+
+<ol>
+<li>使用官方 <code>mysql</code> 客户端连接 TiDB.</li>
+</ol>
+<pre><code class="sh">mysql -h 192.168.199.113 -P 4000 -u root -D test
+</code></pre>
+
+<h5 id="_12">动态添加节点</h5>
+<ol>
+<li>PD</li>
+</ol>
+<p>我们可以使用 <code>join</code> 参数，方便的将一个 PD 服务加入到现有的 PD 集群里面。假设现在我们有三个 PD 服务，详细信息如下：</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>ClientUrls</th>
+<th>PeerUrls</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pd1</td>
+<td>http://host1:2379</td>
+<td>http://host1:2380</td>
+</tr>
+<tr>
+<td>pd2</td>
+<td>http://host2:2379</td>
+<td>http://host2:2380</td>
+</tr>
+<tr>
+<td>pd3</td>
+<td>http://host3:2379</td>
+<td>http://host3:2380</td>
+</tr>
+</tbody>
+</table>
+<p>如果我们需要添加 <code>pd4</code>，只需要在 <code>join</code> 参数里面填入当前 PD 集群某一个 PD 服务的 <code>ClientUrls</code> 就可以了，如下：</p>
+<pre><code>./bin/pd-server --name=pd4 \
+--client-urls=&quot;http://host4:2379&quot;
+--peer-urls=&quot;http://host4:2380&quot;
+--join=&quot;http://host1:2379&quot;
+</code></pre>
+
+<ol>
+<li>TiKV</li>
+</ol>
+<p>动态新加入一个新的 TiKV 服务是非常容易的，我们可以直接启动一个 TiKV 服务，PD 会自动检测到，
+并开始做整个集群的 balance，将其他 TiKV 的数据移动到新加入的 TiKV 里面。</p>
+<p>我们也能够显式的告诉 PD 去删除某个 TiKV。PD 会先把这个 TiKV 标记为正在下线的状态，
+然后把这个 TiKV 上的数据均匀地迁移到其他 TiKV 上面。当这个 TiKV 上的数据已经迁移
+完了，PD 会把这个 TiKV 标记为完成下线的状态，这时候就可以安全地把这个 TiKV 从集
+群中去掉。</p>
+<p>假设我们要删除一个 store id 为 1 的 TiKV，可以调用 PD 的 HTTP API 来操作：</p>
+<pre><code>curl -X DELETE http://host:port/pd/api/v1/store/1
+</code></pre>
+
+<p>然后可以查看这个 TiKV 的当前状态：</p>
+<pre><code>curl http://host:port/pd/api/v1/store/1
+</code></pre>
+
+<p>如果这个 TiKV 正在下线，对应的 state=1，如果这个 TiKV 完成下线，对应的 state=2，
+否则 state=0。</p>
+<p>更详细的 API 文档可以参考 <a href="https://cdn.rawgit.com/pingcap/docs/master/op-guide/pd-api-v1.html">PD APIv1</a>。</p>
+<ol>
+<li>TiDB </li>
+</ol>
+<p>TiDB 是一个无状态的服务，这也就意味着我们能直接添加和删除 TiDB。需要注意的是如果我们在 TiDB 的服务的前面搭建了一个 proxy（譬如 HAProxy），我们需要更新 proxy 的配置并重新载入。</p>
+<p><br /></p>
+<h2 id="gomqtt">Gomqtt平台</h2>
+<p>启动方式分为静态配置和动态配置，这里先讲静态配置。</p>
+<p>请按照文档顺序来启动各个节点(首先需要启动Etcd、Nats，如果需要使用持久化存储，还要启动TiDB)</p>
+<p>Stream、Gateway、Center、Apns的静态配置文件都在configs/底下，例如stream.toml,gateway.toml等，configs/底下还包含了动态配置需要的文件。</p>
+<p>首先是下载项目</p>
+<pre><code>go get -v -u github.com/aiyun/gomqtt
+</code></pre>
+
+<h5 id="stream">Stream</h5>
+<h6 id="_13">安装</h6>
+<pre><code>cd gomqtt/stream
+go build
+</code></pre>
+
+<h6 id="_14">配置</h6>
+<p><p>修改stream.toml中的etcd.addrs和nats.addrs为你的集群地址</p>
+如果要启动持久化存储，则设置enalbe_persist=true，并修改tidb.addrs</p>
+<h6 id="_15">启动</h6>
+<pre><code>./stream -c
+</code></pre>
+
+<p>重复该步骤多次，直到启动所有stream节点</p>
+<p><br /></p>
+<h5 id="gateway">Gateway</h5>
+<h6 id="_16">安装</h6>
+<pre><code>cd gomqtt/gateway
+go build
+</code></pre>
+
+<h6 id="_17">配置</h6>
+<p>假设要启动三台gateway
+首先修改service_id,三个节点依次为1、2、3,id切不可相同。
+修改nats_addrs和etcd.addrs</p>
+<h6 id="_18">启动</h6>
+<pre><code>./gateway -c
+</code></pre>
+
+<p><br /></p>
+<h5 id="center">Center</h5>
+<h6 id="_19">安装</h6>
+<pre><code>cd gomqtt/center
+go build
+</code></pre>
+
+<h6 id="_20">配置</h6>
+<p>修改etcd.addrs</p>
+<h6 id="_21">启动</h6>
+<pre><code>./center -c
+</code></pre>
+
+<p><br /></p>
+<h5 id="apns">Apns</h5>
+<h6 id="_22">安装</h6>
+<pre><code>cd gomqtt/apns
+go build
+</code></pre>
+
+<h6 id="_23">配置</h6>
+<p>修改nats.addrs，如果要开启持久化存储，则设置enalbe_persist=true，并修改tidb.addrs</p></div>
         </div>
 
         <script src="../../js/jquery-1.10.2.min.js"></script>
