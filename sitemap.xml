@@ -3,7 +3,7 @@
 
     
     <url>
-     <loc>/</loc>
+     <loc>https://github.com/taitan-org/gomqtt/</loc>
      <lastmod>2017-01-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
@@ -12,29 +12,13 @@
     
         
     <url>
-     <loc>/tech/architecture/</loc>
+     <loc>https://github.com/taitan-org/gomqtt/tech/architecture/</loc>
      <lastmod>2017-01-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>/tech/proto/</loc>
-     <lastmod>2017-01-04</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    
-
-    
-        
-    <url>
-     <loc>/user-guide/install/</loc>
-     <lastmod>2017-01-04</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-        
-    <url>
-     <loc>/user-guide/configuration/</loc>
+     <loc>https://github.com/taitan-org/gomqtt/tech/proto/</loc>
      <lastmod>2017-01-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
@@ -44,19 +28,35 @@
     
         
     <url>
-     <loc>/about/contribute/</loc>
+     <loc>https://github.com/taitan-org/gomqtt/user-guide/install/</loc>
      <lastmod>2017-01-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>/about/licence/</loc>
+     <loc>https://github.com/taitan-org/gomqtt/user-guide/configuration/</loc>
+     <lastmod>2017-01-04</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    
+
+    
+        
+    <url>
+     <loc>https://github.com/taitan-org/gomqtt/about/contribute/</loc>
      <lastmod>2017-01-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
-     <loc>/about/release-notes/</loc>
+     <loc>https://github.com/taitan-org/gomqtt/about/license/</loc>
+     <lastmod>2017-01-04</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>https://github.com/taitan-org/gomqtt/about/release-notes/</loc>
      <lastmod>2017-01-04</lastmod>
      <changefreq>daily</changefreq>
     </url>
