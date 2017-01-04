@@ -221,22 +221,13 @@
         <li class="main active"><a href="#_1">架构图</a></li>
         
     
-        <li class="main "><a href="#gateway">Gateway解析</a></li>
+        <li class="main "><a href="#_2">分布式解析</a></li>
         
     
-        <li class="main "><a href="#stream">Stream解析</a></li>
+        <li class="main "><a href="#_3">存储层解析</a></li>
         
     
-        <li class="main "><a href="#center">Center解析</a></li>
-        
-    
-        <li class="main "><a href="#apns">Apns解析</a></li>
-        
-    
-        <li class="main "><a href="#_2">存储层解析</a></li>
-        
-    
-        <li class="main "><a href="#_3">使用的开源组件</a></li>
+        <li class="main "><a href="#_4">使用的开源组件</a></li>
         
     
     </ul>
@@ -246,81 +237,30 @@
 <h2 id="_1">架构图</h2>
 <p><img alt="" src="../../img/gomqtt_arch.png" /></p>
 <p><br /></p>
-<h2 id="gateway">Gateway解析</h2>
-<p><strong>Gomqtt网关层，主要负责下面功能</strong></p>
-<ul>
-<li>通信层长连接维持(Tcp、Websocket)</li>
-<li>为客户端分配网关IP(Dispatch)</li>
-<li>mqtt协议编码、解码</li>
-<li>互斥登陆</li>
-<li>账号认证</li>
-<li>跟Stream进行grpc交互</li>
-<li>发送解析后的登陆、订阅、发布消息</li>
-<li>接收要发送到客户端的消息</li>
-<li>加密、压缩</li>
-<li>消息重发策略</li>
-</ul>
+<h2 id="_2">分布式解析</h2>
+<p>分布式分为有状态和无状态两种，数据库等存储服务一般都是有状态的，业务服务一般是无状态的。</p>
+<p>有状态服务需要通过分布式算法来做一致性，无状态服务天生就是分布式的。</p>
 <p><br /></p>
-<p><strong>Gateway的分布式</strong> :</p>
+<p><strong>Gateway</strong></p>
 <p>&nbsp;&nbsp;Gateway是无状态的，因此可以任意水平扩展。</p>
 <p>&nbsp;&nbsp;每个Gateway节点会将自身IP记录到Etcd中，客户端首先请求Gateway的Dispatch服务，
-根据帐号的一致性Hash获取一个Gateway节点，然后进行直连。</p>
-<p>&nbsp;&nbsp;若不使用Dipatch服务，那么互斥登陆将不可用！</p>
+根据帐号的一致性Hash获取一个Gateway节点，然后直连ip。</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>若不使用Dipatch服务，那么互斥登陆将不可用！</p>
+</div>
 <p><br /></p>
-<h2 id="stream">Stream解析</h2>
-<p><strong>stream是业务逻辑处理节点和Local Cache节点，主要负责下面功能</strong></p>
-<ul>
-<li>登陆、订阅、发布等逻辑处理</li>
-<li>广播、群聊等算法实现</li>
-<li>用户、账号、好友、群组等功能管理</li>
-<li>消息路由</li>
-<li>标签推送</li>
-<li>地理位置推送</li>
-<li>高性能本地缓存</li>
-<li>Session</li>
-<li>私聊、群聊、广播消息等</li>
-</ul>
-<p><strong>stream的分布式</strong></p>
+<p><strong>Stream</strong></p>
 <p>&nbsp;&nbsp;Stream因为涉及到缓存实现，因此是通过一致性Hash做的分布式，同时会通过一定的策略将数据同步到存储层(Mysql、Disk、Redis等)</p>
 <p>&nbsp;&nbsp;Stream将自身IP打点到Etcd，Gateway和Center通过用户账号将消息通过一致性hash映射到指定的Stream节点上。</p>
 <p><br /></p>
-<h2 id="center">Center解析</h2>
-<p><strong>Center是消息推送接口和管理平台</strong></p>
-<ul>
-<li>发起消息推送</li>
-<li>配置管理</li>
-<li>Gomqtt动态配置管理</li>
-<li>AppID配置管理</li>
-<li>Gomqtt后台管理</li>
-<li>分域： 每个域是一个service,拥有自己的推送数据统计、后台管理等等</li>
-</ul>
-<p><strong>Center的分布式</strong></p>
+<p><strong>Center</strong></p>
 <p>&nbsp;&nbsp;Center是无状态的，因此可以任意水平扩展</p>
-<h2 id="apns">Apns解析</h2>
-<p><strong>Apns是IOS推送节点</strong></p>
-<ul>
-<li>基于APNS2.0协议，推送性能和稳定性都大大提升</li>
-<li>Token注册和管理</li>
-<li>Client登陆时会在Apns注册Token</li>
-<li>推送时，如果设定了需要Apns推送，那么消息会被stream转发到Apns处理</li>
-<li>推送时无需说明Token,告诉要推送的账户即可</li>
-</ul>
-<p><strong>Apns的分布式</strong></p>
+<p><br /></p>
+<p><strong>Apns</strong></p>
 <p>&nbsp;&nbsp;Apns要管理和存储Token，这些都是在本地硬盘数据库完成的，具体的分布式使用方式参见Apns安装和启动章节</p>
 <p><br /></p>
-<h2 id="_2">存储层解析</h2>
-<p><strong>存储层是数据持久化层，持久化内容包括</strong></p>
-<ul>
-<li>消息</li>
-<li>聊天</li>
-<li>广播</li>
-<li>用户信息</li>
-<li>标签</li>
-<li>好友</li>
-<li>地理位置</li>
-<li>加入的群组</li>
-<li>群组</li>
-</ul>
+<h2 id="_3">存储层解析</h2>
 <p><strong>存储的选择</strong></p>
 <p>&nbsp;&nbsp;我们的存储是使用了本地缓存 ＋ 持久化存储的方式，消息等首先是存在本地缓存，然后会定期或者通过某些操作触发后，同步到持久化存储。
 根据业务场景，我们对持久化的存储有以下几个要求：
@@ -332,9 +272,10 @@
 - 后台可视化
 - 开源产品不能过于守旧</p>
 <p>&nbsp;&nbsp;根据以上要求，我们支持TiDB、Cockroach、Mysql数据库，但是推荐TiDB，在安装环节也是以TiDB作为示例</p>
+<p><br /></p>
 <p><strong>存储的分布式</strong></p>
 <p>&nbsp;&nbsp;TiDB和Cockroach天生支持分布式，Mysql需要通过mysql proxy等来做到这点，因此推荐前两个数据库</p>
-<h2 id="_3">使用的开源组件</h2>
+<h2 id="_4">使用的开源组件</h2>
 <p><strong>1.Etcd</strong></p>
 <ul>
 <li>版本V3及以上</li>
