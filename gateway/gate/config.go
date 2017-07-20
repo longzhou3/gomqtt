@@ -19,7 +19,7 @@ import (
 	"github.com/naoina/toml"
 	"github.com/nats-io/nats"
 	"github.com/taitan-org/talents"
-	"github.com/uber-go/zap"
+	"go.uber.org/zap"
 )
 
 type Config struct {

@@ -3,14 +3,14 @@ package uuid
 import (
 	"strconv"
 
-	"github.com/uber-go/zap"
+	"go.uber.org/zap"
 )
 
 var sid int
 var gen Generator
-var Logger zap.Logger
+var Logger *zap.Logger
 
-func Init(i int, t string, l zap.Logger) {
+func Init(i int, t string, l *zap.Logger) {
 	sid = i
 	Logger = l
 	switch t {

@@ -8,7 +8,7 @@ import (
 	"github.com/taitan-org/gomqtt/global"
 	proto "github.com/taitan-org/gomqtt/mqtt/protocol"
 	"github.com/taitan-org/talents"
-	"github.com/uber-go/zap"
+	"go.uber.org/zap"
 )
 
 func connect(ci *connInfo) error {

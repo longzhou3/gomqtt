@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo"
-	"github.com/uber-go/zap"
+	"go.uber.org/zap"
 )
 
 func adminStart() {

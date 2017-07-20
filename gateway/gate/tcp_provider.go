@@ -11,7 +11,7 @@ import (
 
 	"crypto/tls"
 
-	"github.com/uber-go/zap"
+	"go.uber.org/zap"
 )
 
 /* Websocket Provider */

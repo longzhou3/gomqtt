@@ -8,7 +8,7 @@ import (
 	proto "github.com/taitan-org/gomqtt/mqtt/protocol"
 	"github.com/taitan-org/gomqtt/uuid"
 	"github.com/taitan-org/talents"
-	"github.com/uber-go/zap"
+	"go.uber.org/zap"
 
 	"bytes"
 

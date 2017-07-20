@@ -5,7 +5,7 @@ import (
 
 	"github.com/gorilla/websocket"
 
-	"github.com/uber-go/zap"
+	"go.uber.org/zap"
 )
 
 /* Websocket协议容器管理模块*/

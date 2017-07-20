@@ -9,7 +9,7 @@ import (
 
 	"github.com/nats-io/nats"
 	"github.com/taitan-org/gomqtt/global"
-	"github.com/uber-go/zap"
+	"go.uber.org/zap"
 
 	proto "github.com/taitan-org/gomqtt/mqtt/protocol"
 

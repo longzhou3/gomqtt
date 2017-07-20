@@ -15,7 +15,7 @@ web_domain = ""
 # 服务器ID，每台服务器ID必须是唯一的，该id将用于生成uuid
 server_id = 1
 
-
+#"nats-route://user:pass@127.0.0.1:4245",
 nats_addrs = [	
         "nats://10.7.14.236:4222",
         "nats://10.7.14.26:4222",    

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/uber-go/zap"
+	"go.uber.org/zap"
 )
 
 // Standard ...
@@ -23,7 +23,7 @@ func (sd *Standard) Start() {
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				Logger.Warn("ts15 fatal error", zap.Error(err.(error)), zap.Stack())
+				Logger.Warn("ts15 fatal error", zap.Error(err.(error)), zap.Stack("uuid start"))
 			}
 		}()
 

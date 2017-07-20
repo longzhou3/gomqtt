@@ -5,7 +5,7 @@ import (
 
 	"github.com/labstack/echo"
 	"github.com/taitan-org/gomqtt/gateway/gate"
-	"github.com/uber-go/zap"
+	"go.uber.org/zap"
 )
 
 /* Dispatch a room ip to the client which is requesting */
@@ -55,7 +55,7 @@ func dispatch(c echo.Context) error {
 	} else {
 		ip, err := gate.Consist.Get(acc)
 		if err != nil {
-			gate.Logger.Info("get consist ip error", zap.Error(err), zap.Object("consist", gate.Consist.Members()))
+			gate.Logger.Info("get consist ip error", zap.Error(err), zap.Any("consist", gate.Consist.Members()))
 			c.JSON(http.StatusOK, Resp{
 				Result: "error",
 				Data:   "no room available",

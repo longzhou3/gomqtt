@@ -14,7 +14,7 @@ import (
 	proto "github.com/taitan-org/gomqtt/mqtt/protocol"
 
 	"github.com/taitan-org/talents"
-	"github.com/uber-go/zap"
+	"go.uber.org/zap"
 
 	"github.com/nats-io/nats"
 	rpc "github.com/taitan-org/gomqtt/proto"
@@ -92,7 +92,7 @@ type connInfo struct {
 func serve(ci *connInfo) {
 	defer func() {
 		if err := recover(); err != nil {
-			Logger.Info("user's main goroutine has a panic error", zap.Error(err.(error)), zap.Stack())
+			Logger.Info("user's main goroutine has a panic error", zap.Error(err.(error)), zap.Stack("client server"))
 		}
 	}()
 
