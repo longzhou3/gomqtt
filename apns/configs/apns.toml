@@ -14,10 +14,7 @@ cluster_servers = 1
 
 [etcd]
 addrs = [ 
- 	
-        "10.7.24.191:2379",
-        
-        "10.7.24.192:2379",
+ 
         
 ]
 
@@ -27,9 +24,7 @@ apns_addrs = "/gomqtt/apns/etcd/addrs"
 [nats]
 addrs = [
  	
-        "nats://10.7.14.236:4222",
-        
-        "nats://10.7.14.26:4222",
+   
         
 ]
 
