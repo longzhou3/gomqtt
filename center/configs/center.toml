@@ -5,7 +5,7 @@ log_level = "DEBUG"
 log_path = "./out.log"
 
 [mysql]
-addr = "10.7.15.37"
+addr = ""
 port = "4000"
 database = "gomqtt"
 acc = "root"
